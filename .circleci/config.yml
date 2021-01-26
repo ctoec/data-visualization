@@ -42,9 +42,13 @@ jobs:
       - checkout
       - add_ssh_keys
       - run:
+          name: 'Remove previous SuperSet GitHub clone'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo rm -rf superset"
+      - run:
           name: 'Clone SuperSet from GitHub'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "rm -rf superset && git clone https://github.com/apache/superset.git && cd superset && git checkout latest"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "git clone https://github.com/apache/superset.git && cd superset && git checkout latest"
   start:
     machine:
       image: ubuntu-1604:202007-01 
