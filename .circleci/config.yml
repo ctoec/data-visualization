@@ -1,42 +1,68 @@
 version: 2.1
 
 jobs: 
-  deploy:
+  install:
     machine:
       image: ubuntu-1604:202007-01 
     steps:
       - checkout
       - add_ssh_keys
       - run:
-          name: 'Install dependencies'
+          name: 'Install Git'
           command: |
-            ssh ec2-user@ec2-18-225-6-36.us-east-2.compute.amazonaws.com "sudo apt-get install build-essential libssl-dev libffi-dev python3-dev python3-pip libsasl2-dev libldap2-dev"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo yum install git"
       - run:
-          name: 'Create Python Virtual Env'
+          name: 'Install Docker Engine'
           command: |
-            ssh ec2-user@ec2-18-225-6-36.us-east-2.compute.amazonaws.com "pip install virtualenv && python3 -m venv venv && . venv/bin/activate"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo amazon-linux-extras install docker"
       - run:
-          name: 'Install SuperSet'
+          name: 'Start Docker'
           command: |
-            ssh ec2-user@ec2-18-225-6-36.us-east-2.compute.amazonaws.com "pip install apache-superset"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo service docker start"
       - run:
-          name: 'Initialize the SuperSet Database'
+          name: 'Add ec2-user to Docker group'
           command: |
-            ssh ec2-user@ec2-18-225-6-36.us-east-2.compute.amazonaws.com "superset db upgrade"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo usermod -a -G docker ec2-user"
       - run:
-          name: 'Load examples'
+          name: 'Install pinned version of Docker Compose'  # https://github.com/docker/compose/issues/8064
           command: |
-            ssh ec2-user@ec2-18-225-6-36.us-east-2.compute.amazonaws.com "superset load_examples"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "curl -L https://get.daocloud.io/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose"
       - run:
-          name: 'Set default roles and permissions'
+          name: 'Change Docker Compose permissions'
           command: |
-            ssh ec2-user@ec2-18-225-6-36.us-east-2.compute.amazonaws.com "superset init"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "chmod +x /usr/local/bin/docker-compose"
       - run:
-          name: 'Start SuperSet'
+          name: 'Add Docker Compose to path'
           command: |
-            ssh ec2-user@ec2-18-225-6-36.us-east-2.compute.amazonaws.com "superset runserver -p 8080"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose"
+  build:
+    machine:
+      image: ubuntu-1604:202007-01 
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: 'Clone SuperSet from GitHub'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "git clone https://github.com/apache/superset.git && cd superset && git checkout latest"
+  start:
+    machine:
+      image: ubuntu-1604:202007-01 
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: 'Start SuperSet (with examples)'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd superset && SUPERSET_LOAD_EXAMPLES=yes docker-compose up -d"
 
 workflows:
-  deploy-staging:
+  deploy:
     jobs:
-      - deploy
+      - install
+      - build:
+          requires:
+            - install
+      - start:
+          requires:
+            - build
