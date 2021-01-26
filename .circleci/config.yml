@@ -59,7 +59,11 @@ jobs:
 workflows:
   deploy:
     jobs:
-      - install
+      - hold:
+          type: approval
+      - install:
+          requires:
+            - hold
       - build:
           requires:
             - install
