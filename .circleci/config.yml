@@ -1,0 +1,75 @@
+version: 2.1
+
+jobs: 
+  install:  # TODO: Move all these install steps to terraform init, if we end up keeping this
+    machine:
+      image: ubuntu-1604:202007-01 
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: 'Install Git'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo yum install git"
+      - run:
+          name: 'Install Docker Engine'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo amazon-linux-extras install docker"
+      - run:
+          name: 'Start Docker'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo service docker start"
+      - run:
+          name: 'Add ec2-user to Docker group'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo usermod -a -G docker ec2-user"
+      # - run:
+      #     name: 'Install pinned version of Docker Compose'  # https://github.com/docker/compose/issues/8064
+      #     command: |
+      #       ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo su && sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose"
+      # - run:
+      #     name: 'Change Docker Compose permissions'
+      #     command: |
+      #       ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo chmod +x /usr/local/bin/docker-compose"
+      # - run:
+      #     name: 'Add Docker Compose to path'
+      #     command: |
+      #       ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose"
+  build:
+    machine:
+      image: ubuntu-1604:202007-01 
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: 'Remove previous SuperSet GitHub clone'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo rm -rf superset"
+      - run:
+          name: 'Clone SuperSet from GitHub'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "git clone https://github.com/apache/superset.git && cd superset && git checkout latest"
+  start:
+    machine:
+      image: ubuntu-1604:202007-01 
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: 'Start SuperSet (with examples)'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd superset && SUPERSET_LOAD_EXAMPLES=yes docker-compose up -d"
+workflows:
+  deploy:
+    jobs:
+      - hold:
+          type: approval
+      - install:
+          requires:
+            - hold
+      - build:
+          requires:
+            - install
+      - start:
+          requires:
+            - build
