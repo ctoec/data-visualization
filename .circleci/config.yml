@@ -53,7 +53,7 @@ jobs:
       - run:
           name: 'Add DB Password to config files'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "echo -e "SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://superset_admin:$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass)@superset_db/superset'" >> docker/config/superset_config.py && echo -e "POSTGRES_PASSWORD=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass)" >> docker/.env"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "echo -e "SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://superset_admin:$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass --region us-east-2)@superset_db/superset'" >> docker/config/superset_config.py && echo -e "POSTGRES_PASSWORD=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass --region us-east-2)" >> docker/.env"
   start:
     machine:
       image: ubuntu-1604:202007-01 
