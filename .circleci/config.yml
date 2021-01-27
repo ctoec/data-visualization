@@ -49,7 +49,7 @@ jobs:
           command: |
             scp -r docker/ ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com:
       - aws-cli/setup:
-          configure-default-region: false
+          aws-region: us-east-2
       - run:
           name: 'Add DB Password to config files'
           command: |
