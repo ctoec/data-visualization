@@ -48,7 +48,8 @@ jobs:
           name: 'Copy docker files to instance'
           command: |
             scp -r docker/ ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com:
-      - aws-cli/setup
+      - aws-cli/setup:
+          aws-region: AWS_DEFAULT_REGION
       - run:
           name: 'Add DB Password to config files'
           command: |
