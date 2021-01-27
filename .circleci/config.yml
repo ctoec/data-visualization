@@ -42,13 +42,13 @@ jobs:
       - checkout
       - add_ssh_keys
       - run:
-          name: 'Remove previous SuperSet GitHub clone'
+          name: 'Copy docker files to instance'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo rm -rf superset"
+            scp -r .docker/ ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com:
       - run:
-          name: 'Clone SuperSet from GitHub'
+          name: 'Add DB Password to config files'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "git clone https://github.com/apache/superset.git && cd superset && git checkout latest"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "echo -e "SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://superset_admin:$SUPERSET_DB_PASSWORD@superset_db/superset'" >> docker/config/superset_config.py && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASSWORD" >> docker/.env"
   start:
     machine:
       image: ubuntu-1604:202007-01 
@@ -56,9 +56,28 @@ jobs:
       - checkout
       - add_ssh_keys
       - run:
-          name: 'Start SuperSet (with examples)'
+          name: 'Start SuperSet'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd superset && SUPERSET_LOAD_EXAMPLES=yes docker-compose up -d"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd docker && docker-compose up -d"
+  init:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - checkout
+      - add_ssh_keys
+      - run:
+          name: 'Set up database'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset db upgrade && docker exec -it superset superset init"
+      - run:
+          name: 'Create admin user'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset fab create-admin \
+                                                                                         --username USERNAME \
+                                                                                         --firstname FIRSTNAME \
+                                                                                         --lastname LASTNAME \
+                                                                                         --email EMAIL \
+                                                                                         --password ********"
 workflows:
   deploy:
     jobs:

@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+
+  db:
+    env_file: .env
+    image: postgres:10
+    container_name: superset_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_home:/var/lib/postgresql/data
+
+  superset:
+    image: apache/incubator-superset
+    container_name: superset
+    volumes:
+      - ./config:/app/pythonpath
+      - ./images:/app/superset/static/assets/images/mounted_images/
+    ports:
+      - "80:8080"
+
+volumes:
+  db_home:
+    external: false
