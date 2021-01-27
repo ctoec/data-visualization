@@ -132,3 +132,4 @@ dmypy.json
 /src/data_integration/july_2020/data/
 
 *.DS_Store
+!docker/.env
