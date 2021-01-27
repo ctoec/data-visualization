@@ -69,15 +69,15 @@ jobs:
           name: 'Set up database'
           command: |
             ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset db upgrade && docker exec -it superset superset init"
-      - run:
-          name: 'Create admin user'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset fab create-admin \
-                                                                                         --username USERNAME \
-                                                                                         --firstname FIRSTNAME \
-                                                                                         --lastname LASTNAME \
-                                                                                         --email EMAIL \
-                                                                                         --password ********"
+#      - run:
+#          name: 'Create admin user'
+#          command: |
+#            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset fab create-admin \
+#                                                                                         --username USERNAME \
+#                                                                                         --firstname FIRSTNAME \
+#                                                                                         --lastname LASTNAME \
+#                                                                                         --email EMAIL \
+#                                                                                         --password ********"
 workflows:
   deploy:
     jobs:
