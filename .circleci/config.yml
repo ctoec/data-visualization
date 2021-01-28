@@ -63,6 +63,10 @@ jobs:
           name: 'Start SuperSet'
           command: |
             ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd docker && docker-compose down && docker-compose up -d"
+      - run:
+          name: 'Copy Favicon'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker cp docker/images/favicon.png superset:/app/superset/static/assets/images/favicon.png
 #  init:
 #    machine:
 #      image: ubuntu-1604:202007-01
