@@ -1,8 +1,19 @@
+import numpy as np
 import pandas as pd
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
     DATA_FOLDER, SMI_AND_FPL_DATA, RENAME_DICT
 
 STRIPPED_FILE = DATA_FOLDER + '/stripped_file.csv'
+
+
+def clean_column(df_col):
+    """
+    Strip white space and underscores from column data and properly title
+    :param df_col:
+    :return:
+    """
+    return df_col.str.replace('_', ' ').str.strip().str.title()
+
 
 if __name__ == '__main__':
 
@@ -13,9 +24,9 @@ if __name__ == '__main__':
     # 106 of which are value errors in Excel or were input as 0
     df['Birth Month'] = pd.to_datetime(df['Child Date of Birth'], errors='coerce').dt.strftime("%Y-%m-01")
 
-    # Convert concatenated names and birthdays to unique categories
-    df['Name and DOB'] = pd.Categorical(df['Name and DOB'])
-    df['unique_name_ids'] = df['Name and DOB'].cat.codes
+    # Convert concatenated names and birthdays to unique categories for deduplication analysis
+    id_cols = ['Child First Name ', 'Child Middle Name ', 'Child Last Name ', 'Child Date of Birth']
+    df['unique_name_ids'] = df[id_cols].apply(lambda row: ''.join(x.lower() for x in row.values.astype(str)), axis=1)
 
     # Flag duplicated names
     unique_ids = df['unique_name_ids'].value_counts()
@@ -35,10 +46,12 @@ if __name__ == '__main__':
     # Drop rows that are actually site metadata
     df = df[df['C4K Region'] != DUMMY_REGION]
 
-    # Clean Race column
-    df['Race for Reporting'] = df['Race for Reporting'].str.replace('_', ' ').str.strip().str.title()
+    # Clean Race and Ethnicity column
+    df['Race for Reporting'] = clean_column(df['Race for Reporting'])
+    df['Ethnicity'] = clean_column(df['Ethnicity'])
 
     # Add SMI and FPL
+    df['Household size'] = df['Household size'].replace({'SPED': np.nan, '9 or more': 9}).astype(float)
     smi_and_fpl = pd.read_csv(SMI_AND_FPL_DATA)
-    df.merge(smi_and_fpl, how='left', left_on='Household size', right_on='family_size')
+    df = df.merge(smi_and_fpl, how='left', left_on='Household size', right_on='family_size')
     df.to_csv(STRIPPED_FILE, index=False)

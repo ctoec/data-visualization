@@ -37,5 +37,9 @@ DUMMY_REGION = 'x_ECE Site Details'
 RENAME_DICT = {'Race of Child For Reporting': 'Race for Reporting',
                'Child Race American Indian or Alaskan Native, Asian, Black or African American, Native Hawaiian Or Pacific Islander, White - rev': 'All Race Options',
                'Gender Female, Male, Nonbinary, Unknown': 'Gender',
-               'Ethnicity (Not Hispanic or Latinx, Hispanic or Latinx) - rev': 'Ethnicity',
-               'Annual household income_x': 'Annual Household Income'}
+               'Ethnicity Not Hispanic or Latinx, Hispanic or Latinx - rev': 'Ethnicity',
+               'Annual household income_x': 'Annual Household Income',
+               'From': 'Data Submitted By',
+               'City ECE Site': 'Town - Site',
+               'Family town of residence': 'Town - Family'
+               }
