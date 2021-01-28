@@ -13,6 +13,7 @@ PII_COLUMNS = ['Name and DOB',
                'Child Date of Birth',
                'SASID (if available) ',
                'Family street address ',
+               'unique_name_ids'
                ]
 
 # Columns that were added to the spreadsheet to calculate all available spaces, not child level data
