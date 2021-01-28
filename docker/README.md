@@ -27,7 +27,7 @@ When the database is initially built it needs to be set up with the following st
                 --firstname FIRSTNAME \
                 --email EMAIL \
                 --password ********`
-1. Add Database to Superset UI
+1. Add Database to store OEC data through Superset UI 
    - Add database through database UI with connection string `SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://superset_admin:$SUPERSET_DB_PASS@superset_db/superset`
    - Enable CSV upload and all SQL Lab settings
 1. Use SQL Lab to create uploaded_data schema
