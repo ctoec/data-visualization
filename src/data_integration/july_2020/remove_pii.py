@@ -26,7 +26,8 @@ if __name__ == '__main__':
 
     # Convert concatenated names and birthdays to unique categories for deduplication analysis
     id_cols = ['Child First Name ', 'Child Middle Name ', 'Child Last Name ', 'Child Date of Birth']
-    df['unique_name_ids'] = df[id_cols].apply(lambda row: ''.join(x.lower() for x in row.values.astype(str)), axis=1)
+    df['unique_name_ids'] = pd.Categorical(df[id_cols].apply(lambda row: ''.join(x.lower() for x in row.values.astype(str)), axis=1))
+    df['unique_name_ids'] = df['unique_name_ids'].cat.codes
 
     # Flag duplicated names
     unique_ids = df['unique_name_ids'].value_counts()
@@ -50,6 +51,11 @@ if __name__ == '__main__':
     df['Race for Reporting'] = clean_column(df['Race for Reporting'])
     df['Ethnicity'] = clean_column(df['Ethnicity'])
 
+    # Make income a float
+
+    df["Annual Household Income"] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '').str.replace('IncomeNotDisclosed',
+                                                                                        '').astype(float,
+                                                                                                   errors='ignore')
     # Add SMI and FPL
     df['Household size'] = df['Household size'].replace({'SPED': np.nan, '9 or more': 9}).astype(float)
     smi_and_fpl = pd.read_csv(SMI_AND_FPL_DATA)
