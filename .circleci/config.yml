@@ -62,17 +62,17 @@ jobs:
       - run:
           name: 'Start SuperSet'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd docker && docker-compose up -d"
-  init:
-    machine:
-      image: ubuntu-1604:202007-01
-    steps:
-      - checkout
-      - add_ssh_keys
-      - run:
-          name: 'Set up database'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset db upgrade && docker exec -it superset superset init"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd docker && docker-compose down && docker-compose up -d"
+#  init:
+#    machine:
+#      image: ubuntu-1604:202007-01
+#    steps:
+#      - checkout
+#      - add_ssh_keys
+#      - run:
+#          name: 'Set up database'
+#          command: |
+#            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset db upgrade && docker exec -it superset superset init"
 #      - run:
 #          name: 'Create admin user'
 #          command: |
