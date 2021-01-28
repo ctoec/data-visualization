@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_home:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data
 
   superset:
     image: apache/incubator-superset
@@ -19,7 +19,3 @@ services:
       - ./images:/app/superset/static/assets/images/mounted_images/
     ports:
       - "80:8080"
-
-volumes:
-  db_home:
-    external: false
