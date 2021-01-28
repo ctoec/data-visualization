@@ -47,7 +47,7 @@ jobs:
       - run:
           name: 'Add DB Password to config files'
           command: |
-            SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass) && echo -e "SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://superset_admin:$SUPERSET_DB_PASS@superset_db/superset'" >> docker/config/superset_config.py && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env"
+            SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass) && echo -e "SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://superset_admin:$SUPERSET_DB_PASS@superset_db/superset'" >> docker/config/superset_config.py && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
       - run:
           name: 'Copy docker files to instance'
           command: |
