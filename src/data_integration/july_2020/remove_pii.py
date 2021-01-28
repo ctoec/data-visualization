@@ -17,7 +17,14 @@ if __name__ == '__main__':
     df['Name and DOB'] = pd.Categorical(df['Name and DOB'])
     df['unique_name_ids'] = df['Name and DOB'].cat.codes
 
-    # Drop PII and additional added columns
+    # Flag duplicated names
+    unique_ids = df['unique_name_ids'].value_counts()
+
+    # Get all IDs included more than once
+    duplicate_ids = unique_ids.index[unique_ids.gt(1)]
+    df['is_duplicate'] = df['unique_name_ids'].isin(duplicate_ids)
+
+    # Drop PII and additional added columns not associated with children
     df.drop(['Unnamed: 0'] + PII_COLUMNS + PROGRAM_TOTAL_COLS, axis=1, inplace=True)
 
     # Strip whitespace and parens for db loading from columns
@@ -29,9 +36,7 @@ if __name__ == '__main__':
     df = df[df['C4K Region'] != DUMMY_REGION]
 
     # Clean Race column
-    df['Race'] = df['Race'].str.replace('_', ' ').str.strip().str.title()
-
-
+    df['Race for Reporting'] = df['Race for Reporting'].str.replace('_', ' ').str.strip().str.title()
 
     # Add SMI and FPL
     smi_and_fpl = pd.read_csv(SMI_AND_FPL_DATA)

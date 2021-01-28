@@ -130,3 +130,5 @@ dmypy.json
 
 # Data folders
 /src/data_integration/july_2020/data/
+
+*.DS_Store
