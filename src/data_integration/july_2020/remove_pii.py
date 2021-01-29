@@ -48,8 +48,8 @@ if __name__ == '__main__':
     df = df[df['C4K Region'] != DUMMY_REGION]
 
     # Clean Race and Ethnicity column
-    df['Race for Reporting'] = clean_column(df['Race for Reporting'])
-    df['Ethnicity'] = clean_column(df['Ethnicity'])
+    for col in ['Race for Reporting', 'Ethnicity', 'Town - Family', 'Town - Site']:
+        df[col] = clean_column(df[col])
 
     # Make income a float
     df['Annual Household Income'] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '')
