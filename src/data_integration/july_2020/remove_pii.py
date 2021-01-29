@@ -52,10 +52,9 @@ if __name__ == '__main__':
     df['Ethnicity'] = clean_column(df['Ethnicity'])
 
     # Make income a float
+    df['Annual Household Income'] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '')
+    df['Annual Household Income'] = pd.to_numeric(df['Annual Household Income'], errors='coerce')
 
-    df["Annual Household Income"] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '').str.replace('IncomeNotDisclosed',
-                                                                                        '').astype(float,
-                                                                                                   errors='ignore')
     # Add SMI and FPL
     df['Household size'] = df['Household size'].replace({'SPED': np.nan, '9 or more': 9}).astype(float)
     smi_and_fpl = pd.read_csv(SMI_AND_FPL_DATA)
