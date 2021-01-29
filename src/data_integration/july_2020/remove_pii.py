@@ -51,6 +51,9 @@ if __name__ == '__main__':
     for col in ['Race for Reporting', 'Ethnicity', 'Town - Family', 'Town - Site']:
         df[col] = clean_column(df[col])
 
+    # Add column for crossing towns
+    df['attends_site_in_hometown'] = df['Town - Family'] == df['Town - Site']
+
     # Make income a float
     df['Annual Household Income'] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '')
     df['Annual Household Income'] = pd.to_numeric(df['Annual Household Income'], errors='coerce')
