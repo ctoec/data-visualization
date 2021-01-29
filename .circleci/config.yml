@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  aws-cli: circleci/aws-cli@1.3.0
+
 jobs: 
   install:  # TODO: Move all these install steps to terraform init, if we end up keeping this
     machine:
@@ -42,13 +45,14 @@ jobs:
       - checkout
       - add_ssh_keys
       - run:
-          name: 'Remove previous SuperSet GitHub clone'
+          name: 'Add DB Password to config files'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo rm -rf superset"
+            SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
       - run:
-          name: 'Clone SuperSet from GitHub'
+          name: 'Copy docker files to instance'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "git clone https://github.com/apache/superset.git && cd superset && git checkout latest"
+            scp -r docker/ ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com:
+
   start:
     machine:
       image: ubuntu-1604:202007-01 
@@ -56,9 +60,34 @@ jobs:
       - checkout
       - add_ssh_keys
       - run:
-          name: 'Start SuperSet (with examples)'
+          name: 'Start SuperSet'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd superset && SUPERSET_LOAD_EXAMPLES=yes docker-compose up -d"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd docker && docker-compose down && docker-compose up -d"
+      - run:
+          name: 'Copy Favicon'
+          command: |
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker cp docker/images/favicon.ico superset:/app/superset/static/assets/images/favicon.png"
+
+# # One time init of database
+#  init:
+#    machine:
+#      image: ubuntu-1604:202007-01
+#    steps:
+#      - checkout
+#      - add_ssh_keys
+#      - run:
+#          name: 'Set up database'
+#          command: |
+#            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset db upgrade && docker exec -it superset superset init"
+#      - run:
+#          name: 'Create admin user'
+#          command: |
+#            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset fab create-admin \
+#                                                                                         --username USERNAME \
+#                                                                                         --firstname FIRSTNAME \
+#                                                                                         --lastname LASTNAME \
+#                                                                                         --email EMAIL \
+#                                                                                         --password ********"
 workflows:
   deploy:
     jobs:
@@ -73,3 +102,6 @@ workflows:
       - start:
           requires:
             - build
+#      - init:
+#          requires:
+#            - start
