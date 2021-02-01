@@ -35,8 +35,16 @@ When the database is initially built it needs to be set up with the following st
 1. Use SQL Lab to create uploaded_data schema
    - `CREATE SCHEMA uploaded_data;`
 1. Load CSVs as needed 
+
 ### Data Sources
 
 - July 2020 data
   - One time collection of data as of Feb. 2020
   - Stored in bucket referenced in [data retention policy.](https://docs.google.com/document/d/1fBBjWPdC9w8YUlCT47s9-G9jzy0vOQ9ejONviXkkCxI/edit#heading=h.3aiijg3fhho3)
+  
+  
+### Data Visualization
+
+The charts and layout for the dashboards is better stored in the [OEC POC Dashboard](http://ec2-3-134-85-99.us-east-2.compute.amazonaws.com/superset/dashboard/3/) directly. 
+The SQL calculations that are behind the metrics are stored for reference and review here in `src/data_visualization`. 
+Any changes to metrics or calculated columns should be accompanied by a pull request here to review the underlying SQL code.
