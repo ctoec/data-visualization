@@ -4,6 +4,7 @@ DATA_FOLDER = os.path.dirname(os.path.realpath(__file__)) + '/data/'
 REFERENCE_DATA_FOLDER = os.path.dirname(os.path.realpath(__file__)) + '/reference_data/'
 JULY_2020_DATA_FILE = DATA_FOLDER + 'ece_feb_20_data_collection.csv'
 SMI_AND_FPL_DATA = REFERENCE_DATA_FOLDER + 'fpl_and_smi.csv'
+LICENSE_DATA = REFERENCE_DATA_FOLDER + 'license_data.csv'
 
 # Columns with explict PII,
 PII_COLUMNS = ['Name and DOB',
