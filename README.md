@@ -41,6 +41,8 @@ When the database is initially built it needs to be set up with the following st
 - July 2020 data
   - One time collection of data as of Feb. 2020
   - Stored in bucket referenced in [data retention policy.](https://docs.google.com/document/d/1fBBjWPdC9w8YUlCT47s9-G9jzy0vOQ9ejONviXkkCxI/edit#heading=h.3aiijg3fhho3)
+  - Copy sheet `ECE Feb20 Data Collect_All_e` and paste as tab separated CSV (this should be the default) into `src/data_integration/july_2020/data/ece_feb_20_data_collection.csv`.
+  - To clean data: go to `src/data_integration/july_2020/` and run `python3 clean_data.py` or `python clean_data.py` depending on your machine's binary for Python 3.
   
   
 ### Data Visualization
@@ -48,3 +50,4 @@ When the database is initially built it needs to be set up with the following st
 The charts and layout for the dashboards is better stored in the [OEC POC Dashboard](http://ec2-3-134-85-99.us-east-2.compute.amazonaws.com/superset/dashboard/3/) directly. 
 The SQL calculations that are behind the metrics are stored for reference and review here in `src/data_visualization`. 
 Any changes to metrics or calculated columns should be accompanied by a pull request here to review the underlying SQL code.
+
