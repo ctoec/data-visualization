@@ -40,12 +40,12 @@ def clean_column(df_col):
     return df_col.str.replace('_', ' ').str.strip().str.title()
 
 
-def clean_student_data(df):
+def clean_student_data():
     """
     Convert full student and site data file into just anonymous student data
-    :param df: full datafrome of July 2020 student and site data
     :return: Anonymized student dataframe
     """
+    df = pd.read_csv(JULY_2020_DATA_FILE, sep='\t')
 
     # Round dates to the nearest birth month. 109 rows have bad dates
     # 106 of which are value errors in Excel or were input as 0
@@ -163,12 +163,11 @@ def clean_site_data():
 
 if __name__ == '__main__':
 
-    full_df = pd.read_csv(JULY_2020_DATA_FILE, sep='\t')
     site_data = clean_site_data()
     site_data.to_csv(SITE_FILE, index=False)
 
     # Call each cleaning function with a copy of the data to avoid any side effects
-    student_df = clean_student_data(full_df.copy())
+    student_df = clean_student_data()
     student_df.to_csv(STUDENT_FILE, index=False)
 
 
