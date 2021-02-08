@@ -20,15 +20,12 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     return 'FC' + col.str.zfill(12)
 
 
-def get_lat_lon(address, existing_lookup):
+def get_lat_lon(address):
     """
     Get lat lon from US Census
     :param address: Address string
-    :param existing_lookup: Dictionary of results from Census of previous searches base on address
     :return: tuple of lat, lon
     """
-    if address in existing_lookup:
-        return existing_lookup[address]
     url_encoded_address = requests.utils.quote(address)
     url = f"https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=" \
           f"{url_encoded_address}&benchmark=2020&format=json"
@@ -128,12 +125,7 @@ def clean_site_data():
     site_df['Full Address'] = site_df[['Address'] + base_address_cols].apply(lambda row: ' '.join(row.values.astype(str)), axis=1)
     site_df['Facility Code'] = standardize_facility_string(site_df['Facility Code'])
 
-    # Open saved file with existing data
-    with open(LAT_LONG_LOOKUP) as f:
-        existing_location_lookup = json.load(f)
-
     # Get all addresses from census API
-    counter = 0
     lats = []
     longs = []
     census_towns = []
@@ -141,12 +133,12 @@ def clean_site_data():
     # Geocode address
     for _, row in site_df.iterrows():
         address = row['Full Address - Lookup']
-        address_result = get_lat_lon(address, existing_location_lookup)
+        address_result = get_lat_lon(address)
 
         # If address doesn't exist, attempt a generic town address
         if not address_result:
             address = f'1 Main {row["Town"]} CT'
-            address_result = get_lat_lon(address, existing_location_lookup)
+            address_result = get_lat_lon(address)
             pass
 
         # Add nulls for results that didn't get a result
@@ -155,20 +147,12 @@ def clean_site_data():
             longs.append(np.nan)
             census_towns.append('')
 
-        # Add data to lats, longs and town and stores results
+        # Add data to lats, longs and town
         else:
-            existing_location_lookup[address] = address_result
             lats.append(address_result['coordinates']['y'])
             longs.append(address_result['coordinates']['x'])
             census_towns.append(address_result['addressComponents']['city'])
 
-        # Checkpoint save result from Census API
-        if counter % 5 == 0:
-            print(counter)
-            with open(LAT_LONG_LOOKUP, 'w') as f:
-                json.dump(existing_location_lookup, f)
-
-        counter += 1
     site_df['Latitude'] = lats
     site_df['Longitude'] = longs
     site_df['Town from Census'] = census_towns
