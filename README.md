@@ -51,3 +51,7 @@ The charts and layout for the dashboards is better stored in the [OEC POC Dashbo
 The SQL calculations that are behind the metrics are stored for reference and review here in `src/data_visualization`. 
 Any changes to metrics or calculated columns should be accompanied by a pull request here to review the underlying SQL code.
 
+
+#### Data Cleaning TODOS
+- Fill outstanding lat, longs for sites
+- Clean up town names

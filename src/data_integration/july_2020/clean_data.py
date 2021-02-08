@@ -4,11 +4,21 @@ import pandas as pd
 import requests
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
     DATA_FOLDER, SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, \
-    SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE
+    SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, REFERENCE_DATA_FOLDER, \
+    STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
 
-STUDENT_FILE = DATA_FOLDER + 'stripped_file.csv'
-SITE_FILE = DATA_FOLDER + 'site_data.csv'
-LAT_LONG_LOOKUP = DATA_FOLDER + '/lat_long_lookup.json'
+
+
+
+def standardize_facility_string(col):
+    """
+    The CSV upload to Superset is stripp
+    :param col:
+    :return:
+    """
+
+    # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
+    return 'FC' + col.str.zfill(10)
 
 
 def get_lat_lon(address, existing_lookup):
@@ -86,6 +96,7 @@ def clean_student_data():
     # Make income a float
     df['Annual Household Income'] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '')
     df['Annual Household Income'] = pd.to_numeric(df['Annual Household Income'], errors='coerce')
+    df['Facility Code'] = standardize_facility_string(df['Facility Code'])
 
     # Add SMI and FPL
     df['Household size'] = df['Household size'].replace({'SPED': np.nan, '9 or more': 9}).astype(float)
@@ -100,7 +111,7 @@ def clean_site_data():
     :param df: dataframe created from July 2020 data collection
     :return: Clean dataframe with site data
     """
-    site_df = pd.read_csv(JULY_2020_SITE_DATA_FILE, sep='\t', dtype={'ZIP [ECE]': str})
+    site_df = pd.read_csv(JULY_2020_SITE_DATA_FILE, sep='\t', dtype={'ZIP [ECE]': str, })
 
     # Convert town code to integer and remove all sites that don't have a code
     site_df['Town Code'] = pd.to_numeric(site_df['Town Code'], errors='coerce')
@@ -116,6 +127,7 @@ def clean_site_data():
     site_df['ZIP Code'] = site_df['ZIP Code'].fillna('')
     site_df['Full Address - Lookup'] = site_df[['Dummy Address'] + base_address_cols].apply(lambda row: ' '.join(row.values.astype(str)), axis=1)
     site_df['Full Address'] = site_df[['Address'] + base_address_cols].apply(lambda row: ' '.join(row.values.astype(str)), axis=1)
+    site_df['Facility Code'] = standardize_facility_string(site_df['Facility Code'])
 
     # Open saved file with existing data
     with open(LAT_LONG_LOOKUP) as f:
@@ -143,12 +155,12 @@ def clean_site_data():
         # Add data to lats, longs and town and stores results
         else:
             existing_location_lookup[address] = address_result
-            lats.append(address_result['coordinates']['x'])
-            longs.append(address_result['coordinates']['y'])
+            lats.append(address_result['coordinates']['y'])
+            longs.append(address_result['coordinates']['x'])
             census_towns.append(address_result['addressComponents']['city'])
 
         # Checkpoint save results
-        if counter % 2 == 0:
+        if counter % 5 == 0:
             print(counter)
             with open(LAT_LONG_LOOKUP, 'w') as f:
                 json.dump(existing_location_lookup, f)
@@ -163,8 +175,8 @@ def clean_site_data():
 
 if __name__ == '__main__':
 
-    site_data = clean_site_data()
-    site_data.to_csv(SITE_FILE, index=False)
+    site_df = clean_site_data()
+    site_df.to_csv(SITE_FILE, index=False)
 
     # Call each cleaning function with a copy of the data to avoid any side effects
     student_df = clean_student_data()

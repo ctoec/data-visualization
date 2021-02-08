@@ -6,6 +6,10 @@ JULY_2020_DATA_FILE = DATA_FOLDER + 'ece_feb_20_data_collection.csv'
 JULY_2020_SITE_DATA_FILE = DATA_FOLDER + 'ece_feb_20_site_data.csv'
 SMI_AND_FPL_DATA = REFERENCE_DATA_FOLDER + 'fpl_and_smi.csv'
 LICENSE_DATA = REFERENCE_DATA_FOLDER + 'state_funded_program_list.csv'
+STUDENT_FILE = DATA_FOLDER + 'student_data.csv'
+SITE_FILE = DATA_FOLDER + 'site_data.csv'
+LAT_LONG_LOOKUP = REFERENCE_DATA_FOLDER + '/site_lat_long_lookup.json'
+LEG_DIST_FILE = DATA_FOLDER + 'leg_districts.csv'
 
 # Columns with explict PII,
 PII_COLUMNS = ['Name and DOB',
@@ -43,7 +47,8 @@ RENAME_DICT = {'Race of Child For Reporting': 'Race for Reporting',
                'Annual household income_x': 'Annual Household Income',
                'From': 'Data Submitted By',
                'City ECE Site': 'Town - Site',
-               'Family town of residence': 'Town - Family'
+               'Family town of residence': 'Town - Family',
+               'ECIS/PSIS Facility Code': 'Facility Code'
                }
 
 SITE_COL_RENAME_DICT = {
