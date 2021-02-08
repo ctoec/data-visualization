@@ -55,6 +55,8 @@ The charts and layout for the dashboards is better stored in the [OEC POC Dashbo
 The SQL calculations that are behind the metrics are stored for reference and review here in `src/data_visualization`. 
 Any changes to metrics or calculated columns should be accompanied by a pull request here to review the underlying SQL code.
 
+A Mapbox API key is stored in AWS Secrets with key `/data-viz/map_box/key`. 
+
 
 #### Data Cleaning TODOS
 - Fill outstanding lat, longs for sites
