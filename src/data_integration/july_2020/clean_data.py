@@ -3,22 +3,21 @@ import numpy as np
 import pandas as pd
 import requests
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
-    DATA_FOLDER, SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, \
-    SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, REFERENCE_DATA_FOLDER, \
+    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, \
+    SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
     STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
 
 
-
-
-def standardize_facility_string(col):
+def standardize_facility_string(col: pd.Series) -> pd.Series:
     """
-    The CSV upload to Superset is stripp
-    :param col:
-    :return:
+    The CSV upload to Superset is stripping leading Zeros in a unpredictable way, this coerces a string
+    to facilitate future joins
+    :param col: dataframe column with facility codes
+    :return: column of renamed facility codes
     """
 
     # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
-    return 'FC' + col.str.zfill(10)
+    return 'FC' + col.str.zfill(12)
 
 
 def get_lat_lon(address, existing_lookup):
