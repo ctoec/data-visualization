@@ -137,14 +137,18 @@ def clean_site_data():
     lats = []
     longs = []
     census_towns = []
+
+    # Geocode address
     for _, row in site_df.iterrows():
         address = row['Full Address - Lookup']
         address_result = get_lat_lon(address, existing_location_lookup)
 
+        # If address doesn't exist, attempt a generic town address
         if not address_result:
             address = f'1 Main {row["Town"]} CT'
             address_result = get_lat_lon(address, existing_location_lookup)
             pass
+
         # Add nulls for results that didn't get a result
         if not address_result:
             lats.append(np.nan)
@@ -158,7 +162,7 @@ def clean_site_data():
             longs.append(address_result['coordinates']['x'])
             census_towns.append(address_result['addressComponents']['city'])
 
-        # Checkpoint save results
+        # Checkpoint save result from Census API
         if counter % 5 == 0:
             print(counter)
             with open(LAT_LONG_LOOKUP, 'w') as f:
@@ -177,7 +181,6 @@ if __name__ == '__main__':
     site_df = clean_site_data()
     site_df.to_csv(SITE_FILE, index=False)
 
-    # Call each cleaning function with a copy of the data to avoid any side effects
     student_df = clean_student_data()
     student_df.to_csv(STUDENT_FILE, index=False)
 
