@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 # Web Imports
 import requests
-import io
+import math
 import json
 # Python Utilities Imports
 import os
@@ -83,15 +83,15 @@ def get_district(lat, lon, leg_lookup):
         return leg_lookup[lat_lon_key], leg_lookup
     geo_url = f"https://v3.openstates.org/people.geo?lat={lat}&lng={lon}&apikey={API_KEY}"
     response = requests.get(geo_url)
-    if lat != np.nan and lon != np.nan:
+    if math.isnan(lat) or math.isnan(lon):
+        return {'lat': lat, 'lon':lon}, leg_lookup
+    if not math.isnan(lat) and lon != np.nan:
         while response.status_code != 200:
             print(f"Waiting on {lat_lon_key}")
             time.sleep(60)
             response = requests.get(geo_url)
         results = response.json()
         leg_lookup[lat_lon_key] = results
-    else:
-        results = {}
     print(results)
     # return district info
     return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
@@ -111,8 +111,6 @@ def create_jurisdiction_dataframe(site_df):
         legis_lookup = json.load(f)
     for i, row in site_df.iterrows():
         if i % 10 == 0:
-            print("Sleeping")
-            time.sleep(61)
             df = pd.DataFrame(data)
             df.to_csv(LEG_DIST_FILE)
         print(f'SYSTEM: Processing {i} of {len(site_df)}\n\n')
