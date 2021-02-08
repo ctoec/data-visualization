@@ -92,10 +92,10 @@ def get_district(lat, lon, leg_lookup):
         counter = 0
         while response.status_code != 200:
             print(f"Waiting on {lat_lon_key}")
-            time.sleep(60)
+            time.sleep(70)
             response = requests.get(geo_url)
             counter += 1
-            if counter > 2:
+            if counter >= 1:
                 return null_return
 
         results = response.json()
