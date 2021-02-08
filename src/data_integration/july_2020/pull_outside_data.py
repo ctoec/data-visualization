@@ -51,7 +51,7 @@ def parse_results(results_json):
 
     num_results = len(results_json['results'])
     if num_results > 0:
-        for i in range(len(results_json)):
+        for i in range(num_results):
             leg = results_json['results'][i]
             if 'Representative' in leg['current_role']['title']:
                 long_lat_jurisdiction['person_id'] = leg['id']
@@ -80,16 +80,24 @@ def get_district(lat, lon, leg_lookup):
     """
     lat_lon_key = f"{lat}----{lon}"
     if lat_lon_key in leg_lookup:
-        return leg_lookup[lat_lon_key], leg_lookup
+        results = leg_lookup[lat_lon_key]
+        return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
     geo_url = f"https://v3.openstates.org/people.geo?lat={lat}&lng={lon}&apikey={API_KEY}"
     response = requests.get(geo_url)
+    null_return = {'lat': lat, 'lon': lon}, leg_lookup
+
     if math.isnan(lat) or math.isnan(lon):
-        return {'lat': lat, 'lon':lon}, leg_lookup
-    if not math.isnan(lat) and lon != np.nan:
+        return null_return
+    if not math.isnan(lat):
+        counter = 0
         while response.status_code != 200:
             print(f"Waiting on {lat_lon_key}")
             time.sleep(60)
             response = requests.get(geo_url)
+            counter += 1
+            if counter > 2:
+                return null_return
+
         results = response.json()
         leg_lookup[lat_lon_key] = results
     print(results)
@@ -128,9 +136,6 @@ def create_jurisdiction_dataframe(site_df):
 
 if __name__ == '__main__':
     site_df = pd.read_csv(SITE_FILE)
-    try:
-        leg_dist_df = pd.read_csv(LEG_DIST_FILE)
-    except:
-        leg_dist_df = create_jurisdiction_dataframe(site_df)
-        leg_dist_df.to_csv(LEG_DIST_FILE)
+    leg_dist_df = create_jurisdiction_dataframe(site_df)
+    leg_dist_df.to_csv(LEG_DIST_FILE)
 
