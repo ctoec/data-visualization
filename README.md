@@ -44,6 +44,10 @@ When the database is initially built it needs to be set up with the following st
   - Copy sheet `ECE Feb20 Data Collect_All_e` and paste as tab separated CSV (this should be the default) into `src/data_integration/july_2020/data/ece_feb_20_data_collection.csv`.
   - To clean data: go to `src/data_integration/july_2020/` and run `python3 clean_data.py` or `python clean_data.py` depending on your machine's binary for Python 3.
   
+### Created tables
+
+The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder that can be uploaded to Superset.
+`student_data.csv` populates the `uploaded_data.july_2020` table and `site_data.csv` populates the `uploaded_data.july_2020_sites` table. 
   
 ### Data Visualization
 
@@ -51,7 +55,10 @@ The charts and layout for the dashboards is better stored in the [OEC POC Dashbo
 The SQL calculations that are behind the metrics are stored for reference and review here in `src/data_visualization`. 
 Any changes to metrics or calculated columns should be accompanied by a pull request here to review the underlying SQL code.
 
+A Mapbox API key is stored in AWS Secrets with key `/data-viz/map_box/key`. 
+
 
 #### Data Cleaning TODOS
 - Fill outstanding lat, longs for sites
 - Clean up town names
+- Resolve outstanding student records that aren't matching to any sites
