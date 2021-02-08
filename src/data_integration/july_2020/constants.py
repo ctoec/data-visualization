@@ -9,6 +9,7 @@ LICENSE_DATA = REFERENCE_DATA_FOLDER + 'state_funded_program_list.csv'
 STUDENT_FILE = DATA_FOLDER + 'student_data.csv'
 SITE_FILE = DATA_FOLDER + 'site_data.csv'
 LAT_LONG_LOOKUP = REFERENCE_DATA_FOLDER + '/site_lat_long_lookup.json'
+SITE_LEGIS_LOOKUP = REFERENCE_DATA_FOLDER + '/site_legislature_lookup.json'
 LEG_DIST_FILE = DATA_FOLDER + 'leg_districts.csv'
 
 # Columns with explict PII,
