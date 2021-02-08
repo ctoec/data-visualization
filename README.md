@@ -44,6 +44,10 @@ When the database is initially built it needs to be set up with the following st
   - Copy sheet `ECE Feb20 Data Collect_All_e` and paste as tab separated CSV (this should be the default) into `src/data_integration/july_2020/data/ece_feb_20_data_collection.csv`.
   - To clean data: go to `src/data_integration/july_2020/` and run `python3 clean_data.py` or `python clean_data.py` depending on your machine's binary for Python 3.
   
+### Created tables
+
+The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder that can be uploaded to Superset.
+`student_data.csv` populates the `uploaded_data.july_2020` table and `site_data.csv` populates the `uploaded_data.july_2020_sites` table. 
   
 ### Data Visualization
 
