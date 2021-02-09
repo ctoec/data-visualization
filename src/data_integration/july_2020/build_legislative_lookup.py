@@ -11,7 +11,8 @@ import time
 from constants import SITE_FILE, LEG_DIST_FILE, SITE_LEGIS_LOOKUP
 
 # ENTER YOUR OPEN STATES KEY
-API_KEY = 'ad8c3463-59f9-4486-8ba0-2962a6cc4718' #5edee751-ebd3-4b5f-ae32-3f8038f03055
+# API_KEY = 'ad8c3463-59f9-4486-8ba0-2962a6cc4718'
+API_KEY = '5edee751-ebd3-4b5f-ae32-3f8038f03055'
 
 
 def create_latlong_unique(pandas_series_Lat, pandas_series_Lon):
@@ -82,13 +83,12 @@ def get_district(lat, lon, leg_lookup):
 
     if lat_lon_key in leg_lookup:
         results = leg_lookup[lat_lon_key]
-        if results == {}:
-            print('******* Missing data *********')
-        else:
+        if results != {}:
             return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
 
     if math.isnan(lat) or math.isnan(lon):
         return null_return
+
     geo_url = f"https://v3.openstates.org/people.geo?lat={lat}&lng={lon}&apikey={API_KEY}"
     response = requests.get(geo_url)
 
