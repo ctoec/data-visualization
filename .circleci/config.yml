@@ -49,6 +49,10 @@ jobs:
           command: |
             SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
       - run:
+          name: 'Add MapBox API key to Superset config'
+          command: |
+            MAPBOX_API_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_API_KEY=$MAPBOX_API_KEY" >> docker/config/superset_config.py
+      - run:
           name: 'Copy docker files to instance'
           command: |
             scp -r docker/ ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com:
