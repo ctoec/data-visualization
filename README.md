@@ -79,6 +79,5 @@ Live production dashboards can be edited safely with the following process:
 
 - Rather than editing, new metrics should be created first with new names
 - Old metrics can be deleted in a subsequent review after it has been determined their removal will not affect production dashboards.
-- The SQL associated with new metrics and calculated columns should be added to tables in Superset and the SQL associated with them should be checked in to the repo.
-   - Each table should have its own SQL file associated with it in `data_visualization/superset_sql`
+- The SQL associated with new metrics and calculated columns should be added to tables in Superset and reviewed there.
 - Superset has an option for metrics for Certification and Certification Details that the writer can use.
