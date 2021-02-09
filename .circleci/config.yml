@@ -52,7 +52,6 @@ jobs:
           name: 'Add MapBox API key to Superset config'
           command: |
             MAPBOX_API_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_API_KEY='$MAPBOX_API_KEY'" >> docker/config/superset_config.py
-            cat docker/config/superset_config.py
       - run:
           name: 'Copy docker files to instance'
           command: |
