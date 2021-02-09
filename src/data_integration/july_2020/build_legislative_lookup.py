@@ -11,8 +11,7 @@ import time
 from constants import SITE_FILE, LEG_DIST_FILE, SITE_LEGIS_LOOKUP
 
 # ENTER YOUR OPEN STATES KEY
-API_KEY = '5edee751-ebd3-4b5f-ae32-3f8038f03055'
-
+API_KEY = 'ad8c3463-59f9-4486-8ba0-2962a6cc4718' #5edee751-ebd3-4b5f-ae32-3f8038f03055
 
 
 def create_latlong_unique(pandas_series_Lat, pandas_series_Lon):
@@ -79,28 +78,35 @@ def get_district(lat, lon, leg_lookup):
     Returns: dict (results)
     """
     lat_lon_key = f"{lat}----{lon}"
+    null_return = {'lat': lat, 'lon': lon}, leg_lookup
+
     if lat_lon_key in leg_lookup:
         results = leg_lookup[lat_lon_key]
-        return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
-    geo_url = f"https://v3.openstates.org/people.geo?lat={lat}&lng={lon}&apikey={API_KEY}"
-    response = requests.get(geo_url)
-    null_return = {'lat': lat, 'lon': lon}, leg_lookup
+        if results == {}:
+            print('******* Missing data *********')
+        else:
+            return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
 
     if math.isnan(lat) or math.isnan(lon):
         return null_return
-    if not math.isnan(lat):
-        counter = 0
-        while response.status_code != 200:
-            print(f"Waiting on {lat_lon_key}")
-            time.sleep(70)
-            response = requests.get(geo_url)
-            counter += 1
-            if counter >= 1:
-                return null_return
+    geo_url = f"https://v3.openstates.org/people.geo?lat={lat}&lng={lon}&apikey={API_KEY}"
+    response = requests.get(geo_url)
 
-        results = response.json()
-        leg_lookup[lat_lon_key] = results
-    print(results)
+    counter = 0
+    while response.status_code != 200:
+        print(f"Sleeping on {lat_lon_key}")
+        if response.status_code != 500:
+            time.sleep(70)
+        else:
+            print("500")
+        response = requests.get(geo_url)
+        counter += 1
+        if counter >= 1:
+            return null_return
+
+    results = response.json()
+    print("Active results")
+    leg_lookup[lat_lon_key] = results
     # return district info
     return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
 
@@ -136,6 +142,8 @@ def create_jurisdiction_dataframe(site_df):
 
 if __name__ == '__main__':
     site_df = pd.read_csv(SITE_FILE)
+    with open(SITE_LEGIS_LOOKUP, 'r') as f:
+        legis_lookup = json.load(f)
     leg_dist_df = create_jurisdiction_dataframe(site_df)
     leg_dist_df.to_csv(LEG_DIST_FILE)
 
