@@ -92,58 +92,56 @@ def get_district(lat, lon, leg_lookup):
     geo_url = f"https://v3.openstates.org/people.geo?lat={lat}&lng={lon}&apikey={API_KEY}"
     response = requests.get(geo_url)
 
+    # API occasionally
     counter = 0
     while response.status_code != 200:
-        print(f"Sleeping on {lat_lon_key}")
         if response.status_code != 500:
+            print(f"Sleeping on {lat_lon_key}")
             time.sleep(70)
-        else:
-            print("500")
         response = requests.get(geo_url)
         counter += 1
         if counter >= 1:
             return null_return
 
     results = response.json()
-    print("Active results")
     leg_lookup[lat_lon_key] = results
     # return district info
     return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
 
+def get_shape_files():
+    
 
 def create_jurisdiction_dataframe(site_df):
-    '''
-    This function builds df of legislative jurisdictions
-    pandas columns representing lat and long
-    Parameters: pandas Series
-    Returns: pandas DataFrame
-    '''
+    """
+    Looks up
+    :param site_df:
+    :return:
+    """
 
     # long_lat_pairs_list = list(create_latlong_unique(lat_pandas_column, lon_pandas_column).unique())
     data = []
     with open(SITE_LEGIS_LOOKUP, 'r') as f:
         legis_lookup = json.load(f)
     for i, row in site_df.iterrows():
+
+        # Checkpoint save legislative district data and full dataframe
         if i % 10 == 0:
+            print(f"Sleeping at item {i}")
+            time.sleep(61)
             df = pd.DataFrame(data)
             df.to_csv(LEG_DIST_FILE)
-        print(f'SYSTEM: Processing {i} of {len(site_df)}\n\n')
+            with open(SITE_LEGIS_LOOKUP, 'w') as fp:
+                json.dump(legis_lookup, fp)
         appendage, legis_lookup = get_district(lat=row['Latitude'], lon=row['Longitude'],
                                                leg_lookup=legis_lookup)
         appendage['Facility Code'] = row['Facility Code']
-        print(f'System: Appendage:\n{appendage}\n\n')
-        with open(SITE_LEGIS_LOOKUP, 'w') as fp:
-            json.dump(legis_lookup, fp)
         data.append(appendage)
-        print(f'SYSTEM: Data appended\n\n')
     df = pd.DataFrame(data)
     return df
 
 
 if __name__ == '__main__':
     site_df = pd.read_csv(SITE_FILE)
-    with open(SITE_LEGIS_LOOKUP, 'r') as f:
-        legis_lookup = json.load(f)
     leg_dist_df = create_jurisdiction_dataframe(site_df)
     leg_dist_df.to_csv(LEG_DIST_FILE)
 
