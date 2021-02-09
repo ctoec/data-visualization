@@ -17,7 +17,7 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     """
 
     # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
-    return 'FC' + col.str.zfill(12)
+    return 'FC' + col.str.zfill(10)
 
 
 def get_lat_lon(address, existing_lookup):
@@ -49,7 +49,7 @@ def clean_column(df_col):
     return df_col.str.replace('_', ' ').str.strip().str.title()
 
 
-def clean_student_data():
+def build_student_df():
     """
     Convert full student and site data file into just anonymous student data
     :return: Anonymized student dataframe
@@ -104,7 +104,7 @@ def clean_student_data():
     return df
 
 
-def clean_site_data():
+def build_site_df():
     """
     Converts full July 2020 student and site data file to single site file with license data included
     :param df: dataframe created from July 2020 data collection
@@ -174,11 +174,11 @@ def clean_site_data():
 
 if __name__ == '__main__':
 
-    site_df = clean_site_data()
+    site_df = build_site_df()
     site_df.to_csv(SITE_FILE, index=False)
 
     # Call each cleaning function with a copy of the data to avoid any side effects
-    student_df = clean_student_data()
+    student_df = build_student_df()
     student_df.to_csv(STUDENT_FILE, index=False)
 
 
