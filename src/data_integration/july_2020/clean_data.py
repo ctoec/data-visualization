@@ -1,11 +1,10 @@
-import json
 import numpy as np
 import pandas as pd
 import requests
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
     SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, \
     SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
-    STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
+    STUDENT_FILE, SITE_FILE
 
 
 def standardize_facility_string(col: pd.Series) -> pd.Series:
@@ -16,7 +15,9 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     :return: column of renamed facility codes
     """
 
-    # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
+    # Add FC to Facility Code column and pad to 10 digits the string loaded to the DB isn't coerced into a int and
+    #   that the form is the same for all columns to facilitate joins. The import CSV functionality of Superset does not
+    #   allow for type specification
     return 'FC' + col.str.zfill(12)
 
 
