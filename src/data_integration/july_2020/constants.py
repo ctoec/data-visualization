@@ -3,7 +3,13 @@ import os
 DATA_FOLDER = os.path.dirname(os.path.realpath(__file__)) + '/data/'
 REFERENCE_DATA_FOLDER = os.path.dirname(os.path.realpath(__file__)) + '/reference_data/'
 JULY_2020_DATA_FILE = DATA_FOLDER + 'ece_feb_20_data_collection.csv'
+JULY_2020_SITE_DATA_FILE = DATA_FOLDER + 'ece_feb_20_site_data.csv'
 SMI_AND_FPL_DATA = REFERENCE_DATA_FOLDER + 'fpl_and_smi.csv'
+LICENSE_DATA = REFERENCE_DATA_FOLDER + 'state_funded_program_list.csv'
+STUDENT_FILE = DATA_FOLDER + 'student_data.csv'
+SITE_FILE = DATA_FOLDER + 'site_data.csv'
+LAT_LONG_LOOKUP = REFERENCE_DATA_FOLDER + '/site_lat_long_lookup.json'
+LEG_DIST_FILE = DATA_FOLDER + 'leg_districts.csv'
 
 # Columns with explict PII,
 PII_COLUMNS = ['Name and DOB',
@@ -41,5 +47,34 @@ RENAME_DICT = {'Race of Child For Reporting': 'Race for Reporting',
                'Annual household income_x': 'Annual Household Income',
                'From': 'Data Submitted By',
                'City ECE Site': 'Town - Site',
-               'Family town of residence': 'Town - Family'
+               'Family town of residence': 'Town - Family',
+               'ECIS/PSIS Facility Code': 'Facility Code'
                }
+
+SITE_COL_RENAME_DICT = {
+    'PROGRAM/SITE/SUBGRANTEE \n(Registry Licensed Name)\n(ALL) [ECE Division Contact List]': 'Site Name',
+    'AssignedFacilityCode - ECIS': 'Facility Code',
+    'Total Preschool Spaces # Spaces Feb 2020': 'Preschool Spaces',
+    'Total Infant/Toddler Spaces # Spaces Feb 2020': 'Infant/Toddler Spaces',
+    'Total School Age Spaces # Spaces Feb 2020': 'School Age Spaces',
+    'Total All Spaces (Sum) Spaces Feb 2020': 'All Available Spaces',
+    'ADDRESS [ECE]': 'Address',
+    'TOWN [ECE]': 'Town',
+    'ZIP [ECE]': 'ZIP Code'
+}
+
+SITE_FINAL_COLS = ['Site Name',
+                   'Full Address',
+                   'Preschool Spaces',
+                   'Infant/Toddler Spaces',
+                   'School Age Spaces',
+                   'All Available Spaces',
+                   'Facility Code',
+                   'Town Code',
+                   'Address',
+                   'Town',
+                   'ZIP Code',
+                   'Latitude',
+                   'Longitude',
+                   'Town from Census'
+                   ]

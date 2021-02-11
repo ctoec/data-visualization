@@ -1,9 +1,41 @@
 import numpy as np
 import pandas as pd
+import requests
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
-    DATA_FOLDER, SMI_AND_FPL_DATA, RENAME_DICT
+    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, \
+    SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
+    STUDENT_FILE, SITE_FILE
 
-STRIPPED_FILE = DATA_FOLDER + '/stripped_file.csv'
+
+def standardize_facility_string(col: pd.Series) -> pd.Series:
+    """
+    The CSV upload to Superset is stripping leading Zeros in a unpredictable way, this coerces a string
+    to facilitate future joins
+    :param col: dataframe column with facility codes
+    :return: column of renamed facility codes
+    """
+
+    # Add FC to Facility Code column and pad to 10 digits so the string loaded to the DB isn't coerced into a int and
+    #   that the form is the same for all columns to facilitate joins. The import CSV functionality of Superset does not
+    #   allow for type specification
+    return 'FC' + col.str.zfill(12)
+
+
+def get_lat_lon(address):
+    """
+    Get lat lon from US Census
+    :param address: Address string
+    :return: tuple of lat, lon
+    """
+    url_encoded_address = requests.utils.quote(address)
+    url = f"https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=" \
+          f"{url_encoded_address}&benchmark=2020&format=json"
+    res = requests.get(url)
+    res_json = res.json()
+    print(address)
+    matched_address = res_json['result']['addressMatches'][0] if res_json['result']['addressMatches'] else None
+
+    return matched_address
 
 
 def clean_column(df_col):
@@ -15,9 +47,11 @@ def clean_column(df_col):
     return df_col.str.replace('_', ' ').str.strip().str.title()
 
 
-if __name__ == '__main__':
-
-    # Load file as tab separated sheet, file is a copy of the
+def clean_student_data():
+    """
+    Convert full student and site data file into just anonymous student data
+    :return: Anonymized student dataframe
+    """
     df = pd.read_csv(JULY_2020_DATA_FILE, sep='\t')
 
     # Round dates to the nearest birth month. 109 rows have bad dates
@@ -26,7 +60,8 @@ if __name__ == '__main__':
 
     # Convert concatenated names and birthdays to unique categories for deduplication analysis
     id_cols = ['Child First Name ', 'Child Middle Name ', 'Child Last Name ', 'Child Date of Birth']
-    df['unique_name_ids'] = pd.Categorical(df[id_cols].apply(lambda row: ''.join(x.lower() for x in row.values.astype(str)), axis=1))
+    df['unique_name_ids'] = pd.Categorical(
+        df[id_cols].apply(lambda row: ''.join(x.lower() for x in row.values.astype(str)), axis=1))
     df['unique_name_ids'] = df['unique_name_ids'].cat.codes
 
     # Flag duplicated names
@@ -44,6 +79,7 @@ if __name__ == '__main__':
 
     # Rename columns to be easier to read
     df.rename(columns=RENAME_DICT, inplace=True)
+
     # Drop rows that are actually site metadata
     df = df[df['C4K Region'] != DUMMY_REGION]
 
@@ -57,9 +93,79 @@ if __name__ == '__main__':
     # Make income a float
     df['Annual Household Income'] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '')
     df['Annual Household Income'] = pd.to_numeric(df['Annual Household Income'], errors='coerce')
+    df['Facility Code'] = standardize_facility_string(df['Facility Code'])
 
     # Add SMI and FPL
     df['Household size'] = df['Household size'].replace({'SPED': np.nan, '9 or more': 9}).astype(float)
     smi_and_fpl = pd.read_csv(SMI_AND_FPL_DATA)
     df = df.merge(smi_and_fpl, how='left', left_on='Household size', right_on='family_size')
-    df.to_csv(STRIPPED_FILE, index=False)
+    return df
+
+
+def clean_site_data():
+    """
+    Converts full July 2020 student and site data file to single site file with license data included
+    :param df: dataframe created from July 2020 data collection
+    :return: Clean dataframe with site data
+    """
+    site_df = pd.read_csv(JULY_2020_SITE_DATA_FILE, sep='\t', dtype={'ZIP [ECE]': str, })
+
+    # Convert town code to integer and remove all sites that don't have a code
+    site_df['Town Code'] = pd.to_numeric(site_df['Town Code'], errors='coerce')
+    site_df = site_df[(~site_df['Town Code'].isna()) & (site_df['Town Code'] != 0)]
+    site_df.rename(columns=SITE_COL_RENAME_DICT, inplace=True)
+
+    # Get address in a form acceptable for geocoding
+    site_df['STATE'] = 'CT'
+    base_address_cols = ['Town', 'STATE', 'ZIP Code']
+
+    # Where there is no street address use 1 Main instead to get a reasonable location for the town
+    site_df['Dummy Address'] = site_df['Address'].fillna('1 Main')
+    site_df['ZIP Code'] = site_df['ZIP Code'].fillna('')
+    site_df['Full Address - Lookup'] = site_df[['Dummy Address'] + base_address_cols].apply(lambda row: ' '.join(row.values.astype(str)), axis=1)
+    site_df['Full Address'] = site_df[['Address'] + base_address_cols].apply(lambda row: ' '.join(row.values.astype(str)), axis=1)
+    site_df['Facility Code'] = standardize_facility_string(site_df['Facility Code'])
+
+    # Get all addresses from census API
+    lats = []
+    longs = []
+    census_towns = []
+
+    # Geocode address
+    for _, row in site_df.iterrows():
+        address = row['Full Address - Lookup']
+        address_result = get_lat_lon(address)
+
+        # If address doesn't exist, attempt a generic town address
+        if not address_result:
+            address = f'1 Main {row["Town"]} CT'
+            address_result = get_lat_lon(address)
+
+        # Add nulls for results that didn't get a result
+        if not address_result:
+            lats.append(np.nan)
+            longs.append(np.nan)
+            census_towns.append('')
+
+        # Add data to lats, longs and town
+        else:
+            lats.append(address_result['coordinates']['y'])
+            longs.append(address_result['coordinates']['x'])
+            census_towns.append(address_result['addressComponents']['city'])
+
+    site_df['Latitude'] = lats
+    site_df['Longitude'] = longs
+    site_df['Town from Census'] = census_towns
+    site_df_final = site_df[SITE_FINAL_COLS]
+    return site_df_final
+
+
+if __name__ == '__main__':
+
+    site_df = clean_site_data()
+    site_df.to_csv(SITE_FILE, index=False)
+
+    student_df = clean_student_data()
+    student_df.to_csv(STUDENT_FILE, index=False)
+
+
