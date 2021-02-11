@@ -49,6 +49,12 @@ When the database is initially built it needs to be set up with the following st
 The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder to be uploaded to Superset.
 `student_data_legislative.csv` populates the `uploaded_data.july_2020` table and `site_data.csv` populates the `uploaded_data.july_2020_sites` table. 
 A `student_data.csv` is also created as an intermediate file with only student data.
+
+
+#### Reference data
+
+- `fpl_and_smi.csv` is copied from data given to Skylight by OEC in 2020.
+- `site_lat_long_lookup.json` is a json dictionary with a store of data collected from the Census API keyed with the called address.
   
 ### Data Visualization
 
@@ -88,8 +94,6 @@ Live production dashboards can be edited safely with the following process:
 - Old metrics can be deleted in a subsequent review after it has been determined their removal will not affect production dashboards.
 - The SQL associated with new metrics and calculated columns should be added to tables in Superset and reviewed there.
 - Superset has an option for metrics for Certification and Certification Details that the writer can use.
-
-
 
 #### Data Cleaning TODOS
 - Fill outstanding lat, longs for sites

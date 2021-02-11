@@ -13,6 +13,7 @@ LAT_LONG_LOOKUP = REFERENCE_DATA_FOLDER + 'site_lat_long_lookup.json'
 SITE_LEGIS_LOOKUP = REFERENCE_DATA_FOLDER + 'site_legislature_lookup.json'
 FACILITY_CODE_COL = 'Facility Code'
 
+
 # Columns with explict PII,
 PII_COLUMNS = ['Name and DOB',
                'Child Last Name ',

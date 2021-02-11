@@ -205,8 +205,8 @@ def merge_legislative_data(student_df):
 
 if __name__ == '__main__':
 
-    # site_df = build_site_df()
-    # site_df.to_csv(SITE_FILE, index=False)
+    site_df = build_site_df()
+    site_df.to_csv(SITE_FILE, index=False)
 
     # Call each cleaning function with a copy of the data to avoid any side effects
     student_df = build_student_df()
