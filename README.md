@@ -51,3 +51,33 @@ The charts and layout for the dashboards is better stored in the [OEC POC Dashbo
 The SQL calculations that are behind the metrics are stored for reference and review here in `src/data_visualization`. 
 Any changes to metrics or calculated columns should be accompanied by a pull request here to review the underlying SQL code.
 
+## Dashboard validation and deploy process
+
+### Reviewing dashboard edits
+
+Each set of dashboard edits should be tied with a ticket and reviewed and validated by other team members. The process will depend on whether the dashboard is published or unpublished.
+
+Ideally, code changes, including the addition of new metrics, will be in separate tickets from dashboard edits to facilitate review and allow for divided responsibility.
+
+#### Pre-production dashboards
+
+Pre-production dashboards can be edited and reviewed directly before they are published. Once the team has determined the dashboard is ready to go live the dashboard itself can be set to published and it can be given a "slug" (name in the URL).
+  
+#### Production dashboards
+
+Live production dashboards can be edited safely with the following process:
+
+1. Make a full copy (including charts) of the existing production dashboard
+1. Edit proposed new dashboard as needed, including using newly created metrics.
+1. Submit dashboard for review to team for review and approval
+1. Once changes are approved, publish dashboard by changing the "slug" to the production slug and removing the "slug" from the prior dashboard.
+1. Legacy dashboard can be deleted once the new one is up. 
+1. A new copy can then be made for future changes when needed.
+
+
+### Editing and creating tables, metrics and columns
+
+- Rather than editing, new metrics should be created first with new names
+- Old metrics can be deleted in a subsequent review after it has been determined their removal will not affect production dashboards.
+- The SQL associated with new metrics and calculated columns should be added to tables in Superset and reviewed there.
+- Superset has an option for metrics for Certification and Certification Details that the writer can use.
