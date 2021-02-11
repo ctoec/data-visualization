@@ -46,8 +46,9 @@ When the database is initially built it needs to be set up with the following st
   
 ### Created tables
 
-The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder that can be uploaded to Superset.
-`student_data.csv` populates the `uploaded_data.july_2020` table and `site_data.csv` populates the `uploaded_data.july_2020_sites` table. 
+The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder to be uploaded to Superset.
+`student_data_legislative.csv` populates the `uploaded_data.july_2020` table and `site_data.csv` populates the `uploaded_data.july_2020_sites` table. 
+A `student_data.csv` is also created as an intermediate file with only student data.
   
 ### Data Visualization
 

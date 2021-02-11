@@ -2,8 +2,9 @@ import json
 import numpy as np
 import pandas as pd
 import requests
+from build_legislative_lookup import SITE_LEGIS_LOOKUP, parse_legislator_results
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
-    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, \
+    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, FACILITY_CODE_COL, STUDENT_LEGIS_FILE, \
     SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
     STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
 
@@ -95,7 +96,7 @@ def build_student_df():
     # Make income a float
     df['Annual Household Income'] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '')
     df['Annual Household Income'] = pd.to_numeric(df['Annual Household Income'], errors='coerce')
-    df['Facility Code'] = standardize_facility_string(df['Facility Code'])
+    df[FACILITY_CODE_COL] = standardize_facility_string(df[FACILITY_CODE_COL])
 
     # Add SMI and FPL
     df['Household size'] = df['Household size'].replace({'SPED': np.nan, '9 or more': 9}).astype(float)
@@ -171,14 +172,47 @@ def build_site_df():
     site_df_final = site_df[SITE_FINAL_COLS]
     return site_df_final
 
+def merge_legislative_data(student_df):
+    """
+    Combines legislative data associated with a site with student data to build a table that can show
+    legislators associated with children attending sites in their districts
+    :param student_df:
+    :return: None, saves file to disk
+    """
+
+    with open(SITE_LEGIS_LOOKUP, 'r') as f:
+        leg_lookup = json.load(f)
+
+    rows = []
+    for _, row_dict in leg_lookup.items():
+
+        # Get metadata from legislative lookup that is not from the API call
+        initial_data = {key: row_dict[key] for key in row_dict if key != 'raw_result'}
+
+        # Get the API call with the specified columns
+        leg_dict = parse_legislator_results(row_dict['raw_result'])
+        final_row_dict = {**initial_data, **leg_dict}
+        rows.append(final_row_dict)
+
+    # Build dataframe with Facility Code and legislative data
+    leg_df = pd.DataFrame(rows)
+
+    # Build table with student data mapped to legislators
+
+    merged_df = student_df.merge(leg_df, how='left', on='Facility Code')
+    merged_df.to_csv(STUDENT_LEGIS_FILE, index=False)
+
 
 if __name__ == '__main__':
 
-    site_df = build_site_df()
-    site_df.to_csv(SITE_FILE, index=False)
+    # site_df = build_site_df()
+    # site_df.to_csv(SITE_FILE, index=False)
 
     # Call each cleaning function with a copy of the data to avoid any side effects
     student_df = build_student_df()
     student_df.to_csv(STUDENT_FILE, index=False)
+
+    # Add in legislative data
+    merge_legislative_data(student_df)
 
 

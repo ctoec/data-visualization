@@ -1,32 +1,23 @@
-# DataFrame Imports
 import pandas as pd
-import numpy as np
-# Web Imports
 import requests
 import math
 import json
-# Python Utilities Imports
-import os
 import time
-from constants import SITE_FILE, LEG_DIST_FILE, SITE_LEGIS_LOOKUP
+from constants import SITE_FILE, SITE_LEGIS_LOOKUP, FACILITY_CODE_COL
 
 # ENTER YOUR OPEN STATES KEY
-# API_KEY = 'ad8c3463-59f9-4486-8ba0-2962a6cc4718'
 API_KEY = '5edee751-ebd3-4b5f-ae32-3f8038f03055'
+RAW_RESULT_KEY = 'raw_result'
 
 
-def create_latlong_unique(pandas_series_Lat, pandas_series_Lon):
-    '''
-    This function takes to two columns representing
-    latitudes and longitudes and returns a single stirng
-    to create an encoded uniqueID
-    Parameters: two Pandas Column D.type float
-    Returns: one str
-    '''
-    return pandas_series_Lat.astype(str) + '!!!' + pandas_series_Lon.astype(str)
+def get_lat_lon_key(lat, lon):
+    """"
+    Standardized key for dictionary
+    """
+    return f"{lat}----{lon}"
 
 
-def parse_results(results_json):
+def parse_legislator_results(results_json):
     '''
     This function parses the results of a API call
     response and returns a dictionary of values
@@ -71,77 +62,83 @@ def parse_results(results_json):
     return long_lat_jurisdiction
 
 
-def get_district(lat, lon, leg_lookup):
+def get_district(lat, lon):
     """
     This function calls the Open States API on
     a lat lon pair decoded from the lat lon pair string
     Parameters: str
     Returns: dict (results)
     """
-    lat_lon_key = f"{lat}----{lon}"
-    null_return = {'lat': lat, 'lon': lon}, leg_lookup
-
-    if lat_lon_key in leg_lookup:
-        results = leg_lookup[lat_lon_key]
-        if results != {}:
-            return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
-
-    if math.isnan(lat) or math.isnan(lon):
-        return null_return
 
     geo_url = f"https://v3.openstates.org/people.geo?lat={lat}&lng={lon}&apikey={API_KEY}"
+    print(f"Calling {lat} and {lon}")
     response = requests.get(geo_url)
 
-    # API occasionally
     counter = 0
     while response.status_code != 200:
+
+        # The open state API only allows 10 queries a minute and then returns a 429, this adds a wait for that time
         if response.status_code != 500:
-            print(f"Sleeping on {lat_lon_key}")
-            time.sleep(70)
+            print(f"Sleeping on {lat} and {lon} with {response.text}")
+            time.sleep(61)
+        print(f"Calling {lat} and {lon}")
         response = requests.get(geo_url)
+
+        # Try twice and then return None, the API 500s regularly
         counter += 1
-        if counter >= 1:
-            return null_return
+        if counter >= 2:
+            return None
 
     results = response.json()
-    leg_lookup[lat_lon_key] = results
-    # return district info
-    return {'lat': lat, 'lon': lon, **parse_results(results)}, leg_lookup
+    return results
 
-def get_shape_files():
-    
 
-def create_jurisdiction_dataframe(site_df):
+def create_legislative_lookup(df):
     """
-    Looks up
-    :param site_df:
-    :return:
+    Looks up legislatures associated with the location of each site in the site dataframe
+    :param df: Dataframe with all sites
+    :return: None, saves a json file with a lookup of the raw results keyed by lat/long
     """
-
-    # long_lat_pairs_list = list(create_latlong_unique(lat_pandas_column, lon_pandas_column).unique())
-    data = []
     with open(SITE_LEGIS_LOOKUP, 'r') as f:
         legis_lookup = json.load(f)
-    for i, row in site_df.iterrows():
+    for i, row in df.iterrows():
 
-        # Checkpoint save legislative district data and full dataframe
+        # Checkpoint save legislative district data
         if i % 10 == 0:
-            print(f"Sleeping at item {i}")
-            time.sleep(61)
-            df = pd.DataFrame(data)
-            df.to_csv(LEG_DIST_FILE)
+            print(f"Saving at {i} records")
             with open(SITE_LEGIS_LOOKUP, 'w') as fp:
                 json.dump(legis_lookup, fp)
-        appendage, legis_lookup = get_district(lat=row['Latitude'], lon=row['Longitude'],
-                                               leg_lookup=legis_lookup)
-        appendage['Facility Code'] = row['Facility Code']
-        data.append(appendage)
-    df = pd.DataFrame(data)
-    return df
+
+        lat = row['Latitude']
+        lon = row['Longitude']
+
+        # Skip NaN Lat/Longs
+        if math.isnan(lat) or math.isnan(lon):
+            continue
+        lat_lon_key = get_lat_lon_key(lat=lat, lon=lon)
+
+        # Get result from dictionary if it exists there, otherwise, call the API
+        if lat_lon_key in legis_lookup:
+            raw_result = legis_lookup[lat_lon_key][RAW_RESULT_KEY]
+        else:
+            raw_result = get_district(lat=lat, lon=lon)
+
+        # Skip lookups that did not have a return
+        if not raw_result:
+            continue
+
+        # Log result with facility code,
+        save_object = {FACILITY_CODE_COL: row[FACILITY_CODE_COL],
+                       'lat': lat,
+                       'lon': lon,
+                       RAW_RESULT_KEY: raw_result}
+        legis_lookup[lat_lon_key] = save_object
+
+    # Save final lookup dictionary
+    with open(SITE_LEGIS_LOOKUP, 'w') as fp:
+        json.dump(legis_lookup, fp)
 
 
 if __name__ == '__main__':
     site_df = pd.read_csv(SITE_FILE)
-    leg_dist_df = create_jurisdiction_dataframe(site_df)
-    leg_dist_df.to_csv(LEG_DIST_FILE)
-
+    create_legislative_lookup(site_df)

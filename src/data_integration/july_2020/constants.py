@@ -7,10 +7,11 @@ JULY_2020_SITE_DATA_FILE = DATA_FOLDER + 'ece_feb_20_site_data.csv'
 SMI_AND_FPL_DATA = REFERENCE_DATA_FOLDER + 'fpl_and_smi.csv'
 LICENSE_DATA = REFERENCE_DATA_FOLDER + 'state_funded_program_list.csv'
 STUDENT_FILE = DATA_FOLDER + 'student_data.csv'
+STUDENT_LEGIS_FILE = DATA_FOLDER + 'student_data_legislative.csv'
 SITE_FILE = DATA_FOLDER + 'site_data.csv'
-LAT_LONG_LOOKUP = REFERENCE_DATA_FOLDER + '/site_lat_long_lookup.json'
-SITE_LEGIS_LOOKUP = REFERENCE_DATA_FOLDER + '/site_legislature_lookup.json'
-LEG_DIST_FILE = DATA_FOLDER + 'leg_districts.csv'
+LAT_LONG_LOOKUP = REFERENCE_DATA_FOLDER + 'site_lat_long_lookup.json'
+SITE_LEGIS_LOOKUP = REFERENCE_DATA_FOLDER + 'site_legislature_lookup.json'
+FACILITY_CODE_COL = 'Facility Code'
 
 # Columns with explict PII,
 PII_COLUMNS = ['Name and DOB',
@@ -49,12 +50,12 @@ RENAME_DICT = {'Race of Child For Reporting': 'Race for Reporting',
                'From': 'Data Submitted By',
                'City ECE Site': 'Town - Site',
                'Family town of residence': 'Town - Family',
-               'ECIS/PSIS Facility Code': 'Facility Code'
+               'ECIS/PSIS Facility Code': FACILITY_CODE_COL
                }
 
 SITE_COL_RENAME_DICT = {
     'PROGRAM/SITE/SUBGRANTEE \n(Registry Licensed Name)\n(ALL) [ECE Division Contact List]': 'Site Name',
-    'AssignedFacilityCode - ECIS': 'Facility Code',
+    'AssignedFacilityCode - ECIS': FACILITY_CODE_COL,
     'Total Preschool Spaces # Spaces Feb 2020': 'Preschool Spaces',
     'Total Infant/Toddler Spaces # Spaces Feb 2020': 'Infant/Toddler Spaces',
     'Total School Age Spaces # Spaces Feb 2020': 'School Age Spaces',
