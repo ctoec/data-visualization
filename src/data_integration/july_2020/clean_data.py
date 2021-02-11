@@ -15,7 +15,7 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     :return: column of renamed facility codes
     """
 
-    # Add FC to Facility Code column and pad to 10 digits the string loaded to the DB isn't coerced into a int and
+    # Add FC to Facility Code column and pad to 10 digits so the string loaded to the DB isn't coerced into a int and
     #   that the form is the same for all columns to facilitate joins. The import CSV functionality of Superset does not
     #   allow for type specification
     return 'FC' + col.str.zfill(12)
@@ -140,7 +140,6 @@ def clean_site_data():
         if not address_result:
             address = f'1 Main {row["Town"]} CT'
             address_result = get_lat_lon(address)
-            pass
 
         # Add nulls for results that didn't get a result
         if not address_result:
