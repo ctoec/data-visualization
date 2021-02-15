@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from build_legislative_lookup import SITE_LEGIS_LOOKUP, parse_legislator_results
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
-    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, FACILITY_CODE_COL, STUDENT_LEGIS_FILE, \
+    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, FACILITY_CODE_COL, SITE_FACILITY_LOOKUP_DICT, \
     SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
     STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
 
@@ -19,6 +19,10 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     def clean_string(item):
         item = str(item).split(' or ')[0]
         item = item.replace('Annex to', '').replace('?', '').strip()
+
+        # Some facility codes were entered in correctly, this fixes the errors
+        if item in SITE_FACILITY_LOOKUP_DICT:
+            item = SITE_FACILITY_LOOKUP_DICT[item]
         # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
         item = 'FC' + item.zfill(10)
         return item
@@ -174,7 +178,8 @@ def build_site_df():
     site_df['Latitude'] = lats
     site_df['Longitude'] = longs
     site_df['Town from Census'] = census_towns
-    site_df_final = site_df[SITE_FINAL_COLS]
+
+    site_df_final = site_df[~site_df['Site Name'].isna()][SITE_FINAL_COLS]
     return site_df_final
 
 
@@ -216,5 +221,5 @@ if __name__ == '__main__':
     student_legislature_df = merge_legislative_data(student_df)
     site_legislature_df = merge_legislative_data(site_df)
 
-    student_legislature_df.write_csv(STUDENT_FILE, index=False)
-    site_legislature_df.write_csv(SITE_FILE, index=False)
+    student_legislature_df.to_csv(STUDENT_FILE, index=False)
+    site_legislature_df.to_csv(SITE_FILE, index=False)

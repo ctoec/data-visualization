@@ -66,6 +66,10 @@ SITE_COL_RENAME_DICT = {
     'ZIP [ECE]': 'ZIP Code'
 }
 
+SITE_FACILITY_LOOKUP_DICT = {'0280411 / 0280341': '280341',
+                             '0146341': '1460341',
+                             '0571941': '571841',
+                             '0103211': '1032111'}
 SITE_FINAL_COLS = ['Site Name',
                    'Full Address',
                    'Preschool Spaces',
