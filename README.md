@@ -12,6 +12,7 @@ _Items to Add_
 - POSTGRES_PASSWORD
   - The password for the Postgres database that Superset uses for metadata and uploaded data
   - This is stored in AWS Secrets Manager at `/data-viz/db/db_pass`
+  - A non-production password can be used as well for local instances.
 - MAPBOX_KEY
   - This is the API key that Superset uses to render maps, it is tied with Kyle Magida's email (kyle@skylight.digital)
   - This is stored in AWS Secrets Manager at `/data-viz/map_box/key`
