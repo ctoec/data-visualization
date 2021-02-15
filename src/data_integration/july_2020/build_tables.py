@@ -16,9 +16,15 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     :param col: dataframe column with facility codes
     :return: column of renamed facility codes
     """
+    def clean_string(item):
+        item = str(item).split(' or ')[0]
+        item = item.replace('Annex to', '').replace('?', '').strip()
+        # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
+        item = 'FC' + item.zfill(10)
+        return item
+    return_col = col.apply(clean_string)
 
-    # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
-    return 'FC' + col.str.zfill(10)
+    return return_col
 
 
 def get_lat_lon(address, existing_lookup):
@@ -111,11 +117,10 @@ def build_site_df():
     :param df: dataframe created from July 2020 data collection
     :return: Clean dataframe with site data
     """
-    site_df = pd.read_csv(JULY_2020_SITE_DATA_FILE, sep='\t', dtype={'ZIP [ECE]': str, })
+    site_df = pd.read_csv(JULY_2020_SITE_DATA_FILE, sep='\t', dtype={'ZIP [ECE]': str})
 
     # Convert town code to integer and remove all sites that don't have a code
     site_df['Town Code'] = pd.to_numeric(site_df['Town Code'], errors='coerce')
-    site_df = site_df[(~site_df['Town Code'].isna()) & (site_df['Town Code'] != 0)]
     site_df.rename(columns=SITE_COL_RENAME_DICT, inplace=True)
 
     # Get address in a form acceptable for geocoding
@@ -172,14 +177,14 @@ def build_site_df():
     site_df_final = site_df[SITE_FINAL_COLS]
     return site_df_final
 
-def merge_legislative_data(student_df):
-    """
-    Combines legislative data associated with a site with student data to build a table that can show
-    legislators associated with children attending sites in their districts
-    :param student_df:
-    :return: None, saves file to disk
-    """
 
+def merge_legislative_data(df: pd.DataFrame, join_col=FACILITY_CODE_COL) -> pd.DataFrame:
+    """
+    Combine input df with legislative data based off data loaded in build_legislative_lookup
+    :param df: Dataframe to join to legislative district
+    :param join_col: Column to join legislative district to dataframe
+    :return: pd.Dataframe with additional data on state legislators
+    """
     with open(SITE_LEGIS_LOOKUP, 'r') as f:
         leg_lookup = json.load(f)
 
@@ -197,22 +202,19 @@ def merge_legislative_data(student_df):
     # Build dataframe with Facility Code and legislative data
     leg_df = pd.DataFrame(rows)
 
-    # Build table with student data mapped to legislators
-
-    merged_df = student_df.merge(leg_df, how='left', on='Facility Code')
-    merged_df.to_csv(STUDENT_LEGIS_FILE, index=False)
+    # Build table with data mapped to legislators
+    merged_df = df.merge(leg_df, how='left', on=join_col)
+    return merged_df
 
 
 if __name__ == '__main__':
 
     site_df = build_site_df()
-    site_df.to_csv(SITE_FILE, index=False)
-
-    # Call each cleaning function with a copy of the data to avoid any side effects
     student_df = build_student_df()
-    student_df.to_csv(STUDENT_FILE, index=False)
 
     # Add in legislative data
-    merge_legislative_data(student_df)
+    student_legislature_df = merge_legislative_data(student_df)
+    site_legislature_df = merge_legislative_data(site_df)
 
-
+    student_legislature_df.write_csv(STUDENT_FILE, index=False)
+    site_legislature_df.write_csv(SITE_FILE, index=False)

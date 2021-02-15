@@ -56,7 +56,7 @@ RENAME_DICT = {'Race of Child For Reporting': 'Race for Reporting',
 
 SITE_COL_RENAME_DICT = {
     'PROGRAM/SITE/SUBGRANTEE \n(Registry Licensed Name)\n(ALL) [ECE Division Contact List]': 'Site Name',
-    'AssignedFacilityCode - ECIS': FACILITY_CODE_COL,
+    'FACILITY CODE (ECIS & PSIS)': FACILITY_CODE_COL,
     'Total Preschool Spaces # Spaces Feb 2020': 'Preschool Spaces',
     'Total Infant/Toddler Spaces # Spaces Feb 2020': 'Infant/Toddler Spaces',
     'Total School Age Spaces # Spaces Feb 2020': 'School Age Spaces',
