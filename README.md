@@ -5,7 +5,8 @@
 The `docker` folder contains code to build an instance of Superset from a Dockerfile with a Postgres database attached.
 The database will serve as the store of data for both metadata surrounding Superset chart creation and for enrollment data created in this repo.
 
-In order to deploy locally two items need to be added to the `.env` file. CircleCI adds these lines in the deploy process
+In order to deploy locally two items need to be added to the `.env` file. CircleCI adds these lines in the deploy process. 
+The port mapping for the Superset images will also need to be changed from `80:8080` to `8080:8080` or some other local port besides 80.
 
 _Items to Add_
 - POSTGRES_PASSWORD
