@@ -47,7 +47,7 @@ jobs:
       - run:
           name: 'Remove Postgres Password set up from env file'
           command: |
-            sed -i '/POSTGRES_PASSWORD/d' .env
+            sed -i '/POSTGRES_PASSWORD/d' docker/ .env
       - run:
           name: 'Add DB Password to config files'
           command: |
