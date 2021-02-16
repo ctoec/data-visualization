@@ -6,13 +6,8 @@ The `docker` folder contains code to build an instance of Superset from a Docker
 The database will serve as the store of data for both metadata surrounding Superset chart creation and for enrollment data created in this repo.
 
 In order to deploy locally two items need to be added to the `.env` file. CircleCI adds these lines in the deploy process. 
-The port mapping for the Superset images will also need to be changed from `80:8080` to `8080:8080` or some other local port besides 80.
 
 _Environmental Variables to Add to .env_
-- POSTGRES_PASSWORD
-  - The password for the Postgres database that Superset uses for metadata and uploaded data
-  - This is stored in AWS Secrets Manager at `/data-viz/db/db_pass`
-  - A non-production password should be made up and used for local instances.
 - MAPBOX_KEY
   - This is the API key that Superset uses to render maps, it is tied with Kyle Magida's email (kyle@skylight.digital)
   - This is stored in AWS Secrets Manager at `/data-viz/map_box/key`
