@@ -185,36 +185,6 @@ def build_site_df():
     site_df_final = site_df[~site_df['Site Name'].isna()][SITE_FINAL_COLS]
     return site_df_final
 
-def merge_legislative_data(student_df):
-    """
-    Combines legislative data associated with a site with student data to build a table that can show
-    legislators associated with children attending sites in their districts
-    :param student_df:
-    :return: None, saves file to disk
-    """
-
-    with open(SITE_LEGIS_LOOKUP, 'r') as f:
-        leg_lookup = json.load(f)
-
-    rows = []
-    for _, row_dict in leg_lookup.items():
-
-        # Get metadata from legislative lookup that is not from the API call
-        initial_data = {key: row_dict[key] for key in row_dict if key != 'raw_result'}
-
-        # Get the API call with the specified columns
-        leg_dict = parse_legislator_results(row_dict['raw_result'])
-        final_row_dict = {**initial_data, **leg_dict}
-        rows.append(final_row_dict)
-
-    # Build dataframe with Facility Code and legislative data
-    leg_df = pd.DataFrame(rows)
-
-    # Build table with student data mapped to legislators
-
-    merged_df = student_df.merge(leg_df, how='left', on='Facility Code')
-    return merged_df
-
 
 def merge_legislative_data(df: pd.DataFrame, join_col=FACILITY_CODE_COL) -> pd.DataFrame:
     """
@@ -229,10 +199,10 @@ def merge_legislative_data(df: pd.DataFrame, join_col=FACILITY_CODE_COL) -> pd.D
     rows = []
     for _, row_dict in leg_lookup.items():
 
-        # Get metadata from legislative lookup that is not from the API call
+        # Get metadata each the call to the API (lat, long, Facility Code)
         initial_data = {key: row_dict[key] for key in row_dict if key != 'raw_result'}
 
-        # Get the API call with the specified columns
+        # Get the raw results stored for the API and extract the needed fields from the return with parse_legislator results
         leg_dict = parse_legislator_results(row_dict['raw_result'])
         final_row_dict = {**initial_data, **leg_dict}
         rows.append(final_row_dict)
