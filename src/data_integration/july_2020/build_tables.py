@@ -1,10 +1,12 @@
+import json
 import numpy as np
 import pandas as pd
 import requests
+from build_legislative_lookup import SITE_LEGIS_LOOKUP, parse_legislator_results
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
-    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, \
+    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, FACILITY_CODE_COL, STUDENT_LEGIS_FILE, \
     SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
-    STUDENT_FILE, SITE_FILE
+    STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
 
 
 def standardize_facility_string(col: pd.Series) -> pd.Series:
@@ -15,18 +17,19 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     :return: column of renamed facility codes
     """
 
-    # Add FC to Facility Code column and pad to 10 digits so the string loaded to the DB isn't coerced into a int and
-    #   that the form is the same for all columns to facilitate joins. The import CSV functionality of Superset does not
-    #   allow for type specification
-    return 'FC' + col.str.zfill(12)
+    # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
+    return 'FC' + col.str.zfill(10)
 
 
-def get_lat_lon(address):
+def get_lat_lon(address, existing_lookup):
     """
     Get lat lon from US Census
     :param address: Address string
+    :param existing_lookup: Dictionary of results from Census of previous searches base on address
     :return: tuple of lat, lon
     """
+    if address in existing_lookup:
+        return existing_lookup[address]
     url_encoded_address = requests.utils.quote(address)
     url = f"https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=" \
           f"{url_encoded_address}&benchmark=2020&format=json"
@@ -47,7 +50,7 @@ def clean_column(df_col):
     return df_col.str.replace('_', ' ').str.strip().str.title()
 
 
-def clean_student_data():
+def build_student_df():
     """
     Convert full student and site data file into just anonymous student data
     :return: Anonymized student dataframe
@@ -93,7 +96,7 @@ def clean_student_data():
     # Make income a float
     df['Annual Household Income'] = df["Annual Household Income"].str.replace('$', '').str.replace(',', '')
     df['Annual Household Income'] = pd.to_numeric(df['Annual Household Income'], errors='coerce')
-    df['Facility Code'] = standardize_facility_string(df['Facility Code'])
+    df[FACILITY_CODE_COL] = standardize_facility_string(df[FACILITY_CODE_COL])
 
     # Add SMI and FPL
     df['Household size'] = df['Household size'].replace({'SPED': np.nan, '9 or more': 9}).astype(float)
@@ -102,7 +105,7 @@ def clean_student_data():
     return df
 
 
-def clean_site_data():
+def build_site_df():
     """
     Converts full July 2020 student and site data file to single site file with license data included
     :param df: dataframe created from July 2020 data collection
@@ -126,46 +129,90 @@ def clean_site_data():
     site_df['Full Address'] = site_df[['Address'] + base_address_cols].apply(lambda row: ' '.join(row.values.astype(str)), axis=1)
     site_df['Facility Code'] = standardize_facility_string(site_df['Facility Code'])
 
+    # Open saved file with existing data
+    with open(LAT_LONG_LOOKUP) as f:
+        existing_location_lookup = json.load(f)
+
     # Get all addresses from census API
+    counter = 0
     lats = []
     longs = []
     census_towns = []
-
-    # Geocode address
     for _, row in site_df.iterrows():
         address = row['Full Address - Lookup']
-        address_result = get_lat_lon(address)
+        address_result = get_lat_lon(address, existing_location_lookup)
 
-        # If address doesn't exist, attempt a generic town address
         if not address_result:
             address = f'1 Main {row["Town"]} CT'
-            address_result = get_lat_lon(address)
-
+            address_result = get_lat_lon(address, existing_location_lookup)
+            pass
         # Add nulls for results that didn't get a result
         if not address_result:
             lats.append(np.nan)
             longs.append(np.nan)
             census_towns.append('')
 
-        # Add data to lats, longs and town
+        # Add data to lats, longs and town and stores results
         else:
+            existing_location_lookup[address] = address_result
             lats.append(address_result['coordinates']['y'])
             longs.append(address_result['coordinates']['x'])
             census_towns.append(address_result['addressComponents']['city'])
 
+        # Checkpoint save results
+        if counter % 5 == 0:
+            print(counter)
+            with open(LAT_LONG_LOOKUP, 'w') as f:
+                json.dump(existing_location_lookup, f)
+
+        counter += 1
     site_df['Latitude'] = lats
     site_df['Longitude'] = longs
     site_df['Town from Census'] = census_towns
     site_df_final = site_df[SITE_FINAL_COLS]
     return site_df_final
 
+def merge_legislative_data(student_df):
+    """
+    Combines legislative data associated with a site with student data to build a table that can show
+    legislators associated with children attending sites in their districts
+    :param student_df:
+    :return: None, saves file to disk
+    """
+
+    with open(SITE_LEGIS_LOOKUP, 'r') as f:
+        leg_lookup = json.load(f)
+
+    rows = []
+    for _, row_dict in leg_lookup.items():
+
+        # Get metadata from legislative lookup that is not from the API call
+        initial_data = {key: row_dict[key] for key in row_dict if key != 'raw_result'}
+
+        # Get the API call with the specified columns
+        leg_dict = parse_legislator_results(row_dict['raw_result'])
+        final_row_dict = {**initial_data, **leg_dict}
+        rows.append(final_row_dict)
+
+    # Build dataframe with Facility Code and legislative data
+    leg_df = pd.DataFrame(rows)
+
+    # Build table with student data mapped to legislators
+
+    merged_df = student_df.merge(leg_df, how='left', on='Facility Code')
+    merged_df.to_csv(STUDENT_LEGIS_FILE, index=False)
+
 
 if __name__ == '__main__':
 
-    site_df = clean_site_data()
+    site_df = build_site_df()
     site_df.to_csv(SITE_FILE, index=False)
 
-    student_df = clean_student_data()
+    # Call each cleaning function with a copy of the data to avoid any side effects
+    student_df = build_student_df()
     student_df.to_csv(STUDENT_FILE, index=False)
+
+    # Add in legislative data
+    merge_legislative_data(student_df)
 
 

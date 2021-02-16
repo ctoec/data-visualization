@@ -43,17 +43,18 @@ When the database is initially built it needs to be set up with the following st
   - Stored in bucket referenced in [data retention policy.](https://docs.google.com/document/d/1fBBjWPdC9w8YUlCT47s9-G9jzy0vOQ9ejONviXkkCxI/edit#heading=h.3aiijg3fhho3)
   - Copy sheet `ECE Feb20 Data Collect_All_e` and paste as tab separated CSV (this should be the default) into `src/data_integration/july_2020/data/ece_feb_20_data_collection.csv`.
   - To clean data: go to `src/data_integration/july_2020/` and run `python3 clean_data.py` or `python clean_data.py` depending on your machine's binary for Python 3.
+  
+### Created tables
+
+The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder to be uploaded to Superset.
+`student_data_legislative.csv` populates the `uploaded_data.july_2020` table and `site_data.csv` populates the `uploaded_data.july_2020_sites` table. 
+A `student_data.csv` is also created as an intermediate file with only student data.
+
 
 #### Reference data
 
 - `fpl_and_smi.csv` is copied from data given to Skylight by OEC in 2020.
 - `site_lat_long_lookup.json` is a json dictionary with a store of data collected from the Census API keyed with the called address.
-
- 
-### Created tables
-
-The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder that can be uploaded to Superset.
-`student_data.csv` populates the `uploaded_data.july_2020` table and `site_data.csv` populates the `uploaded_data.july_2020_sites` table. 
   
 ### Data Visualization
 
@@ -62,7 +63,6 @@ The SQL calculations that are behind the metrics are stored for reference and re
 Any changes to metrics or calculated columns should be accompanied by a pull request here to review the underlying SQL code.
 
 A Mapbox API key is stored in AWS Secrets with key `/data-viz/map_box/key`. 
-
 
 ## Dashboard validation and deploy process
 
@@ -99,3 +99,4 @@ Live production dashboards can be edited safely with the following process:
 - Fill outstanding lat, longs for sites
 - Clean up town names
 - Resolve outstanding student records that aren't matching to any sites
+
