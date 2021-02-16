@@ -65,6 +65,7 @@ SITE_COL_RENAME_DICT = {
     'ZIP [ECE]': 'ZIP Code'
 }
 
+# Lookup from manual checks of facility codes for students that didn't match sites.
 SITE_FACILITY_LOOKUP_DICT = {'0280411 / 0280341': '280341',
                              '0146341': '1460341',
                              '0571941': '571841',

@@ -17,6 +17,9 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     :return: column of renamed facility codes
     """
     def clean_string(item):
+
+        # Some ids were listed as 12345 or 54321 manual checks confirm that the first number matched site and student data.
+        # If 'or' is not in the name this will return the entire string
         item = str(item).split(' or ')[0]
         item = item.replace('Annex to', '').replace('?', '').strip()
 
@@ -210,7 +213,7 @@ def merge_legislative_data(student_df):
     # Build table with student data mapped to legislators
 
     merged_df = student_df.merge(leg_df, how='left', on='Facility Code')
-    merged_df.to_csv(STUDENT_LEGIS_FILE, index=False)
+    return merged_df
 
 
 def merge_legislative_data(df: pd.DataFrame, join_col=FACILITY_CODE_COL) -> pd.DataFrame:
