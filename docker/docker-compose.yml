@@ -19,4 +19,4 @@ services:
       - ./config:/app/pythonpath
       - ./images:/app/superset/static/assets/images/mounted_images/
     ports:
-      - "80:8080"
+      - "8088:8080"
