@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from build_legislative_lookup import SITE_LEGIS_LOOKUP, parse_legislator_results
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
-    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, FACILITY_CODE_COL, STUDENT_LEGIS_FILE, \
+    SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, FACILITY_CODE_COL, SITE_FACILITY_LOOKUP_DICT, \
     SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
     STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
 
@@ -16,10 +16,23 @@ def standardize_facility_string(col: pd.Series) -> pd.Series:
     :param col: dataframe column with facility codes
     :return: column of renamed facility codes
     """
+    def clean_string(item):
 
-    # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
-    return 'FC' + col.str.zfill(10)
+        # Some ids were listed as 12345 or 54321 manual checks confirm that the first number matched site and student data.
+        # If 'or' is not in the name this will return the entire string
+        item = str(item).split(' or ')[0]
+        item = item.replace('Annex to', '').replace('?', '').strip()
 
+        # Some facility codes were entered in correctly, this fixes the errors
+        if item in SITE_FACILITY_LOOKUP_DICT:
+            item = SITE_FACILITY_LOOKUP_DICT[item]
+        # Add FC to Facility Code column and pad to 10 digits to ensure DB reads it correctly
+        item = 'FC' + item.zfill(10)
+        return item
+
+    return_col = col.apply(clean_string)
+
+    return return_col
 
 def get_lat_lon(address, existing_lookup):
     """
@@ -111,11 +124,10 @@ def build_site_df():
     :param df: dataframe created from July 2020 data collection
     :return: Clean dataframe with site data
     """
-    site_df = pd.read_csv(JULY_2020_SITE_DATA_FILE, sep='\t', dtype={'ZIP [ECE]': str, })
+    site_df = pd.read_csv(JULY_2020_SITE_DATA_FILE, sep='\t', dtype={'ZIP [ECE]': str})
 
     # Convert town code to integer and remove all sites that don't have a code
     site_df['Town Code'] = pd.to_numeric(site_df['Town Code'], errors='coerce')
-    site_df = site_df[(~site_df['Town Code'].isna()) & (site_df['Town Code'] != 0)]
     site_df.rename(columns=SITE_COL_RENAME_DICT, inplace=True)
 
     # Get address in a form acceptable for geocoding
@@ -169,27 +181,28 @@ def build_site_df():
     site_df['Latitude'] = lats
     site_df['Longitude'] = longs
     site_df['Town from Census'] = census_towns
-    site_df_final = site_df[SITE_FINAL_COLS]
+
+    site_df_final = site_df[~site_df['Site Name'].isna()][SITE_FINAL_COLS]
     return site_df_final
 
-def merge_legislative_data(student_df):
-    """
-    Combines legislative data associated with a site with student data to build a table that can show
-    legislators associated with children attending sites in their districts
-    :param student_df:
-    :return: None, saves file to disk
-    """
 
+def merge_legislative_data(df: pd.DataFrame, join_col=FACILITY_CODE_COL) -> pd.DataFrame:
+    """
+    Combine input df with legislative data based off data loaded in build_legislative_lookup
+    :param df: Dataframe to join to legislative district
+    :param join_col: Column to join legislative district to dataframe
+    :return: pd.Dataframe with additional data on state legislators
+    """
     with open(SITE_LEGIS_LOOKUP, 'r') as f:
         leg_lookup = json.load(f)
 
     rows = []
     for _, row_dict in leg_lookup.items():
 
-        # Get metadata from legislative lookup that is not from the API call
+        # Get metadata each the call to the API (lat, long, Facility Code)
         initial_data = {key: row_dict[key] for key in row_dict if key != 'raw_result'}
 
-        # Get the API call with the specified columns
+        # Get the raw results stored for the API and extract the needed fields from the return with parse_legislator results
         leg_dict = parse_legislator_results(row_dict['raw_result'])
         final_row_dict = {**initial_data, **leg_dict}
         rows.append(final_row_dict)
@@ -197,22 +210,19 @@ def merge_legislative_data(student_df):
     # Build dataframe with Facility Code and legislative data
     leg_df = pd.DataFrame(rows)
 
-    # Build table with student data mapped to legislators
-
-    merged_df = student_df.merge(leg_df, how='left', on='Facility Code')
-    merged_df.to_csv(STUDENT_LEGIS_FILE, index=False)
+    # Build table with data mapped to legislators
+    merged_df = df.merge(leg_df, how='left', on=join_col)
+    return merged_df
 
 
 if __name__ == '__main__':
 
     site_df = build_site_df()
-    site_df.to_csv(SITE_FILE, index=False)
-
-    # Call each cleaning function with a copy of the data to avoid any side effects
     student_df = build_student_df()
-    student_df.to_csv(STUDENT_FILE, index=False)
 
     # Add in legislative data
-    merge_legislative_data(student_df)
+    student_legislature_df = merge_legislative_data(student_df)
+    site_legislature_df = merge_legislative_data(site_df)
 
-
+    student_legislature_df.to_csv(STUDENT_FILE, index=False)
+    site_legislature_df.to_csv(SITE_FILE, index=False)
