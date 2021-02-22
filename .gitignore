@@ -6,3 +6,6 @@ venv/
 /src/data_integration/july_2020/data/
 
 *.DS_Store
+*.zip
+src/data_integration/unmet_needs/census_data/data/
+src/data_integration/unmet_needs/data
