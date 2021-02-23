@@ -3,13 +3,15 @@ services:
 
   db:
     env_file: .env
-    image: postgres:10
+    # Currently using Postgres 10, this can be updated if needed
+    image: postgis/postgis:10-2.5-alpine
     container_name: superset_db
     restart: unless-stopped
     ports:
       - "5432:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+      - ./postgis_init.sql:/docker-entrypoint-initdb.d/postgis_init.sql
 
   superset:
     env_file: .env
