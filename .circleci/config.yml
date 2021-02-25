@@ -42,7 +42,7 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - eb/deploy:
+      - aws-elastic-beanstalk/deploy:
           environment-name: ece-pensieve-<< parameters.env >>-env
           platform-version: docker
           
