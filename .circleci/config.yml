@@ -31,19 +31,23 @@ jobs:
           paths:
             - .
 
-  # deploy:
-  #   parameters:
-  #     env:
-  #       description: 'The environment to deploy Superset to (staging or prod)'
-  #       type: string
-  #   docker:
-  #     - image: 'cimg/base:stable'
-  #   steps:
-  #     - attach_workspace:
-  #         at: .
-  #     - eb/deploy:
-  #         environment-name: "ece-pensieve-<< parameters.env >>-env"
-  #         platform-version: docker
+  deploy:
+    parameters:
+      env:
+        description: 'The environment to deploy Superset to (staging or prod)'
+        type: string
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - attach_workspace:
+          at: .
+      - eb/setup
+      - run:
+          name: Initialize Elastic Beanstalk
+          command: eb init ece-pensieve-<< parameters.env >>-app --region us-east-2 --platform docker
+      - run:
+          name: Deploy to Elastic Beanstalk environment
+          command: eb deploy ece-pensieve-<< parameters.env >>-env
           
 workflows:
   deploy-prod:
@@ -54,9 +58,8 @@ workflows:
           env: prod
           requires:
             - hold
-      - eb/deploy:
-          environment-name: "ece-pensieve-prod-env"
-          platform-version: docker
+      - deploy:
+          env: prod
           requires:
             - build
   deploy-staging:
@@ -67,8 +70,7 @@ workflows:
           env: staging
           requires:
             - hold
-      - eb/deploy:
-          environment-name: "ece-pensieve-staging-env"
-          platform-version: docker
+      - deploy:
+          env: staging
           requires:
             - build
