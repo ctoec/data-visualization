@@ -8,13 +8,13 @@ jobs:
     parameters:
       env:
         description: 'The environment to deploy Superset to (staging or prod)'
-        type: string
+        type: string   
     machine:
       image: ubuntu-1604:202007-01 
     steps:
       - checkout
       - run:
-          name: 'Remove Postgres Password set up from env file'
+          name: 'Remove Postgres Password set up from env file'  
           command: |
             sed -i '/POSTGRES_PASSWORD/d' docker/.env
       - run:
