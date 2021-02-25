@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   db:
-    env_file: ./docker/env
+    env_file: ./docker/.env
     image: postgres:10
     container_name: superset_db
     restart: unless-stopped
@@ -12,7 +12,7 @@ services:
       - ./docker/postgres_data:/var/lib/postgresql/data
 
   superset:
-    env_file: ./docker/env
+    env_file: ./docker/.env
     image: apache/incubator-superset
     container_name: superset
     volumes:
