@@ -31,19 +31,19 @@ jobs:
           paths:
             - .
 
-  deploy:
-    parameters:
-      env:
-        description: 'The environment to deploy Superset to (staging or prod)'
-        type: string
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - attach_workspace:
-          at: .
-      - eb/deploy:
-          environment-name: "ece-pensieve-<< parameters.env >>-env"
-          platform-version: docker
+  # deploy:
+  #   parameters:
+  #     env:
+  #       description: 'The environment to deploy Superset to (staging or prod)'
+  #       type: string
+  #   docker:
+  #     - image: 'cimg/base:stable'
+  #   steps:
+  #     - attach_workspace:
+  #         at: .
+  #     - eb/deploy:
+  #         environment-name: "ece-pensieve-<< parameters.env >>-env"
+  #         platform-version: docker
           
 workflows:
   deploy-prod:
@@ -54,8 +54,9 @@ workflows:
           env: prod
           requires:
             - hold
-      - deploy:
-          env: prod
+      - eb/deploy:
+          environment-name: "ece-pensieve-prod-env"
+          platform-version: docker
           requires:
             - build
   deploy-staging:
@@ -66,7 +67,8 @@ workflows:
           env: staging
           requires:
             - hold
-      - deploy:
-          env: staging
+      - eb/deploy:
+          environment-name: "ece-pensieve-staging-env"
+          platform-version: docker
           requires:
             - build
