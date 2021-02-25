@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd ../
 
 # TODO: Do we need to copy this favicon like this?
