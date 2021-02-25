@@ -45,6 +45,7 @@ jobs:
           name: Install Elastic Beanstalk CLI
           working_directory: /
           command: |
+            sudo pip install --upgrade pip
             sudo apt-get -y -qq update
             sudo apt-get install python3-pip python3-dev build-essential
             sudo pip3 install awsebcli
