@@ -16,7 +16,7 @@ jobs:
       - run:
           name: 'Add DB Password to config files'
           command: |
-             SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
+             SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/db/password --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
       - run:
           name: 'Add Mapbox key to config file'
           command: |
