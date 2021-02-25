@@ -11,7 +11,7 @@ DATA_FOLDER = 'data'
 # https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2020pl/TGRSHP2020PL_TechDoc.pdf
 # https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 # https://www2.census.gov/geo/tiger/GENZ2018/2018_file_name_def.pdf
-TOWN = 'cousub'
+TOWN = 'county subdivision'
 PUMA = 'puma'
 SENATE = 'sldu'
 HOUSE = 'sldl'
@@ -86,7 +86,7 @@ def get_geo_data_zip_file(url: str, geo_type: str, file_type: str, redownload=Fa
     full_folder_name = f"{geo_folder_name}/{file_type}/"
     if not os.path.exists(full_folder_name):
         os.mkdir(full_folder_name)
-    file_name = full_folder_name + os.path.basename(url)
+    file_name = (full_folder_name + os.path.basename(url)).replace(' ', '_')
 
     if not os.path.exists(file_name) or redownload:
         request = requests.get(url)
