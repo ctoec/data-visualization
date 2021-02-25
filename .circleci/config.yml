@@ -5,6 +5,10 @@ orbs:
 
 jobs: 
   build:
+    parameters:
+      env:
+        description: 'The environment to deploy Superset to (staging or prod)'
+        type: string
     machine:
       image: ubuntu-1604:202007-01 
     steps:
@@ -57,6 +61,7 @@ workflows:
       - hold:
           type: approval
       - build:
+          env: prod
           requires:
             - hold
       - deploy:
@@ -68,6 +73,7 @@ workflows:
       - hold:
           type: approval
       - build:
+          env: staging
           requires:
             - hold
       - deploy:
