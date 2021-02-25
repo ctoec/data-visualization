@@ -19,4 +19,4 @@ services:
       - ./docker/config:/app/pythonpath
       - ./docker/images:/app/superset/static/assets/images/mounted_images/
     ports:
-      - "443:8080"
+      - "8088:8080"
