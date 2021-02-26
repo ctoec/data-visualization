@@ -3,7 +3,7 @@ import os
 import requests
 
 CT_EPSG_CODE = 2775 # Projection for state of Connecticut, makes centroids more precise
-DEFAULT_LAT_LONG = 4269 # Default lat/long projection for US
+DEFAULT_LAT_LONG_PROJ = 4269 # Default lat/long projection for US
 DATA_FOLDER = 'data'
 
 # Documentation surrounding census data and shapefiles
@@ -27,7 +27,7 @@ house_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/SLDL/tl_202
 house_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sldl_500k.zip'
 senate_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sldu_500k.zip'
 
-REFERENCE_DICT = {TOWN: {TIGER: sub_county_full_tiger_file, CARTO: sub_county_carto_file},
+REFERENCE_DICT = {TOWN: {TIGER: sub_county_full_tiger_file, CARTO: sub_county_carto_file, },
                   PUMA: {TIGER: puma_full_tiger_file, CARTO: sub_county_carto_file},
                   SENATE: {TIGER: senate_full_tiger_file, CARTO: senate_carto_file},
                   HOUSE: {TIGER: house_full_tiger_file, CARTO: house_carto_file}}
@@ -42,7 +42,7 @@ def download_all_data():
 
 def add_centroid(geo_df: gpd.GeoDataFrame,
                  new_epsg_code: int=CT_EPSG_CODE,
-                 final_epsg_code: int=DEFAULT_LAT_LONG) -> gpd.GeoDataFrame:
+                 final_epsg_code: int=DEFAULT_LAT_LONG_PROJ) -> gpd.GeoDataFrame:
     """
 
     :param geo_df:
@@ -80,13 +80,13 @@ def get_geo_data_zip_file(url: str, geo_type: str, file_type: str, redownload=Fa
     """
 
     file_dir = os.path.dirname(os.path.realpath(__file__))
-    geo_folder_name = f"{file_dir}/{DATA_FOLDER}/{geo_type}"
+    geo_folder_name = f"{file_dir}/{DATA_FOLDER}/{geo_type.replace(' ', '_')}"
     if not os.path.exists(geo_folder_name):
         os.mkdir(geo_folder_name)
     full_folder_name = f"{geo_folder_name}/{file_type}/"
     if not os.path.exists(full_folder_name):
         os.mkdir(full_folder_name)
-    file_name = (full_folder_name + os.path.basename(url)).replace(' ', '_')
+    file_name = (full_folder_name + os.path.basename(url))
 
     if not os.path.exists(file_name) or redownload:
         request = requests.get(url)
