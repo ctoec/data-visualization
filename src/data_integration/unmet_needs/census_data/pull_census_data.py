@@ -12,7 +12,6 @@ import pandas as pd
 CENSUS_API_KEY = '' # Get an API key https://api.census.gov/data/key_signup.html
 TOWN = 'county subdivision' # For Connecticut, county subdivision corresponds to towns
 
-
 def get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5', geography: str = TOWN, state_fips: int = states.CT.fips):
     """
     Calls Census API for the provided fields, defaults to acs 5 data from 2019 in Connecticut. This will pull all the
@@ -70,4 +69,4 @@ if __name__ == '__main__':
     census_fields = list(CENSUS_FIELDS.keys())
     census_df = get_census_fields(census_fields)
     census_df.to_csv('data/census_data.csv', index=False)
-    
+
