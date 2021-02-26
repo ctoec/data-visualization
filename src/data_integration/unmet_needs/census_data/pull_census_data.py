@@ -43,7 +43,7 @@ def _get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5
     Calls Census API for the provided fields, defaults to acs 5 data from 2019 in Connecticut. This will pull all the
     data requested for ever geography division in the passed geography
     https://www.census.gov/data/developers/data-sets/acs-5year.html
-    :param fields: list of Census variables
+    :param fields: list of Census variables, full ACS list can be found here: https://api.census.gov/data/2019/acs/acs5/variables.html
     :param year: Year of census data
     :param data_set: Census data set to use
     :param geography: Geogrpa
