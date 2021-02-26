@@ -9,13 +9,39 @@ import pandas as pd
 ## TODO
 # Get common API key
 
-CENSUS_API_KEY = '' # Get an API key https://api.census.gov/data/key_signup.html
+CENSUS_API_KEY = '98a3cf08d29a1fdb0e6ad0c5107f66bf932bfba4' # Get an API key https://api.census.gov/data/key_signup.html
 TOWN = 'county subdivision' # For Connecticut, county subdivision corresponds to towns
+CENSUS_FIELD_LIMIT = 50
+CENSUS_NAME_FIELD = 'NAME'
+
 
 def get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5', geography: str = TOWN, state_fips: int = states.CT.fips):
     """
+    Wrapper for Census API call that gets around the Census' limit on 50 fields per API call
+    :param fields: list of Census variables
+    :param year: Year of census data
+    :param data_set: Census data set to use
+    :param geography: Geogrpa
+    :param state_fips:
+    :return: combined dataframe from all calls
+    """
+    field_list_of_list = []
+    for i in range(0, len(fields), CENSUS_FIELD_LIMIT):
+        field_list_of_list.append(fields[i:i+CENSUS_FIELD_LIMIT])
+
+    return_df = _get_census_fields(fields=field_list_of_list[0], year=year, data_set=data_set, geography=geography, state_fips=state_fips)
+
+    for field_list in field_list_of_list[1:]:
+        new_df = _get_census_fields(fields=field_list, year=year, data_set=data_set, geography=geography, state_fips=state_fips)
+        return_df = return_df.merge(new_df, how='outer', on=CENSUS_NAME_FIELD)
+
+    return return_df
+
+
+def _get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5', geography: str = TOWN, state_fips: int = states.CT.fips):
+    """
     Calls Census API for the provided fields, defaults to acs 5 data from 2019 in Connecticut. This will pull all the
-    data requested for ever geography division in the passed geography (
+    data requested for ever geography division in the passed geography
     https://www.census.gov/data/developers/data-sets/acs-5year.html
     :param fields: list of Census variables
     :param year: Year of census data
@@ -26,7 +52,7 @@ def get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5'
     """
     # Build and encode URL
     field_string = ",".join(fields)
-    url = f'https://api.census.gov/data/{year}/{data_set}?get=NAME,{field_string}&for={urllib.parse.quote(geography)}:*&in=state:{str(state_fips)}&key={CENSUS_API_KEY}'
+    url = f'https://api.census.gov/data/{year}/{data_set}?get={CENSUS_NAME_FIELD},{field_string}&for={urllib.parse.quote(geography)}:*&in=state:{str(state_fips)}&in=county:*&key={CENSUS_API_KEY}'
     res = requests.get(url)
 
     # Raise error if the call was not successful
