@@ -38,7 +38,7 @@ def get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5'
     return return_df
 
 
-def _get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5', geography: str = TOWN, state_fips: int = states.CT.fips):
+def _get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5', geography: str = TOWN, state_fips: int = states.CT.fips, sub_geos='in=county:*'):
     """
     Calls Census API for the provided fields, defaults to acs 5 data from 2019 in Connecticut. This will pull all the
     data requested for ever geography division in the passed geography
@@ -46,13 +46,15 @@ def _get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5
     :param fields: list of Census variables, full ACS list can be found here: https://api.census.gov/data/2019/acs/acs5/variables.html
     :param year: Year of census data
     :param data_set: Census data set to use
-    :param geography: Geogrpa
+    :param geography: Lowest level of geography required
+    :param sub_geos: Sub-state geopraphies to return eg. counties and tracts, these are generally in the form &in=tract:*
+    https://api.census.gov/data/2019/acs/acs5/examples.html
     :param state_fips:
     :return:
     """
     # Build and encode URL
     field_string = ",".join(fields)
-    url = f'https://api.census.gov/data/{year}/{data_set}?get={CENSUS_NAME_FIELD},{field_string}&for={urllib.parse.quote(geography)}:*&in=state:{str(state_fips)}&in=county:*&key={CENSUS_API_KEY}'
+    url = f'https://api.census.gov/data/{year}/{data_set}?get={CENSUS_NAME_FIELD},{field_string}&for={urllib.parse.quote(geography)}:*&in=state:{str(state_fips)}&{sub_geos}&key={CENSUS_API_KEY}'
     res = requests.get(url)
 
     # Raise error if the call was not successful
