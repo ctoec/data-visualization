@@ -10,7 +10,7 @@ import pandas as pd
 ## TODO
 # Get common API key
 
-CENSUS_API_KEY = '98a3cf08d29a1fdb0e6ad0c5107f66bf932bfba4' # Get an API key https://api.census.gov/data/key_signup.html
+CENSUS_API_KEY = '' # Get an API key https://api.census.gov/data/key_signup.html
 CENSUS_FIELD_LIMIT = 50
 CENSUS_NAME_FIELD = 'NAME'
 
