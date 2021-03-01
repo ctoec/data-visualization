@@ -3,6 +3,7 @@ import urllib.parse
 import censusdata
 from us import states
 from census_fields import CENSUS_FIELDS
+from shapefiles import TOWN
 
 import pandas as pd
 
@@ -10,7 +11,6 @@ import pandas as pd
 # Get common API key
 
 CENSUS_API_KEY = '98a3cf08d29a1fdb0e6ad0c5107f66bf932bfba4' # Get an API key https://api.census.gov/data/key_signup.html
-TOWN = 'county subdivision' # For Connecticut, county subdivision corresponds to towns
 CENSUS_FIELD_LIMIT = 50
 CENSUS_NAME_FIELD = 'NAME'
 
