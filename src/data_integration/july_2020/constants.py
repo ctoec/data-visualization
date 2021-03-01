@@ -7,7 +7,6 @@ JULY_2020_SITE_DATA_FILE = DATA_FOLDER + 'ece_feb_20_site_data.csv'
 SMI_AND_FPL_DATA = REFERENCE_DATA_FOLDER + 'fpl_and_smi.csv'
 LICENSE_DATA = REFERENCE_DATA_FOLDER + 'state_funded_program_list.csv'
 STUDENT_FILE = DATA_FOLDER + 'student_data.csv'
-STUDENT_LEGIS_FILE = DATA_FOLDER + 'student_data_legislative.csv'
 SITE_FILE = DATA_FOLDER + 'site_data.csv'
 LAT_LONG_LOOKUP = REFERENCE_DATA_FOLDER + 'site_lat_long_lookup.json'
 SITE_LEGIS_LOOKUP = REFERENCE_DATA_FOLDER + 'site_legislature_lookup.json'
@@ -56,7 +55,7 @@ RENAME_DICT = {'Race of Child For Reporting': 'Race for Reporting',
 
 SITE_COL_RENAME_DICT = {
     'PROGRAM/SITE/SUBGRANTEE \n(Registry Licensed Name)\n(ALL) [ECE Division Contact List]': 'Site Name',
-    'AssignedFacilityCode - ECIS': FACILITY_CODE_COL,
+    'FACILITY CODE (ECIS & PSIS)': FACILITY_CODE_COL,
     'Total Preschool Spaces # Spaces Feb 2020': 'Preschool Spaces',
     'Total Infant/Toddler Spaces # Spaces Feb 2020': 'Infant/Toddler Spaces',
     'Total School Age Spaces # Spaces Feb 2020': 'School Age Spaces',
@@ -66,6 +65,11 @@ SITE_COL_RENAME_DICT = {
     'ZIP [ECE]': 'ZIP Code'
 }
 
+# Lookup from manual checks of facility codes for students that didn't match sites.
+SITE_FACILITY_LOOKUP_DICT = {'0280411 / 0280341': '280341',
+                             '0146341': '1460341',
+                             '0571941': '571841',
+                             '0103211': '1032111'}
 SITE_FINAL_COLS = ['Site Name',
                    'Full Address',
                    'Preschool Spaces',
