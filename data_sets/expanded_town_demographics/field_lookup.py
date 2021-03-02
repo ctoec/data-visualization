@@ -4,20 +4,9 @@ from numpy import nan
 
 TOWN_FILE = "town_data.csv"
 SINGLE_FIELD_FILE = "single_field_lookups.txt"
-COMBINATIONN_FIELD_FILE = "combination_field_lookups.txt"
+COMBINATION_FIELD_FILE = "combination_field_lookups.txt"
 STATE_CODE = '09'
 OUT_FILE = "town_demographic_data.csv"
-
-'''
-Performs string padding on a given number so that the right number 
-of '0's are prepended to make census geo lookup work. 
-'''
-def pad_int(x):
-    str_rep = "0"
-    if x < 10:
-        str_rep += "0"
-    str_rep += str(x)
-    return str_rep
 
 
 '''
@@ -56,34 +45,40 @@ def parse_combination_field_file(filename):
             # Ignore lines providing the example
             if line.strip() != "" and line[0] != '#':
                 parts = line.strip().split(";")
-                root_names.append(parts[0].strip())
-                tables.append(parts[1].strip())
-                max_nums.append(int(parts[2].strip()))
                 
                 # Determine whether we're parsing any single field vars
                 sfs = parts[3].strip()
                 if sfs == "":
-                    solo_fields.append([])
-                    solo_names.append([])
+                    sfs = []
+                    sfns = []
                 else:
                     sfs = [int(x.strip()) for x in sfs.split(",")]
-                    solo_fields.append(sfs)
                     sfns = [x.strip() for x in parts[4].strip().split(",")]
-                    solo_names.append(sfns)
                 
                 # Same thing for aggregation based variables 
                 cfs = parts[5].strip()
-                if cfs == "":
-                    combination_fields.append([])
-                    combination_names.append([])
-                else:
-                    groups = []
+                groups = []
+                names = []
+                if cfs != "":
                     for cluster in cfs.split('+'):
                         cleaned_cluster = [int(x.strip()) for x in cluster.strip().split(',')]
                         groups.append(tuple(cleaned_cluster))
-                    combination_fields.append(groups)
                     names = [x.strip() for x in parts[6].strip().split(',')]
+                    
+                # Skip the row if the lengths don't match up
+                if len(sfs) == len(sfns) and len(groups) == len(names):
+                    root_names.append(parts[0].strip())
+                    tables.append(parts[1].strip())
+                    max_nums.append(int(parts[2].strip()))
+                    solo_fields.append(sfs)
+                    solo_names.append(sfns)
+                    combination_fields.append(groups)
                     combination_names.append(names)
+                else:
+                    print("Error parsing line: " + line.strip())
+                    print(groups)
+                    print(names)
+                    print("Number of fields and number of names do not match")
                     
     return root_names, tables, max_nums, solo_fields, solo_names, combination_fields, combination_names
                 
@@ -125,7 +120,7 @@ def download_combination_fields(geo, tables, max_field_nums, solo_fields, combin
                     if i in cf:
                         need_field = True
             if need_field:
-                str_rep = pad_int(i)
+                str_rep = str(i).zfill(3)
                 field_list.append(tables[t] + "_" + str_rep + "E")
     
     # Block download to minimize API calls
@@ -159,7 +154,7 @@ def handle_combination_fields(dat, tables, solo_fields, solo_names, combination_
         for i in range(len(solo_fields[t])):
             
             # Accumulate all table identifiers of fields we indexed on their ownn
-            str_rep = pad_int(solo_fields[t][i])
+            str_rep = str(solo_fields[t][i]).zfill(3)
             str_rep = tables[t] + "_" + str_rep + "E"
             solo_strings.append(str_rep)
         
@@ -175,7 +170,7 @@ def handle_combination_fields(dat, tables, solo_fields, solo_names, combination_
             total = 0
             affected_fields = []
             for field in combination_fields[t][i]:
-                str_rep = pad_int(field)
+                str_rep = str(field).zfill(3)
                 str_rep = tables[t] + "_" + str_rep + "E" 
                 affected_fields.append(str_rep)
                 total += dat[str_rep]
@@ -183,40 +178,29 @@ def handle_combination_fields(dat, tables, solo_fields, solo_names, combination_
             dat.drop(columns=affected_fields, inplace=True)
         
     return dat
-
-
-'''
-Simple util to drop all collected columns for which every value
-is null or nan.
-'''
-def drop_null_cols(df):
-    cols_to_drop = []
-    for c in df.columns:
-        if df[c].isnull().all():
-            cols_to_drop.append(c)
-    df = df.drop(columns=cols_to_drop)
-    return df
     
 
 # Let's pull some data
 geo = cd.censusgeo([('state', STATE_CODE), ('county', '*'), ('county subdivision', '*')])
 single_field_mapping = parse_single_field_file(SINGLE_FIELD_FILE)
 df_single = handle_single_fields(geo, single_field_mapping)
-root_names, tables, max_nums, solo_fields, solo_names, combination_fields, combination_names = parse_combination_field_file(COMBINATIONN_FIELD_FILE)
+root_names, tables, max_nums, solo_fields, solo_names, combination_fields, combination_names = parse_combination_field_file(COMBINATION_FIELD_FILE)
 df_combination = download_combination_fields(geo, tables, max_nums, solo_fields, combination_fields)
 df_combination = handle_combination_fields(df_combination, tables, solo_fields, solo_names, combination_fields, root_names, combination_names)
-df = pd.concat([df_single, df_combination], axis=1)
+df = df_single.join(df_combination)
 df[df < 0] = nan
-df = drop_null_cols(df)
-  
+null_cols = df.isnull().all()
+df = df.drop(null_cols[null_cols].index.values, axis=1)
+   
 # Get rid of the kruft in each town's name that the censusgeo object comes with
 # Makes for much cleaner df writing
+# Also dump subcounties that aren't actual towns (census has a few that are 
+# 'unorganized/unspecified')
 df['town'] = [str(x) for x in df.index]
 df = df.loc[df['town'].apply(lambda x: True if 'town' in x else False), :]
 df['town'] = df['town'].apply(lambda x: x.split(',')[0].strip())
 df['town'] = df['town'].apply(lambda x: x.replace(' town', ''))
 df.to_csv(OUT_FILE, index=False)
-
 
 
 

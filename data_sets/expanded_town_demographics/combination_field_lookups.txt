@@ -18,8 +18,8 @@ educational attainment; B15003; 25; 2; no school; 3,4,5,6,7,8,9,10,11,12,13,14,1
 primary spoken language at home; C16001; 21; 2,3,21; english, spanish, chinese; ;
 ratio of income to poverty level; B17026; 13; 2; < 0.5; 3,4 + 5,6,7,8,9 + 10,11,12,13; 0.51 - 1.0, 1.01 - 2.0, > 2.0
 number of income earners in family; B19122; 5; 2,3,4,5; no earners, 1 earner, 2 earners, 3+ earners; ;
-rent paid for non-owned housing units; B25063; 27; 27; no rent paid; 3,4,5,6,7,8,9,10,11 + 12,13,14,15,16,17,18,19 + 20,21,22 + 23,24 + 25,26; < 500, 500 - 999, 1000 - 1,999, 2000 - 2999, 3000+
+rent paid for non-owned housing units; B25063; 27; 27; no rent paid; 3,4,5,6,7,8,9,10,11 + 12,13,14,15,16,17,18,19 + 20,21,22 + 23,24 + 25,26; < 500, 500 - 999, 1000 - 1999, 2000 - 2999, 3000+
 rent as percentage of income; B25070; 10; 10; 50+%; 2,3 + 4,5,6 + 7,8,9; <15%, 15-29%, 30-49%
-home value of owned/mortgaged housing units; B25075; 27; 21,22,23,24; 300k - 400k, 400k - 500k, 500k - 750k, 750k - 1m; 2,3,4,5,6,7,8,9 + 10,11,12,13,14 + 15,16,17,18 + 19,20; < 50k, 50k - 100k, 100k - 200k, 200k - 300k, 1m+
+home value of owned/mortgaged housing units; B25075; 27; 21,22,23,24; 300k - 400k, 400k - 500k, 500k - 750k, 750k - 1m; 2,3,4,5,6,7,8,9 + 10,11,12,13,14 + 15,16,17,18 + 19,20 + 25,26,27; < 50k, 50k - 100k, 100k - 200k, 200k - 300k, 1m+
 monthly housing costs; B25104; 17; 17,16; no housing cost, 3k+; 2,3,4,5,6 + 7,8,9,10,11 + 12,13 + 14,15; < 500, 500-1000, 1k - 2k, 2k - 3k
 computers and internet; B28003; 6; 6,5; no computer, computer but no internet; 3,4; computer with internet
