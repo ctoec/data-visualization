@@ -7,5 +7,5 @@ venv/
 
 *.DS_Store
 *.zip
-src/data_integration/unmet_needs/census_data/data/
+src/data_integration/census_data/data/
 src/data_integration/unmet_needs/data/
