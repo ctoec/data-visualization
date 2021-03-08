@@ -49,8 +49,20 @@ When the database is initially built it needs to be set up with the following st
   - Copy sheet `ECE Feb20 Data Collect_All_e` and paste as tab separated CSV (this should be the default) into `src/data_integration/july_2020/data/ece_feb_20_data_collection.csv`.
   - To clean data: go to `src/data_integration/july_2020/` and run `python3 clean_data.py` or `python clean_data.py` depending on your machine's binary for Python 3.
 - ECE Reporter
-  - Reporter 
-  - C4K data is not included  
+  - Reports pulled from ECE reporter on a monthly basis
+  - Initial backfill is also pulled
+  - Data is extracted from ECE reporter and saved to a CSV.  
+  - A config file with host, database, user and password named config.ini should be in the `ece_data` folder. A template 
+  is provided in `ece_data/config_template.ini`.
+  - _ECE Assumptions_    
+    - Reporting period ids always increase as time increases
+    - Family income determination should be the most recent entry for the family that is not deleted
+    - We want data as it was in the database at the end of the reporting period rather than as the data stands today
+      - The end of the funding period for purposes of the timing of the snapshot will be the beginning of the next month
+      - For backfilling data this approach does not work because data wasn't in the DB for some of these periods. March 8th 
+      will be the date that is used in this case since it was the first deadline for data submission.  
+  - C4K data is not included 
+   
 ### Created tables
 
 The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder to be uploaded to Superset; 
