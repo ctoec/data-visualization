@@ -69,7 +69,7 @@ if __name__ == '__main__':
     engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:5432/{db_name}')
 
     # Create postgis extension, this will be a no-op if it already exists
-
+    engine.execute('CREATE EXTENSION postgis')
     # Load town data to Superset keeping data that will allow for joins to other Census and unmet needs data
     town_geo_df = build_level_df(geo_level=TOWN, file_type=CARTO)
     town_cols = ['NAME', 'STATEFP', 'COUNTYFP', 'COUSUBFP', 'lat', 'long']
