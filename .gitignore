@@ -9,3 +9,6 @@ venv/
 *.zip
 src/data_integration/unmet_needs/census_data/data/
 src/data_integration/unmet_needs/data/
+
+# ./idea folder
+src/data_integration/unmet_needs/census_data/.idea/
