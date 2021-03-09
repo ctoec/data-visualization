@@ -50,3 +50,6 @@ median family income - hispanic or latinx: B19113I_001E
 housing units: B25001_001E
 median year housing unit was built: B25035_001E
 number of owned homes: B25081_002E
+pop_male_under_5: B01001_003E
+pop_female_under_5: B01001_027E
+median_family_income_in_the_past_12_months_in_2019_inflation-adjusted_dollars_by_family_size_total: B19119_001E
