@@ -16,7 +16,7 @@ select
     rp.periodEnd as reporting_period_end,
     CASE WHEN child.sasid is NULL then 0 ELSE 1 END as has_sasid,
 
- -- These can be added in as needed, PII isn't not needed for current iterations
+ -- These can be added in as needed, PII is not needed for current iterations
 --     child.lastName as last_name,
 --     child.middleName as middle_name,
 --     child.firstName as first_name,
