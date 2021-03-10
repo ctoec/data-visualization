@@ -58,7 +58,7 @@ When the database is initially built it needs to be set up with the following st
     - Reporting period ids always increase as time increases
     - Family income determination should be the most recent entry by determination date for the family that is not deleted
     - For foster children, income should be set to 0 and family size should be 1.
-    - We want data as it was in the database at the end of the reporting period rather than as the data stands today
+    - The queries are made on temporal tables that return data as if the query was run against the database at the end of the given reporting period. Changes since that time will not be reflected in the results.
       - The end of the funding period for purposes of the timing of the snapshot will be the beginning of the next month
       - For backfilling data this approach does not work because data wasn't in the DB for some of these periods. March 8th 
       will be the date that is used in this case since it was the first deadline for data submission.  
