@@ -23,6 +23,3 @@ rent as percentage of income; B25070; 10; 10; 50+%; 2,3 + 4,5,6 + 7,8,9; <15%, 1
 home value of owned/mortgaged housing units; B25075; 27; 21,22,23,24; 300k - 400k, 400k - 500k, 500k - 750k, 750k - 1m; 2,3,4,5,6,7,8,9 + 10,11,12,13,14 + 15,16,17,18 + 19,20 + 25,26,27; < 50k, 50k - 100k, 100k - 200k, 200k - 300k, 1m+
 monthly housing costs; B25104; 17; 17,16; no housing cost, 3k+; 2,3,4,5,6 + 7,8,9,10,11 + 12,13 + 14,15; < 500, 500-1000, 1k - 2k, 2k - 3k
 computers and internet; B28003; 6; 6,5; no computer, computer but no internet; 3,4; computer with internet
-median income by family size;B19119; 7; 1; median income by household; 2,3,4 + 5,6,7; 2-4 family size, 4+ family size
-children under 6 ratio of income to poverty level; B17024; 14; 3; < 0.5; 4,5 + 6,7,8,9,10 + 11,12,13,14; 0.51 - 1.0, 1.01 - 2.0, > 2.0
-children under 6 by parent employment status; B23008; 13; 2,4,10,13; all categories, both parents - in labor force, only father - in labor force, only mother - in labor force; ;
