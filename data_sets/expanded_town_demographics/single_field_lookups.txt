@@ -49,3 +49,4 @@ median family income - 2 or more races: B19113G_001E
 median family income - hispanic or latinx: B19113I_001E
 housing units: B25001_001E
 median year housing unit was built: B25035_001E
+number of owned homes: B25081_002E
