@@ -9,6 +9,9 @@ State SMI numbers come from https://www.ctcare4kids.com/income-guidelines-for-ne
 POVERTY_PROPORTION_FIELD = 'B17024'
 HOUSEHOLD_SIZE_FIELD = 'B11016'
 STATE_CODE = '09'
+
+# Estimated in smi_to_poverty notebook, this is the approximate level relative to the poverty line the is equivalent to 75% SMI
+# The weighted average of the 75% SMI / Poverty by household size is 3.44
 LAST_BUCKET = 3.0
 PROPORTION_OF_LAST_BUCKET = .44
 
@@ -27,7 +30,7 @@ def get_household_size_buckets():
 def get_under_6_full_poverty_levels():
 
     # 3 and 15 here are the upper and lower bounds for the range of fields from the census for relative income to poverty
-    # for under 6 year olds
+    # for under 6 year olds. This does not include the aggregate and goes from Under .5 of Poverty to 5x poverty and above
     under_6_fields = [f'{POVERTY_PROPORTION_FIELD}_{str(x).zfill(3)}E' for x in range(3, 15)]
     under_6_initial_pull_state = censusdata.download('acs5', 2019, censusdata.censusgeo([('state', STATE_CODE)]), under_6_fields)
     under_6_initial_pull_towns = censusdata.download('acs5', 2019, censusdata.censusgeo([('state', STATE_CODE), ('county', '*'), ('county subdivision', '*')]), under_6_fields)
