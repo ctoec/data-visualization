@@ -1,0 +1,170 @@
+town,min_full_estimate,mid_full_estimate,max_full_estimate
+Westbrook,34,34.0,34
+East Haddam,95,150.88,222
+Old Saybrook,134,168.76,213
+Durham,150,150.0,150
+Deep River,44,49.28,56
+Clinton,301,336.2,381
+Portland,84,115.24,155
+Haddam,135,157.0,185
+Killingworth,26,26.0,26
+Middletown,1191,1338.84,1527
+Middlefield,46,64.48,88
+Beacon Falls,86,107.56,135
+West Haven,2262,2435.36,2656
+Bethany,55,55.0,55
+East Haven,703,798.92,921
+Guilford,195,239.0,295
+Madison,134,194.72,272
+Middlebury,18,76.96000000000001,152
+Wolcott,381,454.04,547
+Wallingford,583,833.36,1152
+Woodbridge,149,154.28,161
+Ansonia,482,568.24,678
+Orange,159,201.68,256
+Oxford,59,106.96000000000001,168
+Branford,507,607.76,736
+Derby,678,684.6,693
+New Haven,7732,7948.48,8224
+Plainville,316,444.91999999999996,609
+Simsbury,193,286.28,405
+West Hartford,904,1078.24,1300
+Windsor,569,709.36,888
+East Windsor,327,327.0,327
+New Britain,4378,4565.44,4804
+Bristol,1577,1754.76,1981
+Southington,592,693.2,822
+East Granby,20,35.84,56
+Avon,135,203.64,291
+Berlin,304,340.08,386
+Burlington,70,103.88,147
+Hartland,7,19.759999999999998,36
+East Hartford,2650,2737.56,2849
+Hartford,7887,8092.92,8355
+Bloomfield,384,447.36,528
+Glastonbury,146,250.72,384
+Marlborough,280,280.0,280
+Rocky Hill,176,223.07999999999998,283
+Chaplin,55,65.56,79
+Plainfield,690,744.56,814
+Thompson,227,290.36,371
+Woodstock,146,166.68,193
+Scotland,16,19.96,25
+Pomfret,0,0.0,0
+Windham,1263,1310.08,1370
+Ashford,268,280.32,296
+Brooklyn,310,315.72,323
+Killingly,618,791.36,1012
+Putnam,101,119.03999999999999,142
+Chester,0,25.080000000000002,57
+Essex,31,38.04,47
+East Hampton,166,203.4,251
+Cromwell,131,174.56,230
+Andover,30,49.8,75
+Coventry,162,198.07999999999998,244
+Bolton,10,28.04,51
+Tolland,186,228.24,282
+Somers,78,152.8,248
+Vernon,1250,1351.2,1480
+Union,15,17.2,20
+Columbia,52,95.56,151
+Ellington,170,247.88,347
+Mansfield,224,249.96,283
+Stafford,227,248.56,276
+Willington,37,73.52000000000001,120
+Greenwich,900,944.0,1000
+Redding,49,72.76,103
+New Canaan,82,82.0,82
+New Fairfield,60,118.08,192
+Newtown,182,256.36,351
+Weston,34,56.0,84
+Easton,48,54.6,63
+Bridgeport,9154,9421.52,9762
+Darien,38,69.24,109
+Ridgefield,277,289.76,306
+Shelton,433,508.68,605
+Westport,125,161.52,208
+Danbury,3863,4104.12,4411
+Sherman,39,42.08,46
+Brookfield,120,241.44,396
+Trumbull,309,404.48,526
+Southbury,103,151.4,213
+Cheshire,287,431.76,616
+Hamden,1160,1388.3600000000001,1679
+North Branford,250,297.52,358
+Seymour,251,328.88,428
+Waterbury,6694,7158.2,7749
+North Haven,240,277.84000000000003,326
+Milford,728,901.8,1123
+Harwinton,37,37.0,37
+Morris,57,62.28,69
+Plymouth,158,228.84,319
+Sharon,70,70.0,70
+Thomaston,143,161.48,185
+Salisbury,91,91.0,91
+Torrington,1186,1313.16,1475
+Cornwall,3,8.719999999999999,16
+New Milford,464,555.08,671
+Watertown,307,374.76,461
+Colebrook,6,13.04,22
+Goshen,28,35.92,46
+Woodbury,111,146.2,191
+Bridgewater,3,6.52,11
+Canaan,17,27.560000000000002,41
+Litchfield,177,197.68,224
+Warren,5,8.08,12
+Norfolk,57,70.2,87
+North Canaan,71,102.24,142
+Roxbury,32,43.0,57
+New Hartford,30,52.44,81
+Washington,74,85.0,99
+Canton,76,112.96000000000001,160
+Enfield,1182,1405.52,1690
+Newington,528,642.84,789
+Eastford,28,40.32,56
+Hampton,28,31.08,35
+Colchester,279,331.36,398
+New London,1126,1203.44,1302
+Bozrah,69,72.52,77
+Franklin,17,22.72,30
+Lebanon,62,77.4,97
+Waterford,444,519.24,615
+North Stonington,173,193.24,219
+Stonington,275,322.52,383
+Norwich,1649,1872.52,2157
+East Lyme,173,229.32,301
+Voluntown,35,48.64,66
+Lisbon,75,75.0,75
+Montville,341,380.16,430
+Lyme,47,62.84,83
+Old Lyme,49,69.24,95
+Naugatuck,1319,1454.52,1627
+Prospect,83,107.64,139
+Meriden,2561,2871.2,3266
+South Windsor,97,189.4,307
+Windsor Locks,300,382.72,488
+Farmington,369,410.8,464
+Wethersfield,329,413.04,520
+Granby,144,237.28,356
+Manchester,2370,2768.2,3275
+Suffield,113,147.76,192
+Canterbury,62,81.8,107
+Hebron,128,132.4,138
+Monroe,146,220.8,316
+Stratford,1165,1382.8,1660
+Stamford,4213,4604.16,5102
+Wilton,100,104.4,110
+Fairfield,426,566.36,745
+Bethel,316,385.52,474
+Norwalk,2626,2772.52,2959
+Bethlehem,92,106.52,125
+Kent,9,35.84,70
+Winchester,260,260.0,260
+Barkhamsted,62,75.64,93
+Sterling,59,114.44,185
+Ledyard,678,732.56,802
+Preston,249,264.4,284
+Salem,18,25.92,36
+Sprague,191,194.96,200
+Groton,1792,1997.92,2260
+Griswold,385,422.84000000000003,471
