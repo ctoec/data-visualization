@@ -16,8 +16,11 @@ select
     rp.periodStart as reporting_period_start,
     rp.periodEnd as reporting_period_end,
     CASE WHEN child.sasid is NULL then 0 ELSE 1 END as has_sasid,
-
- -- These can be added in as needed, PII is not needed for current iterations
+       fs.id as funding_space_id,
+       rp_first.period as first_reporting_period,
+       rp_last.period as last_reporting_period,
+       family_det_temp.family_determination_id as family_det_id,
+      -- These can be added in as needed, PII is not needed for current iterations
 --     child.lastName as last_name,
 --     child.middleName as middle_name,
 --     child.firstName as first_name,
@@ -55,15 +58,17 @@ select
     CASE WHEN child.foster = 'Yes' THEN 0
          ELSE family_det_temp.income
          END as family_income,
-    family_det_temp.incomeNotDisclosed as family_income_not_disclosed,
-    family_det_temp.family_determination_id,
-    family_det_temp.rn
+    family_det_temp.incomeNotDisclosed as family_income_not_disclosed
     from dbo.funding
         FOR SYSTEM_TIME AS OF :active_data_date as f
     inner join dbo.funding_space
         FOR SYSTEM_TIME AS OF :active_data_date as fs on f.fundingSpaceId = fs.id
+    inner join dbo.reporting_period as rp_first on f.firstReportingPeriodId = rp_first.id and fs.source = rp_first.type
+    inner join dbo.reporting_period as rp on fs.source = rp.type and rp.period = :period
+    left outer join dbo.reporting_period as rp_last on f.lastReportingPeriodId = rp_last.ID and fs.source = rp_last.type
     inner join dbo.enrollment
-        FOR SYSTEM_TIME AS OF :active_data_date as enrollment on enrollment.Id = f.enrollmentId
+        FOR SYSTEM_TIME AS OF :active_data_date as enrollment on enrollment.Id = f.enrollmentId and
+                                                            (enrollment.[exit] is null or enrollment.[exit] > rp.periodStart)
     inner join dbo.site
         FOR SYSTEM_TIME AS OF :active_data_date as site on site.Id = enrollment.siteId
     inner join dbo.organization
@@ -72,9 +77,6 @@ select
         FOR SYSTEM_TIME AS OF :active_data_date as child ON child.Id = enrollment.childId
     inner join dbo.family
         FOR SYSTEM_TIME AS OF :active_data_date AS family on child.familyId = family.id
-    inner join dbo.reporting_period as rp_first on f.firstReportingPeriodId = rp_first.id and fs.source = rp_first.type
-    left outer join dbo.reporting_period as rp_last on f.lastReportingPeriodId = rp_last.ID and fs.source = rp_last.type
-    inner join dbo.reporting_period as rp on rp.period = :period and fs.source = rp.type
     left join (
         select
           id as family_determination_id,
@@ -92,9 +94,9 @@ select
          FOR SYSTEM_TIME AS OF :active_data_date
          where deletedDate is null) as family_det_temp
       on family_det_temp.familyId = family.Id and rn = 1
+where rp_first.period <= :period and (rp_last.period is null or rp_last.period >= :period)
+AND f.deletedDate is NULL AND
+    enrollment.deletedDate IS NULL and
+    child.deletedDate is NULL and
+    family.deletedDate is NULL
 
-WHERE (rp_first.period <= rp.period AND (rp_last.period >= rp.period OR rp_last.period IS NULL)) AND
-      f.deletedDate is NULL and
-      child.deletedDate is NULL and
-      enrollment.deletedDate is NULL and
-      family.deletedDate is NULL
