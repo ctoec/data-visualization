@@ -1,5 +1,6 @@
 select
     convert(nvarchar(100), child.Id) as source_child_id,
+    f.Id as funding_id,
     organization.Id as organization_id,
     organization.providerName as organization_name,
     site.Id as site_id,
@@ -37,6 +38,7 @@ select
 	child.gender,
     child.dualLanguageLearner as dual_language_learner,
     child.receivesDisabilityServices as recieves_disability_services,
+    family.id as family_id,
     family.town as family_town,
     family.state as family_state,
     family.zipCode as family_zip_code,
@@ -53,7 +55,9 @@ select
     CASE WHEN child.foster = 'Yes' THEN 0
          ELSE family_det_temp.income
          END as family_income,
-    family_det_temp.incomeNotDisclosed as family_income_not_disclosed
+    family_det_temp.incomeNotDisclosed as family_income_not_disclosed,
+    family_det_temp.family_determination_id,
+    family_det_temp.rn
     from dbo.funding
         FOR SYSTEM_TIME AS OF :active_data_date as f
     inner join dbo.funding_space
@@ -68,10 +72,9 @@ select
         FOR SYSTEM_TIME AS OF :active_data_date as child ON child.Id = enrollment.childId
     inner join dbo.family
         FOR SYSTEM_TIME AS OF :active_data_date AS family on child.familyId = family.id
-    inner join dbo.reporting_period as rp on
-        f.firstReportingPeriodId <= rp.Id and
-        (f.lastReportingPeriodId is null or f.lastReportingPeriodId >= rp.Id) and
-        fs.source = rp.type
+    inner join dbo.reporting_period as rp_first on f.firstReportingPeriodId = rp_first.id and fs.source = rp_first.type
+    left outer join dbo.reporting_period as rp_last on f.lastReportingPeriodId = rp_last.ID and fs.source = rp_last.type
+    inner join dbo.reporting_period as rp on rp.period = :period and fs.source = rp.type
     left join (
         select
           id as family_determination_id,
@@ -90,7 +93,7 @@ select
          where deletedDate is null) as family_det_temp
       on family_det_temp.familyId = family.Id and rn = 1
 
-WHERE rp.period = :period and
+WHERE (rp_first.period <= rp.period AND (rp_last.period >= rp.period OR rp_last.period IS NULL)) AND
       f.deletedDate is NULL and
       child.deletedDate is NULL and
       enrollment.deletedDate is NULL and
