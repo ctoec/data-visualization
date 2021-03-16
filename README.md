@@ -55,7 +55,6 @@ When the database is initially built it needs to be set up with the following st
   - A config file with host, database, user and password named config.ini should be in the `ece_data` folder. A template 
   is provided in `ece_data/config_template.ini`.
   - _ECE Assumptions_    
-    - Reporting period ids always increase as time increases
     - Family income determination should be the most recent entry by determination date for the family that is not deleted
     - For foster children, income should be set to 0 and family size should be 1.
     - The queries are made on temporal tables that return data as if the query was run against the database at the end of the given reporting period. Changes since that time will not be reflected in the results.
