@@ -52,6 +52,8 @@ select
     enrollment.ageGroup as enrollment_age_group,
     enrollment.entry as enrollment_entry,
     enrollment.[exit] as enrollment_exit,
+    --TODO
+    -- Validate that this is actual logic that OEC still uses
     CASE WHEN child.foster = 'Yes' THEN 1
          ELSE family_det_temp.numberOfPeople
          END as family_size,
@@ -60,23 +62,30 @@ select
          END as family_income,
     family_det_temp.incomeNotDisclosed as family_income_not_disclosed
     from dbo.funding
-        FOR SYSTEM_TIME AS OF :active_data_date as f
+        FOR SYSTEM_TIME AS OF :active_data_date
+        as f
     inner join dbo.funding_space
-        FOR SYSTEM_TIME AS OF :active_data_date as fs on f.fundingSpaceId = fs.id
+        FOR SYSTEM_TIME AS OF :active_data_date
+        as fs on f.fundingSpaceId = fs.id
     inner join dbo.reporting_period as rp_first on f.firstReportingPeriodId = rp_first.id and fs.source = rp_first.type
     inner join dbo.reporting_period as rp on fs.source = rp.type and rp.period = :period
     left outer join dbo.reporting_period as rp_last on f.lastReportingPeriodId = rp_last.ID and fs.source = rp_last.type
     inner join dbo.enrollment
-        FOR SYSTEM_TIME AS OF :active_data_date as enrollment on enrollment.Id = f.enrollmentId and
+        FOR SYSTEM_TIME AS OF :active_data_date
+        as enrollment on enrollment.Id = f.enrollmentId and
                                                             (enrollment.[exit] is null or enrollment.[exit] > rp.periodStart)
     inner join dbo.site
-        FOR SYSTEM_TIME AS OF :active_data_date as site on site.Id = enrollment.siteId
+        FOR SYSTEM_TIME AS OF :active_data_date
+        as site on site.Id = enrollment.siteId
     inner join dbo.organization
-        FOR SYSTEM_TIME AS OF :active_data_date as organization on site.organizationId = organization.Id
+        FOR SYSTEM_TIME AS OF :active_data_date
+        as organization on site.organizationId = organization.Id
     inner join dbo.child
-        FOR SYSTEM_TIME AS OF :active_data_date as child ON child.Id = enrollment.childId
+        FOR SYSTEM_TIME AS OF :active_data_date
+        as child ON child.Id = enrollment.childId
     inner join dbo.family
-        FOR SYSTEM_TIME AS OF :active_data_date AS family on child.familyId = family.id
+        FOR SYSTEM_TIME AS OF :active_data_date
+        AS family on child.familyId = family.id
     left join (
         select
           id as family_determination_id,
