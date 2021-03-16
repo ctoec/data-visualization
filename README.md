@@ -48,7 +48,20 @@ When the database is initially built it needs to be set up with the following st
   - Stored in bucket referenced in [data retention policy.](https://docs.google.com/document/d/1fBBjWPdC9w8YUlCT47s9-G9jzy0vOQ9ejONviXkkCxI/edit#heading=h.3aiijg3fhho3)
   - Copy sheet `ECE Feb20 Data Collect_All_e` and paste as tab separated CSV (this should be the default) into `src/data_integration/july_2020/data/ece_feb_20_data_collection.csv`.
   - To clean data: go to `src/data_integration/july_2020/` and run `python3 clean_data.py` or `python clean_data.py` depending on your machine's binary for Python 3.
-  
+- ECE Reporter
+  - Reports pulled from ECE reporter on a monthly basis
+  - Initial backfill is also pulled
+  - Data is extracted from ECE reporter and saved to a CSV.  
+  - A config file with host, database, user and password named config.ini should be in the `ece_data` folder. A template 
+  is provided in `ece_data/config_template.ini`.
+  - _ECE Assumptions_    
+    - Family income determination should be the most recent entry by determination date for the family that is not deleted
+    - For foster children, income should be set to 0 and family size should be 1.
+    - The queries are made on temporal tables that return data as if the query was run against the database at the end of the given reporting period. Changes since that time will not be reflected in the results.
+      - For backfilling data this approach does not work because data wasn't in the DB for some of these periods. March 8th 
+      will be the date that is used in this case since it was the first deadline for data submission.  
+  - C4K data is not included 
+   
 ### Created tables
 
 The clean_data script above will create two files in the `src/data_integration/july_2020/data` folder to be uploaded to Superset; 
