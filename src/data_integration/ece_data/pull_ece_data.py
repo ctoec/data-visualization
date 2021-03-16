@@ -20,7 +20,7 @@ PORT_KEY = 'port'
 
 START_DATE = '2020-07-01'
 END_DATE = '2021-02-01'
-BACKFILL_DATA_ACTIVE_DATA = '2021-03-08'
+BACKFILL_DATA_ACTIVE_DATA = '2021-03-15'
 
 
 def get_beginning_and_end_of_month(date: datetime.date) -> (datetime.date, datetime.date):
