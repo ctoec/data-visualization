@@ -23,3 +23,15 @@ rent as percentage of income; B25070; 10; 10; 50+%; 2,3 + 4,5,6 + 7,8,9; <15%, 1
 home value of owned/mortgaged housing units; B25075; 27; 21,22,23,24; 300k - 400k, 400k - 500k, 500k - 750k, 750k - 1m; 2,3,4,5,6,7,8,9 + 10,11,12,13,14 + 15,16,17,18 + 19,20 + 25,26,27; < 50k, 50k - 100k, 100k - 200k, 200k - 300k, 1m+
 monthly housing costs; B25104; 17; 17,16; no housing cost, 3k+; 2,3,4,5,6 + 7,8,9,10,11 + 12,13 + 14,15; < 500, 500-1000, 1k - 2k, 2k - 3k
 computers and internet; B28003; 6; 6,5; no computer, computer but no internet; 3,4; computer with internet
+population at age; B01001; 49; ; ; 3,4,5,6,27,28,29,30 + 7,8,9,10,11,12,13,14,15,31,32,33,34,35,36,37,38,39 + 16,17,18,19,40,41,42,43 + 20,21,22,23,24,25,44,45,46,47,48,49; < 18 years, 18 - 49 years, 50 - 64 years, 65+ years
+nativity and citizenship; B05002; 21; 3,4,9,14,21; born in CT, born in other state, born outside US, foreign-born naturalized, foreign-born non-citizen; ;
+geographic mobility; B07008; 31; 7,13,19,25,31; no moving, within county, from other county in CT, from other state, from abroad; ;
+work location; B08007; 5; 3,4,5; in county of residence, outside county of residence, outside CT; ;
+household type of homes with children; B11012; 15; 3,6,10,15; married, cohabitating couple, single female, single male; ;
+marital status; B12503; 11; ; ; 3,8 + 5,10 + 6,11; never married, divorced in last year, still married
+school enrollment; B14001; 10; 3,4,5,6,7,8,9,10; nursery/pre-school, kindergarten, grades 1-4, grades 5-8, high school, college, grad school, not enrolled; ;
+school type for high school and below; B14002; 42; ; ; 5,8,11,14,17,29,32,35,38,41 + 6,9,12,15,18,30,33,36,39,42; public school, private school
+house heating fuel; B25040; 10; 4,5,6,7,8,9,10; electric, oil, coal, wood, solar, other, no fuel used; 2,3; gas
+bedrooms in house; B25041; 7; 2,3,4,5,6,7; none, 1,2,3,4,5+; ;
+health insurance coverage; B27001; 57; ; ; 4,7,10,13,16,19,22,25,28,32,35,38,41,44,47,50,53,56 + 8,11,14,17,20,23,26,29,33,36,39,42,45,48,51,54,57; with coverage, without coverage
+ 
