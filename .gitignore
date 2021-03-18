@@ -10,5 +10,6 @@ venv/
 src/data_integration/census_data/data/
 src/data_integration/unmet_needs/data/
 src/data_integration/ece_data/data/
+src/final_data
 
 src/data_integration/ece_data/config.ini

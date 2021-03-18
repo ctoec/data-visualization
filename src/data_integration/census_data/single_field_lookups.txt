@@ -1,52 +1,52 @@
-# FORMAT
-# Supply each field you want on a single line of this file.
-# Use the form:
-#	'name of field': [tableId]_[uniqueId].
-# No quotes are needed around the field name, nor brackets around
-# the identifiers.
+#_FORMAT
+#_Supply_each_field_you_want_on_a_single_line_of_this_file.
+#_Use_the_form:
+#	'name_of_field':_[tableId]_[uniqueId].
+#_No_quotes_are_needed_around_the_field_name,_norBrackets_around
+#_the_identifiers.
 
-total population: B01003_001E
-black or african american: B02009_001E
-american indian and alaska native: B02010_001E
-asian: B02011_001E
-native hawaiian and other pacific islander: B02012_001E
-other race: B02013_001E
-hispanic or latinx: B03003_003E
-male median age at first marriage: B12007_001E
-female median age at first marriage: B12007_002E
-non US citizens: B05001_006E
-multigenerational households: B11017_002E
-male mean usual hours worked: B23020_002E
-female mean usual hours worked: B23020_003E
-unemployed: B23025_007E
-gini index: B19083_001E
-male median income past 12 months: B19326_002E
-female median income past 12 months: B19326_005E
-male median earnings past 12 months: B20002_002E
-female median earnings past 12 months: B20002_003E
-receiving social security income: B19055_002E 
-receiving supplemental security income: B19056_002E
-received public assistance income: B19057_002E
-received cash public assistance or food stamps/snap: B19058_002E
-received retirement income: B19059_002E
-median household income: B19013_001E
-median household income - white: B19013A_001E
-median household income - black: B19013B_001E
-median household income - american indian / alaska native: B19013C_001E
-median household income - asian: B19013D_001E
-median household income - native hawaiian / pacific islander: B19013E_001E
-median household income - other race: B19013F_001E
-median household income - 2 or more races: B19013G_001E
-median household income - hispanic or latinx: B19013I_001E
-median family income: B19113_001E
-median family income - white: B19113A_001E
-median family income - black: B19113B_001E
-median family income - american indian / alaska native: B19113C_001E
-median family income - asian: B19113D_001E
-median family income - native hawaiian / pacific islander: B19113E_001E
-median family income - other race: B19113F_001E
-median family income - 2 or more races: B19113G_001E
-median family income - hispanic or latinx: B19113I_001E
-housing units: B25001_001E
-median year housing unit was built: B25035_001E
-number of owned homes: B25081_002E
+total_population:B01003_001E
+black_or_african_american:B02009_001E
+american_indian_and_alaska_native:B02010_001E
+asian:B02011_001E
+native_hawaiian_and_other_pacific_islander:B02012_001E
+other_race:B02013_001E
+hispanic_or_latinx:B03003_003E
+male_median_age_at_first_marriage:B12007_001E
+female_median_age_at_first_marriage:B12007_002E
+non_US_citizens:B05001_006E
+multigenerational_households:B11017_002E
+male_mean_usual_hours_worked:B23020_002E
+female_mean_usual_hours_worked:B23020_003E
+unemployed:B23025_007E
+gini_index:B19083_001E
+male_median_income_past_12_months:B19326_002E
+female_median_income_past_12_months:B19326_005E
+male_median_earnings_past_12_months:B20002_002E
+female_median_earnings_past_12_months:B20002_003E
+receiving_social_security_income:B19055_002E_
+receiving_supplemental_security_income:B19056_002E
+received_public_assistance_income:B19057_002E
+received_cash_public_assistance_or_food_stamps_snap:B19058_002E
+received_retirement_income:B19059_002E
+median_household_income:B19013_001E
+median_household_income_white:B19013A_001E
+median_household_income_black:B19013B_001E
+median_household_income_american_indian_alaska_native:B19013C_001E
+median_household_income_asian:B19013D_001E
+median_household_income_native_hawaiian_pacific_islander:B19013E_001E
+median_household_income_other_race:B19013F_001E
+median_household_income_2_or_more_races:B19013G_001E
+median_household_income_hispanic_or_latinx:B19013I_001E
+median_family_income:B19113_001E
+median_family_income_white:B19113A_001E
+median_family_income_black:B19113B_001E
+median_family_income_american_indian_alaska_native:B19113C_001E
+median_family_income_asian:B19113D_001E
+median_family_income_native_hawaiian_pacific_islander:B19113E_001E
+median_family_income_other_race:B19113F_001E
+median_family_income_2_or_more_races:B19113G_001E
+median_family_income_hispanic_or_latinx:B19113I_001E
+housing_units:B25001_001E
+median_year_housing_unit_wasBuilt:B25035_001E
+number_of_owned_homes:B25081_002E

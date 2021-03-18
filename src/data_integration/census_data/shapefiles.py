@@ -99,8 +99,6 @@ def get_geo_data_zip_file(url: str, geo_type: str, file_type: str, redownload=Fa
 
 
 if __name__ == '__main__':
-    # download_all_data()
-    town_carto = build_level_df(TOWN, CARTO)
-    town_carto.to_csv('town_data.csv', index=False)
+    download_all_data()
 
 

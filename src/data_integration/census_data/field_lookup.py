@@ -1,12 +1,12 @@
 import censusdata as cd
-import pandas as pd
 from numpy import nan
 
-TOWN_FILE = "town_data.csv"
 SINGLE_FIELD_FILE = "single_field_lookups.txt"
 COMBINATION_FIELD_FILE = "combination_field_lookups.txt"
 STATE_CODE = '09'
-OUT_FILE = "town_demographic_data.csv"
+CENSUS_FIELD_LIMIT = 50
+CENSUS_NAME_FIELD = 'NAME'
+OUT_FILE = "data/town_demographic_data.csv"
 
 
 '''
@@ -178,7 +178,33 @@ def handle_combination_fields(dat, tables, solo_fields, solo_names, combination_
             dat.drop(columns=affected_fields, inplace=True)
         
     return dat
-    
+
+
+def filter_concepts(search_term):
+    """
+    Uses census data package to more effectively search for a certain term, for use in terminal/notebooks
+    :param search_term:
+    :return: list of all metrics that have the search term in the concept
+    """
+    init_list = cd.search('acs5', 2019, 'concept', search_term)
+    concept_set = set([x[1] for x in init_list])
+    for x in concept_set:
+        print(x)
+    return init_list
+
+
+def get_code_from_concept(concept_name, init_list):
+    """
+    Gets precise code information from concept name, should be used in conjunction with filter concepts
+    :param concept_name: Precise concept name that will be exact matched
+    :param init_list: list from filter_concepts of all potential concept fields
+    :return: Tuple of code, concept and metric name
+    """
+
+    for x in init_list:
+        if x[1] == concept_name:
+            return x
+
 
 # Let's pull some data
 geo = cd.censusgeo([('state', STATE_CODE), ('county', '*'), ('county subdivision', '*')])

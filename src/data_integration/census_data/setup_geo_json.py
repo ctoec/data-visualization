@@ -1,10 +1,9 @@
 import geopandas as gpd
 import sqlalchemy
-from sqlalchemy import create_engine
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.multipolygon import MultiPolygon
 from geoalchemy2 import Geometry, WKTElement
-from shapefiles import TOWN, CARTO, build_level_df, DEFAULT_LAT_LONG_PROJ, HOUSE, SENATE
+from shapefiles import CARTO, build_level_df, DEFAULT_LAT_LONG_PROJ
 
 GEOMETRY_COL = 'geometry'
 DEFAULT_SCHEMA = 'uploaded_data'
@@ -57,33 +56,17 @@ def write_to_sql(table_name: str, geo_df: gpd.GeoDataFrame, columns: list,
     print(f"Table {table_name} loaded")
 
 
-if __name__ == '__main__':
+def load_level_table(geo_level, table_name, columns, engine, file_type=CARTO):
+    """
+    Builds a dataframe with geojson and metadata and loads it directly to the database
+    :param geo_level: level (TOWN, leg etc.)
+    :param table_name: Name to give the table in the DB
+    :param columns: Columns to keep from original census shapefile
+    :param engine: DB engine
+    :param file_type:
+    :return: None, loads table to db
+    """
 
-    # Build postgres engine
-    ## TODO
-    # Replace with calls from AWS once there is a production instance and creds
-    password = ''
-    host = ''
-    user = ''
-    db_name = ''
-    engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:5432/{db_name}')
-
-    # Create postgis extension, this will be a no-op if it already exists
-    engine.execute('CREATE EXTENSION postgis')
     # Load town data to Superset keeping data that will allow for joins to other Census and unmet needs data
-    town_geo_df = build_level_df(geo_level=TOWN, file_type=CARTO)
-    town_cols = ['NAME', 'STATEFP', 'COUNTYFP', 'COUSUBFP', 'lat', 'long']
-    write_to_sql(table_name='ct_town_geo', geo_df=town_geo_df, engine=engine, columns=town_cols)
-
-    # Load house shapefiles
-    house_geo_df = build_level_df(geo_level=HOUSE, file_type=CARTO)
-    house_cols = ['STATEFP', 'SLDLST', 'lat', 'long']
-    write_to_sql(table_name='ct_house_geo', geo_df=house_geo_df, engine=engine, columns=house_cols)
-
-    # Load senate shapefiles
-    senate_geo_df = build_level_df(geo_level=SENATE, file_type=CARTO)
-    senate_cols = ['STATEFP', 'SLDUST', 'lat', 'long']
-    write_to_sql(table_name='ct_senate_geo', geo_df=senate_geo_df, engine=engine, columns=senate_cols)
-
-
-
+    town_geo_df = build_level_df(geo_level=geo_level, file_type=file_type)
+    write_to_sql(table_name=table_name, geo_df=town_geo_df, engine=engine, columns=columns)
