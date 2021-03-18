@@ -17,13 +17,13 @@ matrices:
 - Demand col: column in demand file to use as the demand estimate
 - Demo file: file with demographic information by town
 '''
-SUPPLY_DATA_FILE = "overall_supply_and_estimated_demand_for_child_care_by_age_and_by_town.csv"
+SUPPLY_DATA_FILE = "../data_integration/unmet_needs/overall_supply_and_estimated_demand_for_child_care_by_age_and_by_town.csv"
 SUPPLY_COLS = ['Available_Spaces_for_Children_Supply_InfantsToddlers',
                 'Available_Spaces_for_Children_Supply_Preschoolers']
-DEMAND_DATA_FILE = "final_demand_by_town.csv"
+DEMAND_DATA_FILE = "../data_integration/demand_estimation/final_demand_by_town.csv"
 DEMAND_COL = "estimated_demand_by_care_availability"
 
-DEMO_FILE = "town_demographic_data_all_fields.csv"
+DEMO_FILE = "../data_integration/census_data/town_demographic_data_all_fields.csv"
 
 '''
 Selection of two response variables to have the model train on.
@@ -60,7 +60,7 @@ def generate_supply_demand_dataset(supply_fp, demand_fp, supply_cols, demand_col
     df.drop(columns=supply_cols, inplace=True)
     
     # Calculate two kinds of gaps so that we can test different responses
-    df['need_differential'] = df['childcare_supply'] - df['estimated_demand_by_care_availability']
+    df['need_differential'] = df['childcare_supply'] - df[demand_col]
     df['eligibility_differential'] = df['childcare_supply'] - df['children_eligible_for_care_services']
     total_slots = df['childcare_supply'].sum()
     total_need = df[demand_col].sum()

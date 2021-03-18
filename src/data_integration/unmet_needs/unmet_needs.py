@@ -4,19 +4,19 @@ import matplotlib.pyplot as plt
 from random import gauss, seed
 
 OVERALL_DATA_FILE = "overall_supply_and_estimated_demand_for_child_care_by_age_and_by_town.csv"
-OVERALL_DEMAND_COLS = ['Children_Needing_Care_DemandEstimated_InfantsToddlers',
-                'Children_Needing_Care_DemandEstimated_Preschoolers']
-OVERALL_SUPPLY_COLS = ['Available_Spaces_for_Children_Supply_InfantsToddlers',
-                'Available_Spaces_for_Children_Supply_Preschoolers']
-OVERALL_CONVERT_COLS = ['Children_Needing_Care_DemandEstimated_InfantsToddlers',
-                'Available_Spaces_for_Children_Supply_InfantsToddlers',
-                'Children_Needing_Care_DemandEstimated_Preschoolers',
-                'Available_Spaces_for_Children_Supply_Preschoolers']
+OVERALL_DEMAND_COLS = ['children_needing_care_demandestimated_infantstoddlers',
+                'children_needing_care_demandestimated_preschoolers']
+OVERALL_SUPPLY_COLS = ['available_spaces_for_children_supply_infantstoddlers',
+                'available_spaces_for_children_supply_preschoolers']
+OVERALL_CONVERT_COLS = ['children_needing_care_demandestimated_infantstoddlers',
+                'available_spaces_for_children_supply_infantstoddlers',
+                'children_needing_care_demandestimated_preschoolers',
+                'available_spaces_for_children_supply_preschoolers']
 SCHOOL_DATA_FILE = "town_level_public_school_preschool_supply_and_demand.csv"
-SCHOOL_DEMAND_COLS = ['Total_Preschoolers_Needing_Care']
-SCHOOL_SUPPLY_COLS = ['Total#_Preschool_Slots_Public/Charter/Magnet_School_Funded_IncludesOverlaps']
-SCHOOL_CONVERT_COLS = ['Total_Preschoolers_Needing_Care',
-                       'Total#_Preschool_Slots_Public/Charter/Magnet_School_Funded_IncludesOverlaps']
+SCHOOL_DEMAND_COLS = ['total_preschoolers_needing_care']
+SCHOOL_SUPPLY_COLS = ['total#_preschool_slots_public/charter/magnet_school_funded_includesoverlaps']
+SCHOOL_CONVERT_COLS = ['total_preschoolers_needing_care',
+                       'total#_preschool_slots_public/charter/magnet_school_funded_includesoverlaps']
 
 
 # Impute missing supply rows with column means
@@ -35,10 +35,13 @@ def impute_corrected_demand_estimates(df, demand_cols, supply_cols):
             age_group = col.split('_')[-1]
         else:
             matching_supply_col = supply_cols[0]
-            age_group = 'Preschool'
+            age_group = 'preschool'
         rows_with_estimates = df.loc[(df[col] == 0) | (df[col] == 5) | (df[col].isna()), matching_supply_col]
         mu = rows_with_estimates.mean()
         sigma = rows_with_estimates.std(ddof=0)
+        
+        # UCONN always used 5 as their guess, so that's our signal for a row to
+        # replace with an imputation
         new_values = df.loc[(df[col] == 0) | (df[col] == 5) | (df[col].isna()), col].apply(lambda x: max(5, int(gauss(mu, sigma))))
         df["is_imputed_"+age_group] = 0
         df.loc[(df[col] == 0) | (df[col] == 5) | (df[col].isna()), "is_imputed_" + age_group] = 1
@@ -55,7 +58,7 @@ def calculate_expectation_metric(df, demand_cols, supply_cols):
             age_group = col.split('_')[-1]
         else:
             matching_supply_col = supply_cols[0]
-            age_group = 'Preschool'
+            age_group = 'preschool'
         total_slots = df[matching_supply_col].sum()
         total_need = df[col].sum()
         expected_capacity = total_slots / float(total_need)
@@ -118,10 +121,10 @@ def analyze_overall_data(n, show_worst=True, exclude_imputations=True):
     df, rows_with_estimates = impute_corrected_demand_estimates(df, OVERALL_DEMAND_COLS, OVERALL_SUPPLY_COLS)
     df = calculate_expectation_metric(df, OVERALL_DEMAND_COLS, OVERALL_SUPPLY_COLS)
 #     df.to_csv("overall_supply_demand_by_town_with_cae.csv")
-    plot_expectation(df, n, 'Infant/Toddler', "City", "Children_Needing_Care_DemandEstimated_InfantsToddlers", "Available_Spaces_for_Children_Supply_InfantsToddlers", "capacity_above_expectation_InfantsToddlers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
-    plot_need_and_capacity(df, n, 'Infant/Toddler', "City", "Children_Needing_Care_DemandEstimated_InfantsToddlers", "Available_Spaces_for_Children_Supply_InfantsToddlers", "capacity_above_expectation_InfantsToddlers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
-    plot_expectation(df, n, 'Preschooler', "City", "Children_Needing_Care_DemandEstimated_InfantsToddlers", "Available_Spaces_for_Children_Supply_InfantsToddlers", "capacity_above_expectation_Preschoolers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
-    plot_need_and_capacity(df, n, 'Preschooler', "City", "Children_Needing_Care_DemandEstimated_InfantsToddlers", "Available_Spaces_for_Children_Supply_InfantsToddlers", "capacity_above_expectation_Preschoolers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
+    plot_expectation(df, n, 'infant/toddler', "city", "children_needing_care_demandestimated_infantstoddlers", "available_spaces_for_children_supply_infantstoddlers", "capacity_above_expectation_infantstoddlers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
+    plot_need_and_capacity(df, n, 'infant/toddler', "city", "children_needing_care_demandestimated_infantstoddlers", "available_spaces_for_children_supply_infantstoddlers", "capacity_above_expectation_infantstoddlers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
+    plot_expectation(df, n, 'preschooler', "city", "children_needing_care_demandestimated_infantstoddlers", "available_spaces_for_children_supply_infantstoddlers", "capacity_above_expectation_preschoolers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
+    plot_need_and_capacity(df, n, 'preschooler', "city", "children_needing_care_demandestimated_infantstoddlers", "available_spaces_for_children_supply_infantstoddlers", "capacity_above_expectation_preschoolers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
     
 def analyze_school_data(n, show_worst=True, exclude_imputations=True):
     df = pd.read_csv(SCHOOL_DATA_FILE, dtype="object")[1:]
@@ -130,8 +133,8 @@ def analyze_school_data(n, show_worst=True, exclude_imputations=True):
     df, rows_with_estimates = impute_corrected_demand_estimates(df, SCHOOL_DEMAND_COLS, SCHOOL_SUPPLY_COLS)
 #     df = calculate_expectation_metric(df, SCHOOL_DEMAND_COLS, SCHOOL_SUPPLY_COLS)
     df.to_csv("preschool_supply_demand_by_town_with_cae.csv")
-    plot_expectation(df, n, 'Preschooler', "City", SCHOOL_DEMAND_COLS[0], SCHOOL_SUPPLY_COLS[0], "capacity_above_expectation_Preschool", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
-    plot_need_and_capacity(df, n, 'Preschooler', "City", SCHOOL_DEMAND_COLS[0], SCHOOL_SUPPLY_COLS[0], "capacity_above_expectation_Preschool", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
+    plot_expectation(df, n, 'preschooler', "city", SCHOOL_DEMAND_COLS[0], SCHOOL_SUPPLY_COLS[0], "capacity_above_expectation_Preschool", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
+    plot_need_and_capacity(df, n, 'preschooler', "city", SCHOOL_DEMAND_COLS[0], SCHOOL_SUPPLY_COLS[0], "capacity_above_expectation_Preschool", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
 
 
 #Fix random seed for replicability

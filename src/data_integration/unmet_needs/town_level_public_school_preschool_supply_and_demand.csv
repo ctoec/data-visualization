@@ -1,171 +1,171 @@
-City,Total_Preschoolers_Needing_Care,Total#_Preschool_Slots_Public/Charter/Magnet_School_Funded_IncludesOverlaps,#Needed_to_Expand_Public_Preschool_to_Meet_100%_Demand_#NeedingCare_CurrentPublicPreschool
-Total,"69,410","18,207","51,203"
-Andover,5,32,-27
-Ansonia,388,118,270
-Ashford,5,48,-43
-Avon,234,197,37
-Barkhamsted,5,28,-23
-Beacon Falls,5,9,-4
-Berlin,434,57,377
-Bethany,5,11,-6
-Bethel,322,115,207
-Bethlehem,5,0,5
-Bloomfield,289,440,-151
-Bolton,5,10,-5
-Bozrah,5,25,-20
-Branford,366,41,325
-Bridgeport,3942,1089,"2,853"
-Bridgewater,5,0,5
-Bristol,1344,323,"1,021"
-Brookfield,272,40,232
-Brooklyn,5,117,-112
-Burlington,141,,121
-Canaan,5,16,-11
-Canterbury,5,55,-50
-Canton,5,27,-22
-Chaplin,5,33,-28
-Cheshire,462,68,394
-Chester,5,0,5
-Clinton,296,64,232
-Colchester,309,91,218
-Colebrook,5,0,5
-Columbia,5,26,-21
-Cornwall,13,0,13
-Coventry,5,80,-75
-Cromwell,298,32,266
-Danbury,1594,280,"1,314"
-Darien,602,130,472
-Deep River,5,0,5
-Derby,282,30,252
-Durham,5,0,5
-East Granby,5,0,5
-East Haddam,214,16,198
-East Hampton,390,47,343
-East Hartford,1012,522,490
-East Haven,497,144,353
-East Lyme,323,59,264
-East Windsor,5,53,-48
-Eastford,5,17,-12
-Easton,67,24,43
-Ellington,346,50,296
-Enfield,817,96,721
-Essex,5,55,-50
-Fairfield,1415,79,"1,336"
-Farmington,400,125,275
-Franklin,5,21,-16
-Glastonbury,816,124,692
-Goshen,5,0,5
-Granby,5,38,-33
-Greenwich,1926,179,"1,747"
-Griswold,317,208,109
-Groton,1006,303,703
-Guilford,363,36,327
-Haddam,5,20,-15
-Hamden,1280,187,"1,093"
-Hampton,5,11,-6
-Hartford,3518,1317,"2,201"
-Hartland,5,15,-10
-Harwinton,5,0,5
-Hebron,5,80,-75
-Kent,5,16,-11
-Killingly,369,191,178
-Killingworth,5,0,5
-Lebanon,5,46,-41
-Ledyard,292,42,250
-Lisbon,5,32,-27
-Litchfield,101,39,62
-Lyme,5,0,5
-Madison,323,45,278
-Manchester,1259,208,"1,051"
-Mansfield,234,108,126
-Marlborough,5,10,-5
-Meriden,1537,45,"1,492"
-Middlebury,169,25,144
-Middlefield,5,0,5
-Middletown,828,145,683
-Milford,990,164,826
-Monroe,401,41,360
-Montville,365,37,328
-Morris,5,0,5
-Naugatuck,805,120,685
-New Britain,1451,502,949
-New Canaan,391,41,350
-New Fairfield,292,144,148
-New Hartford,5,60,-55
-New Haven,3326,1908,"1,418"
-New London,585,87,498
-New Milford,529,120,409
-Newington,498,101,397
-Newtown,507,64,443
-Norfolk,22,17,5
-North Branford,5,14,-9
-North Canaan,5,,5
-North Haven,458,63,395
-North Stonington,5,30,-25
-Norwalk,1483,305,"1,178"
-Norwich,849,338,511
-Old Lyme,107,48,59
-Old Saybrook,184,40,144
-Orange,306,48,258
-Oxford,278,19,259
-Plainfield,371,154,217
-Plainville,360,87,273
-Plymouth,278,60,218
-Pomfret,5,16,-11
-Portland,5,30,-25
-Preston,5,31,-26
-Prospect,5,44,-39
-Putnam,161,98,63
-Redding,164,51,113
-Ridgefield,539,60,479
-Rocky Hill,337,180,157
-Roxbury,5,0,5
-Salem,5,16,-11
-Salisbury,80,0,80
-Scotland,5,18,-13
-Seymour,329,0,329
-Sharon,5,7,-2
-Shelton,607,59,548
-Sherman,5,22,-17
-Simsbury,426,51,375
-Somers,224,23,201
-South Windsor,430,108,322
-Southbury,478,0,478
-Southington,922,104,818
-Sprague,5,35,-30
-Stafford,249,121,128
-Stamford,3033,188,"2,845"
-Sterling,5,35,-30
-Stonington,289,31,258
-Stratford,1072,153,919
-Suffield,229,68,161
-Thomaston,5,28,-23
-Thompson,223,0,223
-Tolland,221,81,140
-Torrington,738,99,639
-Trumbull,783,305,478
-Union,5,9,-4
-Vernon,559,162,397
-Voluntown,5,44,-39
-Wallingford,867,189,678
-Warren,25,0,25
-Washington,5,0,5
-Waterbury,3034,710,"2,324"
-Waterford,312,697,-385
-Watertown,417,73,344
-West Hartford,1505,298,"1,207"
-West Haven,1029,131,898
-Westbrook,5,38,-33
-Weston,234,25,209
-Westport,471,56,415
-Wethersfield,447,141,306
-Willington,5,19,-14
-Wilton,494,55,439
-Winchester,164,0,164
-Windham,636,240,396
-Windsor Locks,613,77,536
-Windsor,5,0,5
-Wolcott,301,50,251
-Woodbridge,5,20,-15
-Woodbury,204,0,204
-Woodstock,5,69,-64
+city,total_preschoolers_needing_care,total#_preschool_slots_public/charter/magnet_school_funded_includesoverlaps,#needed_to_expand_public_preschool_to_meet_100%_demand_#needingcare_currentpublicpreschool,,,,,,,,,,,,,,,,,
+Total,"69,410","18,207","51,203",,,,,,,,,,,,,,,,,
+Andover,5,32,-27,,,,,,,,,,,,,,,,,
+Ansonia,388,118,270,,,,,,,,,,,,,,,,,
+Ashford,5,48,-43,,,,,,,,,,,,,,,,,
+Avon,234,197,37,,,,,,,,,,,,,,,,,
+Barkhamsted,5,28,-23,,,,,,,,,,,,,,,,,
+Beacon Falls,5,9,-4,,,,,,,,,,,,,,,,,
+Berlin,434,57,377,,,,,,,,,,,,,,,,,
+Bethany,5,11,-6,,,,,,,,,,,,,,,,,
+Bethel,322,115,207,,,,,,,,,,,,,,,,,
+Bethlehem,5,0,5,,,,,,,,,,,,,,,,,
+Bloomfield,289,440,-151,,,,,,,,,,,,,,,,,
+Bolton,5,10,-5,,,,,,,,,,,,,,,,,
+Bozrah,5,25,-20,,,,,,,,,,,,,,,,,
+Branford,366,41,325,,,,,,,,,,,,,,,,,
+Bridgeport,3942,1089,"2,853",,,,,,,,,,,,,,,,,
+Bridgewater,5,0,5,,,,,,,,,,,,,,,,,
+Bristol,1344,323,"1,021",,,,,,,,,,,,,,,,,
+Brookfield,272,40,232,,,,,,,,,,,,,,,,,
+Brooklyn,5,117,-112,,,,,,,,,,,,,,,,,
+Burlington,141,,121,,,,,,,,,,,,,,,,,
+Canaan,5,16,-11,,,,,,,,,,,,,,,,,
+Canterbury,5,55,-50,,,,,,,,,,,,,,,,,
+Canton,5,27,-22,,,,,,,,,,,,,,,,,
+Chaplin,5,33,-28,,,,,,,,,,,,,,,,,
+Cheshire,462,68,394,,,,,,,,,,,,,,,,,
+Chester,5,0,5,,,,,,,,,,,,,,,,,
+Clinton,296,64,232,,,,,,,,,,,,,,,,,
+Colchester,309,91,218,,,,,,,,,,,,,,,,,
+Colebrook,5,0,5,,,,,,,,,,,,,,,,,
+Columbia,5,26,-21,,,,,,,,,,,,,,,,,
+Cornwall,13,0,13,,,,,,,,,,,,,,,,,
+Coventry,5,80,-75,,,,,,,,,,,,,,,,,
+Cromwell,298,32,266,,,,,,,,,,,,,,,,,
+Danbury,1594,280,"1,314",,,,,,,,,,,,,,,,,
+Darien,602,130,472,,,,,,,,,,,,,,,,,
+Deep River,5,0,5,,,,,,,,,,,,,,,,,
+Derby,282,30,252,,,,,,,,,,,,,,,,,
+Durham,5,0,5,,,,,,,,,,,,,,,,,
+East Granby,5,0,5,,,,,,,,,,,,,,,,,
+East Haddam,214,16,198,,,,,,,,,,,,,,,,,
+East Hampton,390,47,343,,,,,,,,,,,,,,,,,
+East Hartford,1012,522,490,,,,,,,,,,,,,,,,,
+East Haven,497,144,353,,,,,,,,,,,,,,,,,
+East Lyme,323,59,264,,,,,,,,,,,,,,,,,
+East Windsor,5,53,-48,,,,,,,,,,,,,,,,,
+Eastford,5,17,-12,,,,,,,,,,,,,,,,,
+Easton,67,24,43,,,,,,,,,,,,,,,,,
+Ellington,346,50,296,,,,,,,,,,,,,,,,,
+Enfield,817,96,721,,,,,,,,,,,,,,,,,
+Essex,5,55,-50,,,,,,,,,,,,,,,,,
+Fairfield,1415,79,"1,336",,,,,,,,,,,,,,,,,
+Farmington,400,125,275,,,,,,,,,,,,,,,,,
+Franklin,5,21,-16,,,,,,,,,,,,,,,,,
+Glastonbury,816,124,692,,,,,,,,,,,,,,,,,
+Goshen,5,0,5,,,,,,,,,,,,,,,,,
+Granby,5,38,-33,,,,,,,,,,,,,,,,,
+Greenwich,1926,179,"1,747",,,,,,,,,,,,,,,,,
+Griswold,317,208,109,,,,,,,,,,,,,,,,,
+Groton,1006,303,703,,,,,,,,,,,,,,,,,
+Guilford,363,36,327,,,,,,,,,,,,,,,,,
+Haddam,5,20,-15,,,,,,,,,,,,,,,,,
+Hamden,1280,187,"1,093",,,,,,,,,,,,,,,,,
+Hampton,5,11,-6,,,,,,,,,,,,,,,,,
+Hartford,3518,1317,"2,201",,,,,,,,,,,,,,,,,
+Hartland,5,15,-10,,,,,,,,,,,,,,,,,
+Harwinton,5,0,5,,,,,,,,,,,,,,,,,
+Hebron,5,80,-75,,,,,,,,,,,,,,,,,
+Kent,5,16,-11,,,,,,,,,,,,,,,,,
+Killingly,369,191,178,,,,,,,,,,,,,,,,,
+Killingworth,5,0,5,,,,,,,,,,,,,,,,,
+Lebanon,5,46,-41,,,,,,,,,,,,,,,,,
+Ledyard,292,42,250,,,,,,,,,,,,,,,,,
+Lisbon,5,32,-27,,,,,,,,,,,,,,,,,
+Litchfield,101,39,62,,,,,,,,,,,,,,,,,
+Lyme,5,0,5,,,,,,,,,,,,,,,,,
+Madison,323,45,278,,,,,,,,,,,,,,,,,
+Manchester,1259,208,"1,051",,,,,,,,,,,,,,,,,
+Mansfield,234,108,126,,,,,,,,,,,,,,,,,
+Marlborough,5,10,-5,,,,,,,,,,,,,,,,,
+Meriden,1537,45,"1,492",,,,,,,,,,,,,,,,,
+Middlebury,169,25,144,,,,,,,,,,,,,,,,,
+Middlefield,5,0,5,,,,,,,,,,,,,,,,,
+Middletown,828,145,683,,,,,,,,,,,,,,,,,
+Milford,990,164,826,,,,,,,,,,,,,,,,,
+Monroe,401,41,360,,,,,,,,,,,,,,,,,
+Montville,365,37,328,,,,,,,,,,,,,,,,,
+Morris,5,0,5,,,,,,,,,,,,,,,,,
+Naugatuck,805,120,685,,,,,,,,,,,,,,,,,
+New Britain,1451,502,949,,,,,,,,,,,,,,,,,
+New Canaan,391,41,350,,,,,,,,,,,,,,,,,
+New Fairfield,292,144,148,,,,,,,,,,,,,,,,,
+New Hartford,5,60,-55,,,,,,,,,,,,,,,,,
+New Haven,3326,1908,"1,418",,,,,,,,,,,,,,,,,
+New London,585,87,498,,,,,,,,,,,,,,,,,
+New Milford,529,120,409,,,,,,,,,,,,,,,,,
+Newington,498,101,397,,,,,,,,,,,,,,,,,
+Newtown,507,64,443,,,,,,,,,,,,,,,,,
+Norfolk,22,17,5,,,,,,,,,,,,,,,,,
+North Branford,5,14,-9,,,,,,,,,,,,,,,,,
+North Canaan,5,,5,,,,,,,,,,,,,,,,,
+North Haven,458,63,395,,,,,,,,,,,,,,,,,
+North Stonington,5,30,-25,,,,,,,,,,,,,,,,,
+Norwalk,1483,305,"1,178",,,,,,,,,,,,,,,,,
+Norwich,849,338,511,,,,,,,,,,,,,,,,,
+Old Lyme,107,48,59,,,,,,,,,,,,,,,,,
+Old Saybrook,184,40,144,,,,,,,,,,,,,,,,,
+Orange,306,48,258,,,,,,,,,,,,,,,,,
+Oxford,278,19,259,,,,,,,,,,,,,,,,,
+Plainfield,371,154,217,,,,,,,,,,,,,,,,,
+Plainville,360,87,273,,,,,,,,,,,,,,,,,
+Plymouth,278,60,218,,,,,,,,,,,,,,,,,
+Pomfret,5,16,-11,,,,,,,,,,,,,,,,,
+Portland,5,30,-25,,,,,,,,,,,,,,,,,
+Preston,5,31,-26,,,,,,,,,,,,,,,,,
+Prospect,5,44,-39,,,,,,,,,,,,,,,,,
+Putnam,161,98,63,,,,,,,,,,,,,,,,,
+Redding,164,51,113,,,,,,,,,,,,,,,,,
+Ridgefield,539,60,479,,,,,,,,,,,,,,,,,
+Rocky Hill,337,180,157,,,,,,,,,,,,,,,,,
+Roxbury,5,0,5,,,,,,,,,,,,,,,,,
+Salem,5,16,-11,,,,,,,,,,,,,,,,,
+Salisbury,80,0,80,,,,,,,,,,,,,,,,,
+Scotland,5,18,-13,,,,,,,,,,,,,,,,,
+Seymour,329,0,329,,,,,,,,,,,,,,,,,
+Sharon,5,7,-2,,,,,,,,,,,,,,,,,
+Shelton,607,59,548,,,,,,,,,,,,,,,,,
+Sherman,5,22,-17,,,,,,,,,,,,,,,,,
+Simsbury,426,51,375,,,,,,,,,,,,,,,,,
+Somers,224,23,201,,,,,,,,,,,,,,,,,
+South Windsor,430,108,322,,,,,,,,,,,,,,,,,
+Southbury,478,0,478,,,,,,,,,,,,,,,,,
+Southington,922,104,818,,,,,,,,,,,,,,,,,
+Sprague,5,35,-30,,,,,,,,,,,,,,,,,
+Stafford,249,121,128,,,,,,,,,,,,,,,,,
+Stamford,3033,188,"2,845",,,,,,,,,,,,,,,,,
+Sterling,5,35,-30,,,,,,,,,,,,,,,,,
+Stonington,289,31,258,,,,,,,,,,,,,,,,,
+Stratford,1072,153,919,,,,,,,,,,,,,,,,,
+Suffield,229,68,161,,,,,,,,,,,,,,,,,
+Thomaston,5,28,-23,,,,,,,,,,,,,,,,,
+Thompson,223,0,223,,,,,,,,,,,,,,,,,
+Tolland,221,81,140,,,,,,,,,,,,,,,,,
+Torrington,738,99,639,,,,,,,,,,,,,,,,,
+Trumbull,783,305,478,,,,,,,,,,,,,,,,,
+Union,5,9,-4,,,,,,,,,,,,,,,,,
+Vernon,559,162,397,,,,,,,,,,,,,,,,,
+Voluntown,5,44,-39,,,,,,,,,,,,,,,,,
+Wallingford,867,189,678,,,,,,,,,,,,,,,,,
+Warren,25,0,25,,,,,,,,,,,,,,,,,
+Washington,5,0,5,,,,,,,,,,,,,,,,,
+Waterbury,3034,710,"2,324",,,,,,,,,,,,,,,,,
+Waterford,312,697,-385,,,,,,,,,,,,,,,,,
+Watertown,417,73,344,,,,,,,,,,,,,,,,,
+West Hartford,1505,298,"1,207",,,,,,,,,,,,,,,,,
+West Haven,1029,131,898,,,,,,,,,,,,,,,,,
+Westbrook,5,38,-33,,,,,,,,,,,,,,,,,
+Weston,234,25,209,,,,,,,,,,,,,,,,,
+Westport,471,56,415,,,,,,,,,,,,,,,,,
+Wethersfield,447,141,306,,,,,,,,,,,,,,,,,
+Willington,5,19,-14,,,,,,,,,,,,,,,,,
+Wilton,494,55,439,,,,,,,,,,,,,,,,,
+Winchester,164,0,164,,,,,,,,,,,,,,,,,
+Windham,636,240,396,,,,,,,,,,,,,,,,,
+Windsor Locks,613,77,536,,,,,,,,,,,,,,,,,
+Windsor,5,0,5,,,,,,,,,,,,,,,,,
+Wolcott,301,50,251,,,,,,,,,,,,,,,,,
+Woodbridge,5,20,-15,,,,,,,,,,,,,,,,,
+Woodbury,204,0,204,,,,,,,,,,,,,,,,,
+Woodstock,5,69,-64,,,,,,,,,,,,,,,,,
