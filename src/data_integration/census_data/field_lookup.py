@@ -6,7 +6,7 @@ TOWN_FILE = "town_data.csv"
 SINGLE_FIELD_FILE = "single_field_lookups.txt"
 COMBINATION_FIELD_FILE = "combination_field_lookups.txt"
 STATE_CODE = '09'
-OUT_FILE = "town_demographic_data.csv"
+OUT_FILE = "town_demographic_data_all_fields.csv"
 
 
 '''

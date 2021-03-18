@@ -1,0 +1,87 @@
+feature,coefficient magnitude
+child relationship to householder - family,-4.0038010431278135
+number of income earners in family - 2 earners,-3.756446458936726
+rent paid for non-owned housing units - < 500,-2.8702162319118214
+computers and internet - computer but no internet,-2.5311313514872973
+rent paid for non-owned housing units - 500 - 999,2.4421698780577237
+household type of homes with children - married,2.3008225337084456
+households with 0 vehicles available,2.1934791006974597
+school enrollment - grades 1-4,2.1635907117533018
+rent as percentage of income - 30-49%,1.8761728606709986
+time of departure to work - afternoon,1.784823682862991
+primary spoken language at home - spanish,-1.6184963383426136
+rent as percentage of income - 50+%,-1.55552486031294
+nativity and citizenship - born outside US,1.5185226139275814
+monthly housing costs - 500-1000,-1.3547075156436486
+households with people 65+,1.2369032496472916
+nativity and citizenship - born in other state,-1.1406854923557164
+computers and internet - no computer,-1.082405489568777
+population at age - 50 - 64 years,-1.0297789355168858
+median family income - american indian / alaska native,0.9857777377683778
+school enrollment - kindergarten,-0.9144935821381859
+primary spoken language at home - chinese,-0.8901013143702764
+school enrollment - high school,0.8895498679335888
+monthly housing costs - < 500,0.8688387470052857
+median family income - white,0.8639548620224831
+non-white population,-0.8040740517933214
+number of income earners in family - 1 earner,0.7886265322605331
+house heating fuel - no fuel used,0.6933970680517223
+hispanic or latinx,0.6833156830909107
+time of departure to work - evening/night,0.6692469212267151
+non US citizens,0.6307399147892064
+households with 4+ vehicles available,0.6068752323557123
+school type for high school and below - private school,-0.577580223895207
+monthly housing costs - 2k - 3k,0.5639178883966696
+school enrollment - nursery/pre-school,0.5487024889014922
+school enrollment - grades 5-8,-0.5473793398075218
+per capita income,-0.5464043388531725
+received income from supplemental source,0.5178990955714527
+mean inter quintile income gap,-0.5012284119339269
+number of income earners in family - 3+ earners,0.49995199418879405
+geographic mobility - from other state,0.4962753940852928
+home value of owned/mortgaged housing units - > 300k,0.48554648263381867
+school type for high school and below - public school,0.4604904429654122
+transport to work - other,-0.44673226386631704
+unmarried women with birth in past 12 months,-0.44001741328416416
+rent paid for non-owned housing units - 3000+,0.4390080105308677
+work location - outside CT,0.3961167791267328
+median family income - asian,0.3820079183819923
+monthly housing costs - no housing cost,0.31797173325668426
+median family income - other race,-0.3093386368457297
+median family income - hispanic or latinx,0.2939267573936352
+geographic mobility - within county,0.29163059587448464
+travel time to work - > 40 minns,-0.27913920068562953
+bedrooms in house - 4,-0.26298603356162537
+house heating fuel - oil,0.24834281910942635
+house heating fuel - other,-0.24514625385034702
+monthly housing costs - 1k - 2k,0.23081733496308882
+number of income earners in family - no earners,0.2233094561488364
+bedrooms in house - 3,0.19114596193389527
+median family income - 2 or more races,-0.18223572979495314
+gini index,0.17662055654474762
+male mean usual hours worked,-0.16180832673671464
+household type of homes with children - single male,0.14905125198540733
+rent as percentage of income - <15%,-0.1462837109074994
+monthly housing costs - 3k+,-0.1427641106446851
+educational attainment - high school diploma,-0.14197834487955352
+median family income - black,-0.13085040131904938
+travel time to work - 21-40 mins,0.12549441303864603
+bedrooms in house - 1,-0.11457895556075495
+bedrooms in house - none,-0.11187249298896579
+educational attainment - no school,0.10351039849692358
+educational attainment - college degree,0.1015947399147403
+house heating fuel - solar,-0.10134788521517882
+educational attainment - graduate degree,-0.09584605519745842
+married women with birth in past 12 months,0.09460315705482196
+house heating fuel - coal,-0.09333848925607838
+school enrollment - college,-0.07086599360357622
+house heating fuel - wood,-0.06992994909358671
+nativity and citizenship - foreign-born naturalized,-0.06689138696642954
+home value of owned/mortgaged housing units - 200k - 300k,0.06151584960540534
+home value of owned/mortgaged housing units - < 50k,0.05268177821650657
+female mean usual hours worked,-0.05140582771225982
+child relationship to householder - foster/not family,0.03446933351354482
+rent as percentage of income - 15-29%,-0.012816925741386553
+households with 3 vehicles available,-0.006602412251906967
+median year of home construction after 1943.0,0.0010933499382448067
+geographic mobility - from other county in CT,-0.0003188683987144665
