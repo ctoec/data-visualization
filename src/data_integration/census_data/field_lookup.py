@@ -6,7 +6,8 @@ COMBINATION_FIELD_FILE = "combination_field_lookups.txt"
 STATE_CODE = '09'
 CENSUS_FIELD_LIMIT = 50
 CENSUS_NAME_FIELD = 'NAME'
-OUT_FILE = "data/town_demographic_data.csv"
+OUT_FILE = "town_demographic_data_all_fields.csv"
+
 
 
 '''

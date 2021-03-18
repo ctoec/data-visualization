@@ -1,0 +1,170 @@
+county_code,town,estimated_demand_by_care_availability,children_eligible_for_care_services
+9190,Brooklyn,147.0,315.72
+72090,Stafford,94.0,248.56
+77830,Union,6.0,17.2
+14300,Chester,0.0,25.08
+53890,North Branford,98.0,297.52
+19130,Deep River,0.0,49.28
+78250,Vernon,714.0,1351.2
+37140,Hartland,4.0,19.76
+52140,Newington,257.0,642.84
+2060,Avon,18.0,203.64
+70550,Southington,251.0,693.2
+62710,Putnam,54.0,119.04
+63480,Redding,0.0,72.76
+67400,Scotland,4.0,19.96
+65930,Roxbury,9.0,43.0
+16050,Colebrook,6.0,13.04
+78600,Voluntown,8.0,48.64
+2760,Barkhamsted,26.0,75.64
+32290,Goshen,13.0,35.92
+53470,Norfolk,19.0,70.2
+40500,Killingly,316.0,791.36
+80280,Waterford,141.0,519.24
+61800,Portland,68.0,115.24
+44210,Lyme,21.0,62.84
+62290,Prospect,54.0,107.64
+55500,North Stonington,75.0,193.24
+4580,Bethany,25.0,55.0
+18850,Darien,11.0,69.24
+60120,Plainville,156.0,444.92
+76570,Torrington,574.0,1313.16
+58300,Oxford,28.0,106.96
+19550,Derby,324.0,684.6
+15910,Colchester,172.0,331.36
+31240,Glastonbury,62.0,250.72
+56270,Norwich,1078.0,1872.52
+84900,Wethersfield,126.0,413.04
+57320,Old Saybrook,46.0,168.76
+18500,Danbury,1855.0,4104.12
+25360,Ellington,55.0,247.88
+44700,Manchester,1004.0,2768.2
+76290,Tolland,42.0,228.24
+68310,Sherman,6.0,42.08
+52980,Newtown,41.0,256.36
+5910,Bloomfield,236.0,447.36
+83430,Weston,8.0,56.0
+79510,Warren,5.0,8.08
+83500,Westport,53.0,161.52
+37280,Harwinton,0.0,37.0
+69640,Southbury,23.0,151.4
+47080,Middlefield,18.0,64.48
+73770,Stonington,161.0,322.52
+1080,Andover,17.0,49.8
+37070,Hartford,4814.0,8092.92
+17800,Coventry,109.0,198.08
+43370,Litchfield,54.0,197.68
+6260,Bolton,9.0,28.04
+52070,New Haven,4448.0,7948.48
+16400,Columbia,0.0,95.56
+18080,Cromwell,42.0,174.56
+32640,Granby,79.0,237.28
+33620,Greenwich,321.0,944.0
+27600,Farmington,133.0,410.8
+40710,Killingworth,0.0,26.0
+13810,Chaplin,50.0,65.56
+3250,Beacon Falls,16.0,107.56
+75730,Thomaston,27.0,161.48
+79720,Washington,0.0,85.0
+46940,Middlebury,0.0,76.96000000000002
+49950,Naugatuck,762.0,1454.52
+54870,North Haven,167.0,277.84000000000003
+10940,Canaan,5.0,27.56
+1220,Ansonia,305.0,568.24
+7310,Branford,340.0,607.76
+14160,Cheshire,87.0,431.76
+87700,Woodbridge,33.0,154.28
+1430,Ashford,125.0,280.32
+12130,Canterbury,12.0,81.8
+59980,Plainfield,347.0,744.56
+80490,Watertown,159.0,374.76
+57600,Orange,31.0,201.68
+67610,Seymour,70.0,328.88
+82870,West Haven,921.0,2435.36
+22630,East Hartford,1590.0,2737.56
+15350,Clinton,159.0,336.2
+22490,East Hampton,48.0,203.4
+35230,Haddam,52.0,157.0
+47360,Middletown,647.0,1338.84
+81680,Westbrook,10.0,34.0
+8490,Bristol,945.0,1754.76
+10100,Burlington,38.0,103.88
+12270,Canton,0.0,112.96
+86790,Windham,591.0,1310.08
+22070,East Granby,0.0,35.84
+40290,Kent,5.0,35.84
+49460,Morris,31.0,62.28
+60750,Plymouth,91.0,228.84
+50440,New Britain,2264.0,4565.44
+73420,Sterling,0.0,114.44
+75870,Thompson,114.0,290.36
+25990,Enfield,532.0,1405.52
+45820,Marlborough,211.0,280.0
+52630,New Milford,192.0,555.08
+65370,Rocky Hill,84.0,223.08
+71390,South Windsor,46.0,189.4
+82590,West Hartford,344.0,1078.24
+87070,Windsor Locks,185.0,382.72
+4930,Bethlehem,45.0,106.52
+8210,Bridgewater,0.0,6.52
+34250,Groton,676.0,1997.92
+43230,Lisbon,17.0,75.0
+48900,Montville,170.0,380.16
+29910,Franklin,9.0,22.72
+33900,Griswold,128.0,422.84
+57040,Old Lyme,29.0,69.24
+71670,Sprague,83.0,194.96
+86440,Winchester,61.0,260.0
+87910,Woodbury,11.0,146.2
+66210,Salem,18.0,25.92
+8980,Brookfield,37.0,241.44
+4720,Bethel,179.0,385.52
+26620,Fairfield,214.0,566.36
+50580,New Canaan,36.0,82.0
+77200,Trumbull,127.0,404.48
+50860,New Fairfield,25.0,118.08
+63970,Ridgefield,39.0,289.76
+68170,Shelton,211.0,508.68
+73070,Stamford,1847.0,4604.16
+74190,Stratford,527.0,1382.8
+87560,Wolcott,121.0,454.04
+44560,Madison,11.0,194.72
+87000,Windsor,220.0,709.36
+51350,New Hartford,0.0,52.44
+67960,Sharon,38.0,70.0
+74540,Suffield,0.0,147.76
+26270,Essex,18.0,38.04
+6820,Bozrah,37.0,72.52
+42600,Ledyard,247.0,732.56
+62150,Preston,137.0,264.4
+35650,Hamden,495.0,1388.36
+61030,Pomfret,0.0,0.0
+88190,Woodstock,44.0,166.68
+85950,Willington,9.0,73.52000000000002
+23890,Easton,0.0,54.6
+69220,Somers,22.0,152.8
+44910,Mansfield,69.0,249.96
+37910,Hebron,52.0,132.4
+78740,Wallingford,278.0,833.36
+42390,Lebanon,0.0,77.4
+36000,Hampton,2.0,31.08
+34950,Guilford,85.0,239.0
+68940,Simsbury,97.0,286.28
+4300,Berlin,145.0,340.08
+24800,East Windsor,160.0,327.0
+46520,Meriden,1057.0,2871.2
+48620,Monroe,71.0,220.8
+22280,East Haddam,45.0,150.88
+80070,Waterbury,3789.0,7158.2
+22910,East Haven,378.0,798.92
+54030,North Canaan,30.0,102.24
+8070,Bridgeport,5423.0,9421.52
+86370,Wilton,61.0,104.4
+21860,Eastford,17.0,40.32
+47535,Milford,316.0,901.8
+20810,Durham,39.0,150.0
+23400,East Lyme,114.0,229.32
+52350,New London,617.0,1203.44
+56060,Norwalk,1383.0,2772.52
+66420,Salisbury,0.0,91.0
+17240,Cornwall,3.0,8.719999999999999
