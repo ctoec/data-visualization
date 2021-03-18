@@ -79,9 +79,3 @@ def backfill_ece(db_conn: sqlalchemy.engine, start_month: str = START_DATE,
         report_list.append(month_child_df)
     final_df = pd.concat(report_list)
     return final_df
-
-
-if __name__ == '__main__':
-    ece_conn = get_mysql_connection(section='ECE Reporter DB')
-    child_df = backfill_ece(ece_conn)
-    child_df.to_csv('data/combined_data.csv', index=False)
