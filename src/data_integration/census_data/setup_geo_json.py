@@ -10,14 +10,13 @@ GEOMETRY_COL = 'geometry'
 DEFAULT_SCHEMA = 'uploaded_data'
 
 
-def convert_to_multi_poly(geom) -> MultiPolygon:
+def convert_to_poly(geom) -> Polygon:
     """
-    Converts all Polygon geography types to multi Polygons to account for any MultiPolygons already
-    existing in the data. Polygons can convert to Multipolygons but not the other way around
+    Selects the largest Polygon for MultiPolygons since all CT towns are contiguous, this removes small islands
     :param geom: Geometry object
     :return: MultiPolygon object
     """
-    return MultiPolygon([geom]) if type(geom) == Polygon else geom
+    return max(geom, key=lambda a: a.area) if type(geom) == MultiPolygon else geom
 
 
 def create_wkt_element(geom, srid=DEFAULT_LAT_LONG_PROJ):
@@ -47,13 +46,13 @@ def write_to_sql(table_name: str, geo_df: gpd.GeoDataFrame, columns: list,
     :return: None, writes to table
     """
     # Convert to multi-polygon and stringify the geography column
-    geo_df[GEOMETRY_COL] = geo_df[GEOMETRY_COL].apply(convert_to_multi_poly)
+    geo_df[GEOMETRY_COL] = geo_df[GEOMETRY_COL].apply(convert_to_poly)
     geo_df[GEOMETRY_COL] = geo_df[GEOMETRY_COL].apply(create_wkt_element)
 
     print(f"Loading {table_name}")
     # Write to table specifying the geometry as a MULTIPOLYGON with the given projection
     geo_df[columns + [GEOMETRY_COL]].to_sql(table_name, engine, schema='uploaded_data', if_exists='replace', index=False,
-                                            dtype={GEOMETRY_COL: Geometry("MULTIPOLYGON", srid=srid)})
+                                            dtype={GEOMETRY_COL: Geometry("POLYGON", srid=srid)})
     print(f"Table {table_name} loaded")
 
 
@@ -69,7 +68,8 @@ if __name__ == '__main__':
     engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:5432/{db_name}')
 
     # Create postgis extension, this will be a no-op if it already exists
-    engine.execute('CREATE EXTENSION postgis')
+    # engine.execute('CREATE EXTENSION postgis')
+
     # Load town data to Superset keeping data that will allow for joins to other Census and unmet needs data
     town_geo_df = build_level_df(geo_level=TOWN, file_type=CARTO)
     town_cols = ['NAME', 'STATEFP', 'COUNTYFP', 'COUSUBFP', 'lat', 'long']
