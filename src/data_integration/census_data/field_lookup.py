@@ -207,7 +207,7 @@ def get_code_from_concept(concept_name, init_list):
             return x
 
 
-def create_census_variable_file(filename, single_field_mapping_file, combination_field_mapping_file):
+def create_census_variable_output(filename, single_field_mapping_file, combination_field_mapping_file):
     """
     Writes a csv with fields specified in `combination_field_lookups.txt` and `single_field_lookups.txt`
     :param filename: name of resulting file

@@ -30,7 +30,7 @@ def create_wkt_element(geom, srid=DEFAULT_LAT_LONG_PROJ):
 
 
 def write_to_sql(table_name: str, geo_df: gpd.GeoDataFrame, columns: list,
-                 engine: sqlalchemy.engine, srid: int=DEFAULT_LAT_LONG_PROJ, schema: str=DEFAULT_SCHEMA):
+                 engine: sqlalchemy.engine, srid: int = DEFAULT_LAT_LONG_PROJ, schema: str = DEFAULT_SCHEMA):
     """
     Writes the specified columns in the geodataframe to a DB table, if the table already exists
     this overwrites it. The projection of the resulting geography is specified by the SRID. This assumes
@@ -39,10 +39,9 @@ def write_to_sql(table_name: str, geo_df: gpd.GeoDataFrame, columns: list,
     :param geo_df: Geodataframe
     :param columns: columns to use from the geodataframe in addition to the geometry column
     :param engine: Engine used to write to the database
-    :param srid: Spatial reference system
-    :param schema: DB Schema where table will be written
-    ## TODO
+    :param srid: Spatial reference system     ## TODO
     # Check if CT spatial code works better here
+    :param schema: DB Schema where table will be written
     :return: None, writes to table
     """
     # Convert to multi-polygon and stringify the geography column
@@ -51,7 +50,7 @@ def write_to_sql(table_name: str, geo_df: gpd.GeoDataFrame, columns: list,
 
     print(f"Loading {table_name}")
     # Write to table specifying the geometry as a MULTIPOLYGON with the given projection
-    geo_df[columns + [GEOMETRY_COL]].to_sql(table_name, engine, schema='uploaded_data', if_exists='replace', index=False,
+    geo_df[columns + [GEOMETRY_COL]].to_sql(table_name, engine, schema=schema, if_exists='replace', index=False,
                                             dtype={GEOMETRY_COL: Geometry("MULTIPOLYGON", srid=srid)})
     print(f"Table {table_name} loaded")
 
