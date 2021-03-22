@@ -5,6 +5,12 @@ import os
 BASE_URL = "https://www.ctcare4kids.com/care-4-kids-program/reports/"
 DATA_DIR = "enrollment_reports/"
 
+# We're querying five years of data where data is published in reports
+# once per month; but, one of the years is a combination of mislabeled
+# and straight up missing, so we have 12 fewer data points than 
+# expected, leaving 12 * 5 - 12 = 48.
+EXPECTED_FILES_TO_DOWNLOAD = 48
+
 '''
 Determines whether the given url string for a resource is an excel 
 file that we should download. We care about enrollment reports during
@@ -39,9 +45,9 @@ soup = BeautifulSoup(page.text, features="lxml")
 if not os.path.exists(DATA_DIR):
     os.mkdir(DATA_DIR)
     
-# If the data directory alreasy has files, nothing to do
+# If the data directory already has files, nothing to do
 existing_files = os.listdir(DATA_DIR)
-if len(existing_files) == 48:
+if len(existing_files) == EXPECTED_FILES_TO_DOWNLOAD:
     print("Data already present--nothing to download")
 else:
     for link in soup.find_all('a'):
