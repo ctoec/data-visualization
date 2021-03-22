@@ -207,27 +207,35 @@ def get_code_from_concept(concept_name, init_list):
             return x
 
 
-# Let's pull some data
-geo = cd.censusgeo([('state', STATE_CODE), ('county', '*'), ('county subdivision', '*')])
-single_field_mapping = parse_single_field_file(SINGLE_FIELD_FILE)
-df_single = handle_single_fields(geo, single_field_mapping)
-root_names, tables, max_nums, solo_fields, solo_names, combination_fields, combination_names = parse_combination_field_file(COMBINATION_FIELD_FILE)
-df_combination = download_combination_fields(geo, tables, max_nums, solo_fields, combination_fields)
-df_combination = handle_combination_fields(df_combination, tables, solo_fields, solo_names, combination_fields, root_names, combination_names)
-df = df_single.join(df_combination)
-df[df < 0] = nan
-null_cols = df.isnull().all()
-df = df.drop(null_cols[null_cols].index.values, axis=1)
-   
-# Get rid of the kruft in each town's name that the censusgeo object comes with
-# Makes for much cleaner df writing
-# Also dump subcounties that aren't actual towns (census has a few that are 
-# 'unorganized/unspecified')
-df['town'] = [str(x) for x in df.index]
-df = df.loc[df['town'].apply(lambda x: True if 'town' in x else False), :]
-df['town'] = df['town'].apply(lambda x: x.split(',')[0].strip())
-df['town'] = df['town'].apply(lambda x: x.replace(' town', ''))
-df.to_csv(OUT_FILE, index=False)
+def create_census_variable_file(filename, single_field_mapping_file, combination_field_mapping_file):
+    """
+    Writes a csv with fields specified in `combination_field_lookups.txt` and `single_field_lookups.txt`
+    :param filename: name of resulting file
+    :param single_field_mapping_file: File containing single fields to add to file
+    :param combination_field_mapping_file: File containing multiple categories
+    :return: None
+    """
+    # Let's pull some data
+    geo = cd.censusgeo([('state', STATE_CODE), ('county', '*'), ('county subdivision', '*')])
+    single_field_mapping = parse_single_field_file(single_field_mapping_file)
+    df_single = handle_single_fields(geo, single_field_mapping)
+    root_names, tables, max_nums, solo_fields, solo_names, combination_fields, combination_names = parse_combination_field_file(combination_field_mapping_file)
+    df_combination = download_combination_fields(geo, tables, max_nums, solo_fields, combination_fields)
+    df_combination = handle_combination_fields(df_combination, tables, solo_fields, solo_names, combination_fields, root_names, combination_names)
+    df = df_single.join(df_combination)
+    df[df < 0] = nan
+    null_cols = df.isnull().all()
+    df = df.drop(null_cols[null_cols].index.values, axis=1)
+
+    # Get rid of the kruft in each town's name that the censusgeo object comes with
+    # Makes for much cleaner df writing
+    # Also dump subcounties that aren't actual towns (census has a few that are
+    # 'unorganized/unspecified')
+    df['town'] = [str(x) for x in df.index]
+    df = df.loc[df['town'].apply(lambda x: True if 'town' in x else False), :]
+    df['town'] = df['town'].apply(lambda x: x.split(',')[0].strip())
+    df['town'] = df['town'].apply(lambda x: x.replace(' town', ''))
+    df.to_csv(filename, index=False)
 
 
 
