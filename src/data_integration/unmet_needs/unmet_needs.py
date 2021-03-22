@@ -114,13 +114,15 @@ def plot_expectation(df, n, age_group, town_col, demand_col, supply_col, expecta
     plt.xticks(rotation="vertical")
     plt.show()
     
-def analyze_overall_data(n, show_worst=True, exclude_imputations=True):
+
     df = pd.read_csv(OVERALL_DATA_FILE, dtype="object")[1:]
     df[OVERALL_CONVERT_COLS] = df[OVERALL_CONVERT_COLS].apply(pd.to_numeric, errors="coerce")
     df = fill_missing_supply_rows(df, OVERALL_SUPPLY_COLS)
     df, rows_with_estimates = impute_corrected_demand_estimates(df, OVERALL_DEMAND_COLS, OVERALL_SUPPLY_COLS)
     df = calculate_expectation_metric(df, OVERALL_DEMAND_COLS, OVERALL_SUPPLY_COLS)
 #     df.to_csv("overall_supply_demand_by_town_with_cae.csv")
+
+def analyze_overall_data(n, show_worst=True, exclude_imputations=True):
     plot_expectation(df, n, 'infant/toddler', "city", "children_needing_care_demandestimated_infantstoddlers", "available_spaces_for_children_supply_infantstoddlers", "capacity_above_expectation_infantstoddlers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
     plot_need_and_capacity(df, n, 'infant/toddler', "city", "children_needing_care_demandestimated_infantstoddlers", "available_spaces_for_children_supply_infantstoddlers", "capacity_above_expectation_infantstoddlers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)
     plot_expectation(df, n, 'preschooler', "city", "children_needing_care_demandestimated_infantstoddlers", "available_spaces_for_children_supply_infantstoddlers", "capacity_above_expectation_preschoolers", show_worst=show_worst, points_to_exclude=[] if not exclude_imputations else rows_with_estimates)

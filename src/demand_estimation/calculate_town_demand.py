@@ -6,7 +6,7 @@ SMI_ELIGIBLE_CHILDREN_FILE = "town_estimates.csv"
 OUT_FILE = "final_demand_by_town.csv"
 
 towns = pd.read_csv(BASE_TOWN_FILE)
-towns.drop(columns=[c for c in towns.columns if not c in ['NAME', 'COUSUBFP','COUNTYFP']], inplace=True)
+towns.drop(columns=[c for c in towns.columns if not c in ['NAME', 'COUSUBFP', 'COUNTYFP']], inplace=True)
 towns.rename(columns={'NAME': 'town'}, inplace=True)
 parent_metric_df = pd.read_csv(CALCULATED_PARENT_METRIC_FILE)
 smi_df = pd.read_csv(SMI_ELIGIBLE_CHILDREN_FILE)
