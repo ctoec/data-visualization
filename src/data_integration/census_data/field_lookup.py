@@ -207,13 +207,13 @@ def get_code_from_concept(concept_name, init_list):
             return x
 
 
-def create_census_variable_output(filename, single_field_mapping_file=SINGLE_FIELD_FILE, combination_field_mapping_file=COMBINATION_FIELD_FILE):
+def create_census_variable_output(filename=None, single_field_mapping_file=SINGLE_FIELD_FILE, combination_field_mapping_file=COMBINATION_FIELD_FILE):
     """
     Writes a csv with fields specified in `combination_field_lookups.txt` and `single_field_lookups.txt`
     :param filename: name of resulting file
     :param single_field_mapping_file: File containing single fields to add to file
     :param combination_field_mapping_file: File containing multiple categories
-    :return: None
+    :return: df if file name is None otherwise no return and a file is written
     """
     # Let's pull some data
     geo = cd.censusgeo([('state', STATE_CODE), ('county', '*'), ('county subdivision', '*')])
@@ -235,7 +235,10 @@ def create_census_variable_output(filename, single_field_mapping_file=SINGLE_FIE
     df = df.loc[df['town'].apply(lambda x: True if 'town' in x else False), :]
     df['town'] = df['town'].apply(lambda x: x.split(',')[0].strip())
     df['town'] = df['town'].apply(lambda x: x.replace(' town', ''))
-    df.to_csv(filename, index=False)
+    if filename:
+        df.to_csv(filename, index=False)
+    else:
+        return df
 
 
 if __name__ == '__main__':
