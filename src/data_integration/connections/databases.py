@@ -40,11 +40,10 @@ def get_db_connection(section: str, config_file: str = CONFIG_FILE) -> sqlalchem
         raise Exception(f"{db_type} is not a valid DB type, only {','.join(VALID_DB_TYPES)} are allowed.")
 
     if db_type == POSTGRES:
-        prefix = 'postgresql+psycopg2'
+        conn_string = f'postgresql+psycopg2://{user_name}:{password}@{host}:{port}/{db_name}'
     elif db_type == SQL_SERVER:
-        prefix = 'mssql+pyodbc'
+        conn_string = f"mssql+pyodbc://{user_name}:{password}@{host},{port}/{db_name}?driver=ODBC+Driver+17+for+SQL+Server&Mars_Connection=Yes"
     # Create and return DB connection
-    conn_string = f"{prefix}://{user_name}:{password}@{host},{port}/{db_name}?driver=ODBC+Driver+17+for+SQL+Server&Mars_Connection=Yes"
     engine = sqlalchemy.create_engine(conn_string)
     conn = engine.connect()
     return conn
