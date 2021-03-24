@@ -11,6 +11,8 @@ DATA_DIR = "enrollment_reports/"
 # expected, leaving 12 * 5 - 12 = 48.
 EXPECTED_FILES_TO_DOWNLOAD = 48
 
+
+def is_a_report_file(href):
 '''
 Determines whether the given url string for a resource is an excel 
 file that we should download. We care about enrollment reports during
@@ -24,7 +26,6 @@ the period 2016-2020. Some notes:
 This means we can't explicitly bound our files by 2020 because we
 care about getting some of the files tagged as 2021.
 '''
-def is_a_report_file(href):
     # All reports contain either 'files' or 'uploads' in their url string
     if 'files' in href or 'uploads' in href:
         # Only want excel versions of files, not PDFs
