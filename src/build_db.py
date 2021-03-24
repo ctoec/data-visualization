@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     # Write July data CSV
     get_july_2020_sites(filename=f"{DB_DATA_FOLDER}/july_2020_sites.csv")
-    get_july_2020_students(filename=f"{DB_DATA_FOLDER}/july_2020.csv")
+    get_july_2020_students(filename=f"{DB_DATA_FOLDER}/pii/july_2020.csv")
 
     # Get ECE Data
     get_ece_data(filename=f"{DB_DATA_FOLDER}/pii/backfilled_ece_data.csv")
