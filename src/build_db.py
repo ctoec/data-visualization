@@ -71,7 +71,7 @@ if __name__ == '__main__':
     get_july_2020_students(filename=f"{DB_DATA_FOLDER}/pii/july_2020.csv")
 
     # Get ECE Data
-    get_ece_data(filename=f"{DB_DATA_FOLDER}/pii/backfilled_ece_data.csv")
+    get_ece_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
 
     # Build demand estimates
     get_demand_estimates(filename=f"{DB_DATA_FOLDER}/demand_estimation.csv")
