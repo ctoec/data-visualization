@@ -1,7 +1,8 @@
+import os
 import configparser
 import sqlalchemy
 
-CONFIG_FILE = 'config.ini'
+CONFIG_FILE = os.path.dirname(os.path.realpath(__file__)) + '/config.ini'
 
 # Keys referring to configuration file
 HOST_KEY = 'host'
