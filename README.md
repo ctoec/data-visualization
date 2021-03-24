@@ -34,6 +34,7 @@ When the database is initially built it needs to be set up with the following st
 1. Use SQL Lab to create uploaded_data schema and initialize POSTGIS
    - `CREATE SCHEMA uploaded_data;`
    - `CREATE EXTENSION postgis;`
+1. Populate a `config.ini` file in `src/data_integration/connections` using the format in `src/data_integration/connections/config_template.ini`
 1. Run `build_db.py` to create csvs
 1. Load CSVs from `final_data` into tables with the same name as the files.
 1. Load shapefiles using `load_shapefiles_to_db` function in `build_db.py`
@@ -48,7 +49,7 @@ When the database is initially built it needs to be set up with the following st
 - Demand Estimation
   - Contains two estimates of demand created by Skylight:
     - Number of children under 6 who are under 3.44X of the poverty line which is roughly 75% of the state median income.
-    - Number of children under 6 in families who are under 200% of poverty with 2 working parents.
+    - Number of children under 6 in families who are under 200% of poverty with at least one working parent.
 - Shapefiles
   - Census TIGER files with shapes associated with towns
   - Islands are ignored
