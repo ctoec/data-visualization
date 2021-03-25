@@ -37,7 +37,7 @@ When the database is initially built it needs to be set up with the following st
 1. Populate a `config.ini` file in `src/data_integration/connections` using the format in `src/data_integration/connections/config_template.ini`
 1. Run `build_db.py` to create csvs
 1. Load CSVs from `final_data` into tables with the same name as the files.
-1. Load shapefiles using `load_shapefiles_to_db` function in `build_db.py`
+1. Load shapefiles running the `load_shapefiles_to_db` function in `build_db.py` in either the Python console on a standalone script.
 
 ### Data Sources (in final_data)
 
