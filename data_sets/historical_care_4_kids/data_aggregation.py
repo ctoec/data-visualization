@@ -2,12 +2,31 @@ import pandas as pd
 import os
 import re
 
+'''
+A note on turning lists of lists into dataframes: there is almost
+certainly a pandas native way of transforming the data we get from
+the individual enrollment report sheets into the structure we want.
+That way *should* use the functions pivot, stack, unstack, and melt.
+However, because we these files have inconsistent multi-index and
+multi-level column formatting, none of these functions works as 
+expected. Columns where the 0-level part is associated only with
+a single 1-level part get massacred because they're not actually 
+multi-index but they get treated as such. And, while it's possible
+to correct that (theoretically...), because this is a) a one-off
+script, and b) dealing with individual files which are only 170 
+lines long, there's no need to over-optimize because the efficiency
+gain is minimal. So, lists of lists is what's happening.
+'''
+
 # Where all the historical reports are, named exactly as they
 # were downloaded
 DATA_DIR = "enrollment_reports/"
 
 # File to write the result artifact aggregated DF to
 OUT_FILE = "all_c4k_data.csv"
+
+# These are the columns we'll keep in our database-like CSV
+SCHEMA_COLS = ['year', 'month', 'town', 'age', 'regulation', 'setting', 'enrollments']
 
 
 def get_month(str):
@@ -41,72 +60,22 @@ def get_month(str):
     if str == '12':
         return 'Dec'
     
-    
-def join_to_accumulator(df, xls, sheet):
+
+def get_age_group(sheet):
     '''
-    Combines the information generated from a single sub-sheet of an
-    excel file into an existing data frame to accumulate the results
-    of the enrollment report. Also trims footnotes and sporadic total
-    rows that sometimes randomly occur
+    Turns a given sheet number into the associated age group, since sheets
+    always present age groups in the same order.
     '''
-    
-    # Some sheets have totals rows at the bottom, or footnotes--cut
-    # 'em out
-    if len(xls) > 170:
-        rows_over = len(xls) - 170;
-        xls = xls.iloc[: -1 * (rows_over), :]
-        
-    # Join the information to the accumulator data frame
+    age_group = ''
     if sheet == 1:
-        df = xls
-    else:
-        df = df.merge(xls, on='Town')
-    return df
+        age_group = 'Infant/Toddler'
+    elif sheet == 2:
+        age_group = 'Preschool'
+    elif sheet == 3:
+        age_group = 'School Aged'
+    return age_group
     
     
-def flatten_hierarchical_columns(xls, sheet, month, year):
-    '''
-    Squash the multi-level hierarchical index into a series of flattened
-    columns all at a single level. We create a unique identifier for each
-    column by combining the month, year, age group, and stat category
-    of columns to insure no information is overwritten by subsequent
-    sheets. 
-    '''
-    
-    # Rename doesn't play well with hierarchical index--easiest
-    # solution is to just overwrite them with flattened names
-    new_col_names = []
-    totals_seen = 0
-    for c in xls.columns:
-        joint_name = ' '.join(c).replace('\n', ' ')
-        
-        # Some of the sheets parse with duplicate multi-index
-        # total columns, so only keep the first
-        if 'Total' in joint_name:
-            joint_name = 'Total'
-            totals_seen += 1
-        
-        # Prepend date information and age group
-        age_group = ''
-        if sheet == 1:
-            age_group = 'Infant/Toddler'
-        elif sheet == 2:
-            age_group = 'Preschool'
-        elif sheet == 3:
-            age_group = 'School Aged'
-        joint_name = month + ' ' + year + ' ' + age_group + ' ' + joint_name
-        
-        # Correct the town column to a standardized name
-        if 'Municipality' in joint_name or 'Town' in joint_name:
-            joint_name = 'Town'
-        new_col_names.append(joint_name)
-        
-    xls.columns = new_col_names
-    if totals_seen > 1:
-        xls = xls.iloc[:, : -1 * (totals_seen - 1)]
-    return xls
-
-
 def parse_pre_18_report(filename):
     '''
     Handles parsing of an enrollment report file that was published 
@@ -117,8 +86,8 @@ def parse_pre_18_report(filename):
     unnamed convention of multi-index parsing to correct for this.
     '''
     
-    print('Parsing', filename)
-    df = pd.DataFrame()
+    print('Parsing', filename)   
+    rows = []
     
     # Get month and year to append into column names
     parts = filename.split('-')
@@ -135,14 +104,34 @@ def parse_pre_18_report(filename):
         first_row = pd.read_excel(DATA_DIR + filename, sheet_name=sheet, nrows=1)
         if ('Unnamed' in first_row.columns[0]):
             skiprows += 1
-        xls = pd.read_excel(DATA_DIR + filename, header=[0,1], sheet_name=sheet, skiprows=skiprows)   
+        xls = pd.read_excel(DATA_DIR + filename, header=[0,1], sheet_name=sheet, skiprows=skiprows)
+
+        # Some columns get read-in as duplicates because of the multi-
+        # level index and are entirely NaN--they all end with ".X"        
+        xls.drop(columns=[c for c in xls.columns if re.search('\.\d', c[1]) != None ], inplace=True)
         
-        # Flatten columns and accumulate results
-        xls = flatten_hierarchical_columns(xls, sheet, month, year)
-        df = join_to_accumulator(df, xls, sheet)
-    
-    # Standardize case of towns
-    df['Town'] = df['Town'].apply(lambda s: s.title())
+        ag = get_age_group(sheet)
+        for _, row in xls.iterrows():
+            
+            # Standardize the case for the town and ONLY count
+            # actual towns (we can do totals on our own)
+            town = row[('Service Settings', 'Municipality')].title()
+            if 'Total' not in town:
+                for c in xls.columns:
+                    if c[1] != 'Municipality':
+                        reg = c[0]
+                        setting = c[1].replace('\n', ' ')
+                        
+                        # Enrollment totals are actually unique values
+                        # because they don't count double-entered kids
+                        # They don't have a regulation though
+                        if 'Total' in setting:
+                            setting = 'Total'
+                            reg = 'Total'
+                        enrollments = row[c]
+                        rows.append([year, month, town, ag, reg, setting, enrollments])
+           
+    df = pd.DataFrame(rows, columns=SCHEMA_COLS)
     return df
 
 
@@ -159,8 +148,8 @@ def parse_post_18_report(filename, month, year):
     '''
     
     print('Parsing', filename)
-    df = pd.DataFrame()
-    
+    rows = []
+
     # Process sheets one at a time because bad standardization    
     for sheet in range(1,4):
         skiprows = 5
@@ -179,53 +168,83 @@ def parse_post_18_report(filename, month, year):
                 skiprows += 3
                 
         xls = pd.read_excel(DATA_DIR + filename, header=[0,1], sheet_name=sheet, skiprows=skiprows)
-        xls = flatten_hierarchical_columns(xls, sheet, month, year)
-        df = join_to_accumulator(df, xls, sheet)
-    
-    # Standardize case of towns
-    df['Town'] = df['Town'].apply(lambda s: s.title())
-    return df
-      
-
-# If it's the first file we process, just use that as the base DF
-df = pd.DataFrame()
-is_first = True
-
-for filename in os.listdir(DATA_DIR):
-    if '2016' in filename or '2017' in filename:
-        file_df = parse_pre_18_report(filename)
-    else:
-        first_row = pd.read_excel(DATA_DIR + filename, sheet_name=0, header=None, nrows=1, skiprows=1)
         
-        # Once again, some files randomly add or subtract multiple rows
-        # of information (such as Report IDs or Org IDs)--ignore these
-        # and search for the reporting 'period'
-        if not 'period' in str(first_row.loc[0,0]).lower():
-            first_row = pd.read_excel(DATA_DIR + filename, sheet_name=0, header=None, nrows=1, skiprows=0)
+        # Same thing with duplicated multi-indexes as above
+        xls.drop(columns=[c for c in xls.columns if re.search('\.\d', c[1]) != None ], inplace=True)
+        
+        ag = get_age_group(sheet)
+        for _, row in xls.iterrows():
             
-        # Get the date from our forced find
-        working_date = re.search('\d+\/\d+\/\d+', first_row.loc[0,0])[0]
-        working_date = working_date.split("/")
-        month = get_month(working_date[0].strip())
-        year = working_date[-1].strip()
-        
-        file_df = parse_post_18_report(filename, month, year)
-        
-    # Accumulate information the right way
-    if is_first:
-        is_first = False
-        df = file_df
-    else:
-        df = df.merge(file_df, on='Town')
-        
-# Two corrections to make:
-# 1. replace all dashes with 0's (don't know why some reports do this)
-# 2. delete all multi-index column clones of other columns (some tuples get
-#    processed with more 'header' columns than they should and have all NaNs)
-df.drop(columns=[c for c in df.columns if re.search('\.\d', c) != None ], inplace=True)
-df.replace('-', 0, inplace=True)
+            # Some of the columns have dashes instead of numbers, which
+            # prevents any kind of stable type reading when opening the sheet
+            # Just use try/catch to ignore casing for dashes, we'll handle
+            # these later
+            try:
+                town = row[('Service Type', 'Town (Child Residence)')].title()
+                
+                # As above, we'll do our own totals; also, footnotes aren't towns
+                if 'Total' not in town and 'Note:' not in town:
+                    for c in xls.columns:
+                        if 'Town' not in c[1]:
+                            reg = c[0]
+                            setting = c[1].replace('\n', ' ')
+                            if 'Total' in setting:
+                                setting = 'Total'
+                                reg = 'Total'
+                            
+                            # Clear away asterisk notes that reference footnotes
+                            # Numerically, these shouldn't drastically affect our
+                            # results because a) the magnitude is either < 5, or b)
+                            # it's > 5 but no one knows which way
+                            enrollments = str(row[c]).replace('*', '').strip()
+                            if enrollments == '':
+                                enrollments = 0
+                            rows.append([year, month, town, ag, reg, setting, enrollments])
 
-df.to_csv(OUT_FILE, index=False)
+            except:
+                pass
+
+    df = pd.DataFrame(rows, columns=SCHEMA_COLS)
+    return df      
+
+
+if __name__ == '__main__':
+    
+    # If it's the first file we process, just use that as the base DF
+    is_first = True
+    
+    for filename in os.listdir(DATA_DIR):
+        if '2016' in filename or '2017' in filename:
+            file_df = parse_pre_18_report(filename)
+        else:
+            first_row = pd.read_excel(DATA_DIR + filename, sheet_name=0, header=None, nrows=1, skiprows=1)
+            
+            # Once again, some files randomly add or subtract multiple rows
+            # of information (such as Report IDs or Org IDs)--ignore these
+            # and search for the reporting 'period'
+            if not 'period' in str(first_row.loc[0,0]).lower():
+                first_row = pd.read_excel(DATA_DIR + filename, sheet_name=0, header=None, nrows=1, skiprows=0)
+                
+            # Get the date from our forced find
+            working_date = re.search('\d+\/\d+\/\d+', first_row.loc[0,0])[0]
+            working_date = working_date.split("/")
+            month = get_month(working_date[0].strip())
+            year = working_date[-1].strip()
+            
+            file_df = parse_post_18_report(filename, month, year)
+            
+        # Accumulate information the right way
+        if is_first:
+            is_first = False
+            df = file_df
+        else:
+            df = df.append(file_df)
+            
+    # Correct any dashes or nan values
+    df.replace('-', 0, inplace=True)
+    df.fillna(0, inplace=True)
+    
+    df.to_csv(OUT_FILE, index=False)
 
 
 
