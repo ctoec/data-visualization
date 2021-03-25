@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       # File system is mounted on volume vol-067000fe41671b6b0 (Initially mounted using steps here https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html)
-      - ./postgres_mounted_data:/var/lib/postgresql/data
+      - ./postgres_data_mounted:/var/lib/postgresql/data
 
   superset:
     env_file: .env
