@@ -1,6 +1,7 @@
 import pandas as pd
 import censusdata
 
+
 '''
 Poverty levels come from https://aspe.hhs.gov/poverty-guidelines
 State SMI numbers come from https://www.ctcare4kids.com/income-guidelines-for-new-applications/ 
@@ -81,9 +82,9 @@ def get_town_estimates(df, cutoff=LAST_BUCKET, last_proportion=PROPORTION_OF_LAS
     return final_df
 
 
-if __name__ == '__main__':
+def get_town_eligible_df():
     state_under_6, town_under_6 = get_under_6_full_poverty_levels()
     town_under_6.rename(columns=lambda x: rename_poverty_cols(x), inplace=True)
     town_under_6 = clean_town_name(town_under_6)
     town_df = get_town_estimates(town_under_6)
-    town_df.to_csv('town_estimates.csv', index=False)
+    return town_df
