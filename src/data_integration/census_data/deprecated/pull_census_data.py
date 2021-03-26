@@ -4,12 +4,7 @@ import censusdata
 from us import states
 from census_fields import CENSUS_FIELDS
 from shapefiles import TOWN
-
 import pandas as pd
-
-CENSUS_API_KEY = '98a3cf08d29a1fdb0e6ad0c5107f66bf932bfba4' # Get an API key https://api.census.gov/data/key_signup.html
-TOWN = 'county subdivision' # For Connecticut, county subdivision corresponds to towns
-CENSUS_FIELD_LIMIT = 49 # Census field limit is 50 but we are including name in each call
 
 CENSUS_API_KEY = '' # Get an API key https://api.census.gov/data/key_signup.html
 CENSUS_FIELD_LIMIT = 50
@@ -68,30 +63,6 @@ def _get_census_fields(fields: list, year: int = 2019, data_set: str = 'acs/acs5
     return df
 
 
-def filter_concepts(search_term):
-    """
-    Uses census data package to more effectively search for a certain term
-    :param search_term:
-    :return: list of all metrics that have the search term in the concept
-    """
-    init_list = censusdata.search('acs5', 2019, 'concept', search_term)
-    concept_set = set([x[1] for x in init_list])
-    for x in concept_set:
-        print(x)
-    return init_list
-
-
-def get_code_from_concept(concept_name, init_list):
-    """
-    Gets precise code information from concept name
-    :param concept_name: Precise concept name that will be exact matched
-    :param init_list: list from filter_concepts of all potential concept fields
-    :return: Tuple of code, concept and metric name
-    """
-
-    for x in init_list:
-        if x[1] == concept_name:
-            return x
 
 
 if __name__ == '__main__':
