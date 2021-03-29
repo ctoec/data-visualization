@@ -20,10 +20,8 @@ gain is minimal. So, lists of lists is what's happening.
 
 # Where all the historical reports are, named exactly as they
 # were downloaded
-DATA_DIR = "enrollment_reports/"
+DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + "/enrollment_reports/"
 
-# File to write the result artifact aggregated DF to
-OUT_FILE = "all_c4k_data.csv"
 
 # These are the columns we'll keep in our database-like CSV
 SCHEMA_COLS = ['year', 'month', 'town', 'age', 'regulation', 'setting', 'enrollments']
@@ -224,7 +222,7 @@ def parse_post_18_report(filename, month, year):
     return df      
 
 
-if __name__ == '__main__':
+def get_historical_c4k(final_filename):
     
     # If it's the first file we process, just use that as the base DF
     is_first = True
@@ -260,7 +258,7 @@ if __name__ == '__main__':
     df.replace('-', 0, inplace=True)
     df.fillna(0, inplace=True)
     
-    df.to_csv(OUT_FILE, index=False)
+    df.to_csv(final_filename, index=False)
 
 
 

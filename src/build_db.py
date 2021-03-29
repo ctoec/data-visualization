@@ -10,6 +10,7 @@ from data_integration.connections.databases import get_db_connection
 from demand_estimation.estimate_eligible_population import get_town_eligible_df
 from demand_estimation.calculate_town_demand import create_final_town_demand
 from demand_estimation.demand_estimate_script import build_need_demand_df
+from data_integration.historical_care_4_kids.data_aggregation import get_historical_c4k
 
 DB_DATA_FOLDER = 'final_data'
 CUR_FOLDER = os.path.dirname(os.path.realpath(__file__))
@@ -75,3 +76,6 @@ if __name__ == '__main__':
 
     # Build demand estimates
     get_demand_estimates(filename=f"{DB_DATA_FOLDER}/demand_estimation.csv")
+
+    # Get C4K data
+    get_historical_c4k(final_filename=f"{DB_DATA_FOLDER}/all_c4k_data.csv")
