@@ -5,5 +5,10 @@ SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://superset_admin:{os.environ["PO
 MAPBOX_API_KEY=f'{os.environ["MAPBOX_KEY"]}'
 ENABLE_JAVASCRIPT_CONTROLS = True
 
-CACHE_DIR='/home/ec2-user/docker'
-CACHE_TYPE='FileSystemCache'
+# Default cache for Superset objects
+CACHE_CONFIG = {"CACHE_TYPE": "FileSystemCache",
+                "CACHE_DIR": "/home/ec2-user/docker/cache"}
+
+# Cache for datasource metadata and query results
+DATA_CACHE_CONFIG = {"CACHE_TYPE": "FileSystemCache",
+                     "CACHE_DIR": "/home/ec2-user/docker/cache"}
