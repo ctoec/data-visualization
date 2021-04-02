@@ -6,9 +6,9 @@ MAPBOX_API_KEY=f'{os.environ["MAPBOX_KEY"]}'
 ENABLE_JAVASCRIPT_CONTROLS = True
 
 # Default cache for Superset objects
-CACHE_CONFIG = {"CACHE_TYPE": "FileSystemCache",
+CACHE_CONFIG = {"CACHE_TYPE": "filesystem",
                 "CACHE_DIR": "/cache"}
 
 # Cache for datasource metadata and query results
-DATA_CACHE_CONFIG = {"CACHE_TYPE": "FileSystemCache",
+DATA_CACHE_CONFIG = {"CACHE_TYPE": "filesystem",
                      "CACHE_DIR": "/cache"}
