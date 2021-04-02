@@ -92,7 +92,7 @@ Ideally, code changes, including the addition of new metrics, will be in separat
 
 #### Pre-production dashboards
 
-Pre-production dashboards can be edited and reviewed directly before they are published. Once the team has determined the dashboard is ready to go live the dashboard itself can be set to published and it can be given a "slug" (name in the URL).
+Pre-production dashboards can be edited and reviewed directly before they are published. Once the team has determined the dashboard is ready to go live the dashboard itself can be set to published and it can be given a "slug" (name in the URL). All draft dashboards should have "DRAFT" in the title.
   
 #### Production dashboards
 
@@ -105,6 +105,11 @@ Live production dashboards can be edited safely with the following process:
 1. Legacy dashboard can be deleted once the new one is up. 
 1. A new copy can then be made for future changes when needed.
 
+
+### Superset Security
+
+Superset ships with multiple security [roles](https://apache-superset.readthedocs.io/en/0.28.1/security.html). An additional role exists for OEC
+that disables an overall dashboard list view. All roles can be configured in Settings -> List Users, and Settings -> List Roles.
 
 ### Editing and creating tables, metrics and columns
 
