@@ -7,8 +7,8 @@ ENABLE_JAVASCRIPT_CONTROLS = True
 
 # Default cache for Superset objects
 CACHE_CONFIG = {"CACHE_TYPE": "FileSystemCache",
-                "CACHE_DIR": "/home/ec2-user/docker/cache"}
+                "CACHE_DIR": "/cache"}
 
 # Cache for datasource metadata and query results
 DATA_CACHE_CONFIG = {"CACHE_TYPE": "FileSystemCache",
-                     "CACHE_DIR": "/home/ec2-user/docker/cache"}
+                     "CACHE_DIR": "/cache"}
