@@ -15,18 +15,6 @@ DATA_CACHE_CONFIG = {"CACHE_TYPE": "filesystem",
                      "CACHE_DIR": "/cache"}
 
 CELERYBEAT_SCHEDULE = {
-        "email_reports.schedule_hourly": {
-            "task": "email_reports.schedule_hourly",
-            "schedule": crontab(minute=1, hour="*"),
-        },
-        "reports.scheduler": {
-            "task": "reports.scheduler",
-            "schedule": crontab(minute="*", hour="*"),
-        },
-        "reports.prune_log": {
-            "task": "reports.prune_log",
-            "schedule": crontab(minute=0, hour=0),
-        },
         # From https://superset.apache.org/docs/installation/cache
         'cache-warmup-daily': {
                 'task': 'cache-warmup',
