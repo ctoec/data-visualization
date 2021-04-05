@@ -20,5 +20,6 @@ services:
     volumes:
       - ./config:/app/pythonpath
       - ./images:/app/superset/static/assets/images/mounted_images/
+      - ./cache:/cache
     ports:
       - "8088:8080"
