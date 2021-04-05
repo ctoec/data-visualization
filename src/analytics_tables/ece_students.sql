@@ -32,7 +32,7 @@ create table uploaded_data.ece_student_data
 	hispanic_or_latinx_ethnicity varchar(20),
 	gender varchar(20),
 	dual_language_learner varchar(20),
-	recieves_disability_services varchar(20),
+	receives_disability_services varchar(20),
 	family_town varchar(255),
 	family_state varchar(255),
 	family_zip_code varchar(255),

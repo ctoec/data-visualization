@@ -40,7 +40,7 @@ select
 	child.hispanicOrLatinxEthnicity as hispanic_or_latinx_ethnicity,
 	child.gender,
     child.dualLanguageLearner as dual_language_learner,
-    child.receivesDisabilityServices as recieves_disability_services,
+    child.receivesDisabilityServices as receives_disability_services,
     family.town as family_town,
     family.state as family_state,
     family.zipCode as family_zip_code,

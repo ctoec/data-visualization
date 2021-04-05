@@ -68,14 +68,17 @@ if __name__ == '__main__':
     # get_supply_demand_with_cae(filename=f'{DB_DATA_FOLDER}/overall_supply_demand_with_cae.csv')
 
     # Write July data CSV
-    # get_july_2020_sites(filename=f"{DB_DATA_FOLDER}/july_2020_sites.csv")
-    # get_july_2020_students(filename=f"{DB_DATA_FOLDER}/pii/july_2020.csv")
+    get_july_2020_sites(filename=f"{DB_DATA_FOLDER}/july_2020_sites.csv")
+    get_july_2020_students(filename=f"{DB_DATA_FOLDER}/pii/july_2020.csv")
 
     # Get ECE Data
     get_ece_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
 
+    ## TODO
+    # Add ECE table creation into script as well as loading CSV directly to DB
+
     # Build demand estimates
-    # get_demand_estimates(filename=f"{DB_DATA_FOLDER}/demand_estimation.csv")
+    get_demand_estimates(filename=f"{DB_DATA_FOLDER}/demand_estimation.csv")
 
     # Get C4K data
-    # get_historical_c4k(final_filename=f"{DB_DATA_FOLDER}/all_c4k_data.csv")
+    get_historical_c4k(final_filename=f"{DB_DATA_FOLDER}/all_c4k_data.csv")
