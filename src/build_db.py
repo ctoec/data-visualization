@@ -1,4 +1,5 @@
 import os
+from sqlalchemy import text
 from data_integration.census_data.field_lookup import create_census_variable_output
 from data_integration.unmet_needs.unmet_needs import get_supply_demand_with_cae
 from data_integration.ece_data.pull_ece_data import backfill_ece, get_space_df
@@ -16,6 +17,7 @@ DB_DATA_FOLDER = 'final_data'
 CUR_FOLDER = os.path.dirname(os.path.realpath(__file__))
 NEED_SINGLE_VARIABLE = f'{CUR_FOLDER}/demand_estimation/need_single_field_lookups.txt'
 NEED_MULTI_VARIABLE = f'{CUR_FOLDER}/demand_estimation/need_combination_field_lookups.txt'
+TABLE_FOLDER = f'{CUR_FOLDER}/analytics_tables/'
 
 
 def get_demand_estimates(filename):
@@ -49,15 +51,13 @@ def get_july_2020_students(filename):
     merge_legislative_data(student_df, filename)
 
 
-def load_shapefiles_to_db(init_postgis=False):
+def load_shapefiles_to_db(db_engine):
     """
-    Loads town, house and senate shapefiles to the
-    :param init_postgis: Boolean whether to install postgis in database
+    Loads town, house and senate shapefiles to the dashboard database
+    :param db_engine: SQLAlchemy engine
     :return: None, adds data to DB
     """
-    db_engine = get_db_connection(section='SUPERSET DB')
-    if init_postgis:
-        db_engine.execute('CREATE EXTENSION postgis')
+
     town_cols = ['NAME', 'STATEFP', 'COUNTYFP', 'COUSUBFP', 'lat', 'long']
     load_level_table(geo_level=TOWN, table_name='ct_town_geo', columns=town_cols, engine=db_engine)
 
@@ -68,8 +68,27 @@ def load_shapefiles_to_db(init_postgis=False):
     load_level_table(geo_level=SENATE, table_name='ct_house_geo', columns=senate_cols, engine=db_engine)
 
 
-if __name__ == '__main__':
+def init_database(init_postgis: bool=False):
+    """
+    Adds initial tables to database and loads postgis
+    :param init_postgis: Boolean whether to install postgis in database
+    :return:
+    """
+    db_engine = get_db_connection(section='SUPERSET DB')
+    if init_postgis:
+        db_engine.execute('CREATE EXTENSION postgis')
+    load_shapefiles_to_db(db_engine)
+    for filename in os.listdir(TABLE_FOLDER):
+        print(f"Creating {filename}")
+        db_engine.execute(text(open(TABLE_FOLDER + filename).read()))
 
+
+
+
+
+
+if __name__ == '__main__':
+    init_database()
     # Write CAE CSV
     get_supply_demand_with_cae(filename=f'{DB_DATA_FOLDER}/overall_supply_demand_with_cae.csv')
 
