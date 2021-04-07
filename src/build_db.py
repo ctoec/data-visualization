@@ -1,7 +1,7 @@
 import os
 from data_integration.census_data.field_lookup import create_census_variable_output
 from data_integration.unmet_needs.unmet_needs import get_supply_demand_with_cae
-from data_integration.ece_data.pull_ece_data import backfill_ece
+from data_integration.ece_data.pull_ece_data import backfill_ece, get_space_df
 from data_integration.july_2020.build_tables import build_site_df, build_student_df
 from data_integration.july_2020.merge_leg import merge_legislative_data
 from data_integration.census_data.setup_geo_json import load_level_table
@@ -26,10 +26,16 @@ def get_demand_estimates(filename):
     create_final_town_demand(parent_metric_df=demand_df, smi_df=eligible_df, write_filename=filename)
 
 
-def get_ece_data(filename):
+def get_ece_student_data(filename):
     ece_conn = get_db_connection(section='ECE Reporter DB')
     child_df = backfill_ece(ece_conn)
     child_df.to_csv(filename, index=False)
+
+
+def get_ece_site_date(filename):
+    ece_conn = get_db_connection(section='ECE Reporter DB')
+    site_df = get_space_df(ece_conn)
+    site_df.to_csv(filename, index=False)
 
 
 def get_july_2020_sites(filename):
@@ -65,14 +71,15 @@ def load_shapefiles_to_db(init_postgis=False):
 if __name__ == '__main__':
 
     # Write CAE CSV
-    # get_supply_demand_with_cae(filename=f'{DB_DATA_FOLDER}/overall_supply_demand_with_cae.csv')
+    get_supply_demand_with_cae(filename=f'{DB_DATA_FOLDER}/overall_supply_demand_with_cae.csv')
 
     # Write July data CSV
     get_july_2020_sites(filename=f"{DB_DATA_FOLDER}/july_2020_sites.csv")
     get_july_2020_students(filename=f"{DB_DATA_FOLDER}/pii/july_2020.csv")
 
     # Get ECE Data
-    get_ece_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
+    get_ece_student_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
+    get_ece_site_date(filename=f"{DB_DATA_FOLDER}/ece_space_data.csv")
 
     ## TODO
     # Add ECE table creation into script as well as loading CSV directly to DB
