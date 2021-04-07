@@ -121,3 +121,5 @@ Live production dashboards can be edited safely with the following process:
 - Clean up town names
 - Resolve outstanding student records that aren't matching to any sites
 
+#### Data Pipeline TODOS
+- Create cadence for pulling new data from ECE Reporter as it is input (funding spaces and student)
