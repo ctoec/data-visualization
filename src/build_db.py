@@ -78,6 +78,8 @@ def init_database(init_postgis: bool=False):
     if init_postgis:
         db_engine.execute('CREATE EXTENSION postgis')
     load_shapefiles_to_db(db_engine)
+
+    # Load all tables in analytics table folder
     for filename in os.listdir(TABLE_FOLDER):
         print(f"Creating {filename}")
         db_engine.execute(text(open(TABLE_FOLDER + filename).read()))
