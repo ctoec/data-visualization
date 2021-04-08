@@ -36,8 +36,11 @@ When the database is initially built it needs to be set up with the following st
    - `CREATE EXTENSION postgis;`
 1. Populate a `config.ini` file in `src/data_integration/connections` using the format in `src/data_integration/connections/config_template.ini`
 1. Run `build_db.py` to create csvs
+1. Load shapefiles and initialize tables by running the `init_database` function in `build_db.py` in either the Python console on a standalone script.
 1. Load CSVs from `final_data` into tables with the same name as the files.
-1. Load shapefiles running the `load_shapefiles_to_db` function in `build_db.py` in either the Python console on a standalone script.
+    - The ECE student table will need to be loaded through some method other than the Superset UI (it is too big). This 
+    can either be through a database UI or a command line tool (psql) to [copy the file into the database](https://www.postgresqltutorial.com/import-csv-file-into-posgresql-table/).
+
 
 ### Data Sources (in final_data)
 
@@ -66,11 +69,15 @@ When the database is initially built it needs to be set up with the following st
       - For backfilling data this approach does not work because data wasn't in the DB for some of these periods. March 8th 
       will be the date that is used in this case since it was the first deadline for data submission.  
   - C4K data is not included 
+  - Capacity data is pulled directly from the funding space table and only includes CDC and SS data. School Readiness data
+  is unreliable and Head Start doesn't have defined spaces.
    
 #### Reference data
 
 - `src/data_integration/july_2020/reference_data/fpl_and_smi.csv` is copied from data given to Skylight by OEC in 2020.
 - `src/demand_estimation/oec_smi_data.csv` is the current (3/2021) data used by OEC to calculate State Median Income (SMI) and Poverty Level.
+   - Poverty levels come from https://aspe.hhs.gov/poverty-guidelines
+   - State SMI numbers come from https://www.ctcare4kids.com/income-guidelines-for-new-applications/ 
 - `src/data_integration/july_2020/reference_data/site_lat_long_lookup.json` is a json dictionary with a store of data collected from the Census API keyed with the called address.
 - `src/data_integration/historical_care_4_kids/` is data crawled from `https://www.ctcare4kids.com/care-4-kids-program/reports/`, which contains town-level enrollment reports giving the number of enrolled children in each of a variety of care settings. Data from 2018 is missing, so the most reliable "five year span" includes four years of data: 2016-17 and 2019-20.
   
@@ -123,3 +130,5 @@ that disables an overall dashboard list view. All roles can be configured in Set
 - Clean up town names
 - Resolve outstanding student records that aren't matching to any sites
 
+#### Data Pipeline TODOS
+- Create cadence for pulling new data from ECE Reporter as it is input (funding spaces and student)

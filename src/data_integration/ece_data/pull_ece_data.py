@@ -9,9 +9,21 @@ from datetime import datetime
 # File paths
 DIR_NAME = os.path.dirname(os.path.realpath(__file__))
 CHILD_SQL_FILE = DIR_NAME + '/child_pull.sql'
+SPACE_SQL_FILE = DIR_NAME + '/space_pull.sql'
 START_DATE = '2020-07-01'
 END_DATE = '2021-02-01'
 BACKFILL_DATA_ACTIVE_DATA = '2021-03-15'
+
+
+def get_space_df(db_conn: sqlalchemy.engine) -> pd.DataFrame:
+    """
+    Pulls capacity by organization
+    :param db_conn: connection to run DB query
+    :return: Dataframe of funding space table
+    """
+    df = pd.read_sql(sql=text(open(SPACE_SQL_FILE).read()), con=db_conn)
+    return df
+
 
 def get_beginning_and_end_of_month(date: datetime.date) -> (datetime.date, datetime.date):
     """
