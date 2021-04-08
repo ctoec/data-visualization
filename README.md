@@ -69,6 +69,8 @@ When the database is initially built it needs to be set up with the following st
       - For backfilling data this approach does not work because data wasn't in the DB for some of these periods. March 8th 
       will be the date that is used in this case since it was the first deadline for data submission.  
   - C4K data is not included 
+  - Capacity data is pulled directly from the funding space table and only includes CDC and SS data. School Readiness data
+  is unreliable and Head Start doesn't have defined spaces.
    
 #### Reference data
 

@@ -5,3 +5,6 @@ SELECT id as funding_space_id,
        organizationId as organization_id,
        CASE capacity WHEN -1 THEN null else capacity END
 FROM funding_space
+-- Only CDC and Smart Start currently have valid capacity numbers. Once we have a system for collecting
+-- School Readiness data those funding streams can be included
+WHERE source IN ('CDC', 'SS')
