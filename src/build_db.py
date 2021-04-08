@@ -34,7 +34,7 @@ def get_ece_student_data(filename):
     child_df.to_csv(filename, index=False)
 
 
-def get_ece_site_date(filename):
+def get_ece_site_data(filename):
     ece_conn = get_db_connection(section='ECE Reporter DB')
     site_df = get_space_df(ece_conn)
     site_df.to_csv(filename, index=False)
@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
     # Get ECE Data
     get_ece_student_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
-    get_ece_site_date(filename=f"{DB_DATA_FOLDER}/ece_space_data.csv")
+    get_ece_site_data(filename=f"{DB_DATA_FOLDER}/ece_space_data.csv")
 
     ## TODO
     # Add ECE table creation into script as well as loading CSV directly to DB
