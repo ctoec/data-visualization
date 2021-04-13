@@ -10,4 +10,4 @@ services:
       - ./images:/app/superset/static/assets/images/mounted_images/
       - ./cache:/cache
     ports:
-      - "0.0.0.0:8088:8080"
+      - "8088:8088"
