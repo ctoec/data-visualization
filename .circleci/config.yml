@@ -13,11 +13,11 @@ jobs:
       - run:
           name: 'Install Git'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo yum install git"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo yum install git -y"
       - run:
           name: 'Install Docker Engine'
           command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo amazon-linux-extras install docker"
+            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo amazon-linux-extras install docker -y"
       - run:
           name: 'Start Docker'
           command: |
