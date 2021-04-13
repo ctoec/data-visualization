@@ -1,0 +1,15 @@
+# FORMAT
+# root naming convention; base table code; highest field number; comma-separated solo fields; comma-separated solo-field names; comma-separated sequences of fields to aggregate separated by +; comma-separated names
+# Example:
+#	transport to work; B08301; 21; 2, 10; car/truck/van, public transport; 16,17,18,19,20; other
+#	will generate 3 variables. 2 are "solo" fields that are directly pulled from census fields,
+#	which are B08301_002E and B08301_010E, and these fields will be renamed as:
+#		* transport to work - car/truck/van
+#		* transport to work - public transport
+#	The third field will be called "transport to work - other" and will be created by aggregating
+#	fields B08301_0[16:20]E into a single column. 
+
+
+ratio of income to poverty level; B17026; 13; 2; < 0.5; 3,4 + 5,6,7,8,9 + 10,11,12,13; 0.51 - 1.0, 1.01 - 2.0, > 2.0
+children under 6 ratio of income to poverty level; B17024; 14; 3; < 0.5; 4,5 + 6,7,8,9,10 + 11,12,13,14; 0.51 - 1.0, 1.01 - 2.0, > 2.0
+children under 6 by parent employment status; B23008; 13; 2,4,10,13; all categories, both parents - in labor force, only father - in labor force, only mother - in labor force; ;

@@ -6,7 +6,7 @@ from build_legislative_lookup import SITE_LEGIS_LOOKUP, parse_legislator_results
 from constants import JULY_2020_DATA_FILE, PROGRAM_TOTAL_COLS, PII_COLUMNS, DUMMY_REGION, \
     SMI_AND_FPL_DATA, RENAME_DICT, SITE_COL_RENAME_DICT, FACILITY_CODE_COL, SITE_FACILITY_LOOKUP_DICT, \
     SITE_FINAL_COLS, JULY_2020_SITE_DATA_FILE, \
-    STUDENT_FILE, SITE_FILE, LAT_LONG_LOOKUP
+    LAT_LONG_LOOKUP
 
 
 def standardize_facility_string(col: pd.Series) -> pd.Series:
@@ -214,15 +214,3 @@ def merge_legislative_data(df: pd.DataFrame, join_col=FACILITY_CODE_COL) -> pd.D
     merged_df = df.merge(leg_df, how='left', on=join_col)
     return merged_df
 
-
-if __name__ == '__main__':
-
-    site_df = build_site_df()
-    student_df = build_student_df()
-
-    # Add in legislative data
-    student_legislature_df = merge_legislative_data(student_df)
-    site_legislature_df = merge_legislative_data(site_df)
-
-    student_legislature_df.to_csv(STUDENT_FILE, index=False)
-    site_legislature_df.to_csv(SITE_FILE, index=False)

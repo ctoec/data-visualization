@@ -1,14 +1,14 @@
 import json
 import pandas as pd
-from constants import  STUDENT_LEGIS_FILE
 from build_legislative_lookup import SITE_LEGIS_LOOKUP, parse_legislator_results
 
 
-def merge_legislative_data(student_df):
+def merge_legislative_data(student_df, write_file):
     """
     Combines legislative data associated with a site with student data to build a table that can show
     legislators associated with children attending sites in their districts
     :param student_df:
+    :param write_file:
     :return: None, saves file to disk
     """
 
@@ -32,8 +32,5 @@ def merge_legislative_data(student_df):
     # Build table with
 
     merged_df = student_df.merge(leg_df, how='left', on='Facility Code')
-    merged_df.to_csv(STUDENT_LEGIS_FILE, index=False)
+    merged_df.to_csv(write_file, index=False)
 
-from constants import STUDENT_FILE
-df = pd.read_csv(STUDENT_FILE)
-merge_legislative_data(df)

@@ -9,18 +9,20 @@ from datetime import datetime
 # File paths
 DIR_NAME = os.path.dirname(os.path.realpath(__file__))
 CHILD_SQL_FILE = DIR_NAME + '/child_pull.sql'
-CONFIG_FILE = DIR_NAME + '/config.ini'
-
-# Keys referring to configuration file
-HOST_KEY = 'host'
-DB_KEY = 'database'
-USER_KEY = 'user'
-PASSWORD_KEY = 'password'
-PORT_KEY = 'port'
-
+SPACE_SQL_FILE = DIR_NAME + '/space_pull.sql'
 START_DATE = '2020-07-01'
 END_DATE = '2021-02-01'
 BACKFILL_DATA_ACTIVE_DATA = '2021-03-15'
+
+
+def get_space_df(db_conn: sqlalchemy.engine) -> pd.DataFrame:
+    """
+    Pulls capacity by organization
+    :param db_conn: connection to run DB query
+    :return: Dataframe of funding space table
+    """
+    df = pd.read_sql(sql=text(open(SPACE_SQL_FILE).read()), con=db_conn)
+    return df
 
 
 def get_beginning_and_end_of_month(date: datetime.date) -> (datetime.date, datetime.date):
@@ -32,31 +34,6 @@ def get_beginning_and_end_of_month(date: datetime.date) -> (datetime.date, datet
     start = date.replace(day=1)
     end = date.replace(day=calendar.monthrange(date.year, date.month)[1])
     return start, end
-
-
-def get_mysql_connection(section: str, config_file: str = CONFIG_FILE) -> sqlalchemy.engine.base.Connection:
-    """
-    Reads a configuration file, connects to the specified database and returns sqlalchemy engine
-    :param section: section of configuration file that has DB creds
-    :param config_file: path to configuration file
-    :return engine: SQLAlchemy connection object
-    """
-    config = configparser.ConfigParser()
-    config.read(config_file)
-
-    # Get credentials from config file
-    ece_db_dict = config[section]
-    host = ece_db_dict[HOST_KEY]
-    user_name = ece_db_dict[USER_KEY]
-    password = ece_db_dict[PASSWORD_KEY]
-    db_name = ece_db_dict[DB_KEY]
-    port = ece_db_dict[PORT_KEY]
-
-    # Create and return DB connection
-    conn_string = f"mssql+pyodbc://{user_name}:{password}@{host},{port}/{db_name}?driver=ODBC+Driver+17+for+SQL+Server&Mars_Connection=Yes"
-    engine = sqlalchemy.create_engine(conn_string)
-    conn = engine.connect()
-    return conn
 
 
 def backfill_ece(db_conn: sqlalchemy.engine, start_month: str = START_DATE,
@@ -79,9 +56,3 @@ def backfill_ece(db_conn: sqlalchemy.engine, start_month: str = START_DATE,
         report_list.append(month_child_df)
     final_df = pd.concat(report_list)
     return final_df
-
-
-if __name__ == '__main__':
-    ece_conn = get_mysql_connection(section='ECE Reporter DB')
-    child_df = backfill_ece(ece_conn)
-    child_df.to_csv('data/combined_data.csv', index=False)

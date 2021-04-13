@@ -1,22 +1,13 @@
 version: "3.7"
 services:
 
-  db:
-    env_file: ./docker/.env
-    image: postgis/postgis:10-2.5-alpine
-    container_name: superset_db
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./docker/postgres_data:/var/lib/postgresql/data
-
   superset:
     env_file: ./docker/.env
     image: apache/incubator-superset
     container_name: superset
     volumes:
-      - ./docker/config:/app/pythonpath
-      - ./docker/images:/app/superset/static/assets/images/mounted_images/
+      - ./config:/app/pythonpath
+      - ./images:/app/superset/static/assets/images/mounted_images/
+      - ./cache:/cache
     ports:
       - "8088:8080"
