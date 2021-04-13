@@ -3,7 +3,7 @@ services:
 
   superset:
     env_file: ./docker/.env
-    image: apache/incubator-superset
+    image: apache/superset
     container_name: superset
     volumes:
       - ./config:/app/pythonpath
