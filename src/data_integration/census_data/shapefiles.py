@@ -11,12 +11,14 @@ DATA_FOLDER = 'data'
 # https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2020pl/TGRSHP2020PL_TechDoc.pdf
 # https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 # https://www2.census.gov/geo/tiger/GENZ2018/2018_file_name_def.pdf
+# https://www2.census.gov/geo/tiger/TIGER2020/2020_TL_Shapefiles_File_Name_Definitions.pdf
 TOWN = 'county subdivision'
 PUMA = 'puma'
 SENATE = 'sldu'
 HOUSE = 'sldl'
 TIGER = 'tiger'
 CARTO = 'carto'
+BLOCK = 'block'
 
 sub_county_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/COUSUB/tl_2020_09_cousub.zip'
 sub_county_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_cousub_500k.zip'
@@ -26,11 +28,13 @@ senate_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/SLDU/tl_20
 house_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/SLDL/tl_2020_09_sldl.zip'
 house_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sldl_500k.zip'
 senate_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sldu_500k.zip'
+block_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/BG/tl_2020_09_bg.zip'
 
 REFERENCE_DICT = {TOWN: {TIGER: sub_county_full_tiger_file, CARTO: sub_county_carto_file, },
                   PUMA: {TIGER: puma_full_tiger_file, CARTO: sub_county_carto_file},
                   SENATE: {TIGER: senate_full_tiger_file, CARTO: senate_carto_file},
-                  HOUSE: {TIGER: house_full_tiger_file, CARTO: house_carto_file}}
+                  HOUSE: {TIGER: house_full_tiger_file, CARTO: house_carto_file},
+                  BLOCK: {TIGER: block_full_tiger_file}}
 
 
 def download_all_data():
