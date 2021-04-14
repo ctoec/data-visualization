@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ ! -f .initialized ]; then                                                                                                                                                                                    
     echo "Creating admin user..."  
 
