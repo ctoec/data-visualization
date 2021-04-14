@@ -87,10 +87,6 @@ workflows:
           env: prod
           requires:
             - build
-      - setup-admin-user:
-          env: prod
-          requires:
-            - deploy
   deploy-staging:
     jobs:
       - hold:
@@ -103,7 +99,3 @@ workflows:
           env: staging
           requires:
             - build
-      - setup-admin-user:
-          env: staging
-          requires:
-            - deploy
