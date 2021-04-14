@@ -55,6 +55,7 @@ jobs:
       - run:
           name: Deploy to Elastic Beanstalk environment
           command: eb deploy ece-pensieve-<< parameters.env >>-env
+      - add_ssh_keys
       - run:
           name: Create admin user
           command: eb ssh ece-pensieve-<< parameters.env >>-env --command "docker exec -it superset superset fab create-admin --username 'voldemort' --firstname 'ADMIN' --lastname 'USER' --email 'admin@ctoec.org' --password 'password'"
