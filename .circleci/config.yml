@@ -55,6 +55,18 @@ jobs:
       - run:
           name: Deploy to Elastic Beanstalk environment
           command: eb deploy ece-pensieve-<< parameters.env >>-env
+
+  setup-admin-user:
+    parameters:
+      env:
+        description: 'The environment to deploy Superset to (staging or prod)'
+        type: string
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - attach_workspace:
+          at: .
+      - eb/setup
       - add_ssh_keys
       - run:
           name: Create admin user
@@ -73,6 +85,10 @@ workflows:
           env: prod
           requires:
             - build
+      - setup-admin-user:
+          env: prod
+          requires:
+            - deploy
   deploy-staging:
     jobs:
       - hold:
@@ -85,3 +101,7 @@ workflows:
           env: staging
           requires:
             - build
+      - setup-admin-user:
+          env: staging
+          requires:
+            - deploy
