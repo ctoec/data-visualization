@@ -2,7 +2,7 @@ import os
 from celery.schedules import crontab
 APP_ICON = '/static/assets/images/mounted_images/logo.png'
 APP_ICON_WIDTH = 35
-SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://superset_admin:{os.environ["POSTGRES_PASSWORD"]}@superset_db/superset'
+SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://pensieveadmin:{os.environ["POSTGRES_PASSWORD"]}@{os.environ["STAGE"]}.ece-pensieve-db.ctoecskylight.com/superset'
 MAPBOX_API_KEY=f'{os.environ["MAPBOX_KEY"]}'
 ENABLE_JAVASCRIPT_CONTROLS = True
 

@@ -22,6 +22,14 @@ jobs:
           command: |
              SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/db/password --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
       - run:
+          name: 'Add Admin Password to config files'
+          command: |
+             SUPERSET_ADMIN_PASSWORD=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/admin/password --query 'SecretString' --output text) && echo -e "ADMIN_PASSWORD=$SUPERSET_ADMIN_PASSWORD" >> docker/.env
+      - run:
+          name: 'Add stage to config files'
+          command: |
+             echo -e "STAGE=<< parameters.env >>" >> docker/.env
+      - run:
           name: 'Add Mapbox key to config file'
           command: |
             MAPBOX_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_KEY=$MAPBOX_KEY" >> docker/.env
