@@ -14,21 +14,20 @@ jobs:
     steps:
       - checkout
       - run:
-          name: 'Remove Postgres Password set up from env file'  
+          name: 'Set Postgres DB Password from Secrets Manager'  
           command: |
             sed -i '/POSTGRES_PASSWORD/d' docker/.env
+            SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/db/password --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
       - run:
-          name: 'Add DB Password to config files'
+          name: 'Set Postgres DB Host'
           command: |
-             SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/db/password --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
+            sed -i '/POSTGRES_HOST/d' docker/.env
+            echo -e "POSTGRES_HOST=<< parameters.env >>.ece-pensieve-db.ctoecskylight.com" >> docker/.env
       - run:
-          name: 'Add Admin Password to config files'
+          name: 'Set Admin Password for Superset from Secrets Manager'
           command: |
-             SUPERSET_ADMIN_PASSWORD=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/admin/password --query 'SecretString' --output text) && echo -e "ADMIN_PASSWORD=$SUPERSET_ADMIN_PASSWORD" >> docker/.env
-      - run:
-          name: 'Add stage to config files'
-          command: |
-             echo -e "STAGE=<< parameters.env >>" >> docker/.env
+            sed -i '/ADMIN_PASSWORD/d' docker/.env
+            SUPERSET_ADMIN_PASSWORD=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/admin/password --query 'SecretString' --output text) && echo -e "ADMIN_PASSWORD=$SUPERSET_ADMIN_PASSWORD" >> docker/.env
       - run:
           name: 'Add Mapbox key to config file'
           command: |
