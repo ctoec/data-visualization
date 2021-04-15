@@ -1,12 +1,14 @@
+import pandas as pd
 import geopandas as gpd
 import sqlalchemy
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.multipolygon import MultiPolygon
 from geoalchemy2 import Geometry, WKTElement
-from shapefiles import CARTO, build_level_df, DEFAULT_LAT_LONG_PROJ
+from shapefiles import CARTO, build_level_df, DEFAULT_LAT_LONG_PROJ, SENATE, HOUSE
 
 GEOMETRY_COL = 'geometry'
 DEFAULT_SCHEMA = 'uploaded_data'
+CT_OPEN_DATA_CSV = 'https://data.openstates.org/people/current/ct.csv'
 
 
 def convert_to_poly(geom) -> Polygon:
@@ -66,6 +68,15 @@ def load_level_table(geo_level, table_name, columns, engine, file_type=CARTO):
     :return: None, loads table to db
     """
 
-    # Load town data to Superset keeping data that will allow for joins to other Census and unmet needs data
-    town_geo_df = build_level_df(geo_level=geo_level, file_type=file_type)
-    write_to_sql(table_name=table_name, geo_df=town_geo_df, engine=engine, columns=columns)
+    # Load data to Superset keeping data that will allow for joins to other Census and unmet needs data
+    level_geo_df = build_level_df(geo_level=geo_level, file_type=file_type)
+
+    # If the dataset is a legislative district the name of the Legislator should be added
+    if geo_level in [SENATE, HOUSE]:
+        legis_df = pd.read_csv(CT_OPEN_DATA_CSV)
+        cur_chamber = 'lower' if geo_level == HOUSE else 'upper'
+        chamber_df = legis_df[legis_df['current_chamber'] == cur_chamber]
+        chamber_df['current_district'] = chamber_df['current_district'].astype(str).str.zfill(3)
+
+
+    write_to_sql(table_name=table_name, geo_df=level_geo_df, engine=engine, columns=columns)
