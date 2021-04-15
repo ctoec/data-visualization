@@ -8,6 +8,7 @@ from data_integration.july_2020.merge_leg import merge_legislative_data
 from data_integration.census_data.setup_geo_json import load_level_table
 from data_integration.census_data.shapefiles import TOWN, HOUSE, SENATE
 from data_integration.connections.databases import get_db_connection
+from data_integration.census_data.bulk_geocoding import run_geo_code
 from demand_estimation.estimate_eligible_population import get_town_eligible_df
 from demand_estimation.calculate_town_demand import create_final_town_demand
 from demand_estimation.demand_estimate_script import build_need_demand_df
@@ -33,6 +34,11 @@ def get_ece_student_data(filename):
     child_df = backfill_ece(ece_conn)
     child_df.to_csv(filename, index=False)
 
+
+def get_ece_geocode(filename):
+    ece_conn = get_db_connection(section='ECE Reporter DB')
+    geocode_df = run_geo_code(ece_conn)
+    geocode_df.to_csv(filename, index=False)
 
 def get_ece_site_data(filename):
     ece_conn = get_db_connection(section='ECE Reporter DB')
@@ -87,6 +93,7 @@ def init_database(init_postgis: bool=False):
 
 if __name__ == '__main__':
 
+
     # Write CAE CSV
     get_supply_demand_with_cae(filename=f'{DB_DATA_FOLDER}/overall_supply_demand_with_cae.csv')
 
@@ -97,6 +104,7 @@ if __name__ == '__main__':
     # Get ECE Data
     get_ece_student_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
     get_ece_site_data(filename=f"{DB_DATA_FOLDER}/ece_space_data.csv")
+    get_ece_geocode(filename="{DB_DATA_FOLDER}/pii/ece_student_data_geocode.csv")
 
     ## TODO
     # Add ECE table creation into script as well as loading CSV directly to DB

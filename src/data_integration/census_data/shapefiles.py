@@ -30,7 +30,7 @@ house_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sl
 senate_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sldu_500k.zip'
 block_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/BG/tl_2020_09_bg.zip'
 
-REFERENCE_DICT = {TOWN: {TIGER: sub_county_full_tiger_file, CARTO: sub_county_carto_file, },
+REFERENCE_DICT = {TOWN: {TIGER: sub_county_full_tiger_file, CARTO: sub_county_carto_file},
                   PUMA: {TIGER: puma_full_tiger_file, CARTO: sub_county_carto_file},
                   SENATE: {TIGER: senate_full_tiger_file, CARTO: senate_carto_file},
                   HOUSE: {TIGER: house_full_tiger_file, CARTO: house_carto_file},
