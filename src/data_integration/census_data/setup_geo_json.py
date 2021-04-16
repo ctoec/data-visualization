@@ -4,7 +4,7 @@ import sqlalchemy
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.multipolygon import MultiPolygon
 from geoalchemy2 import Geometry, WKTElement
-from shapefiles import CARTO, build_level_df, DEFAULT_LAT_LONG_PROJ, SENATE, HOUSE
+from shapefiles import CARTO, build_level_df, DEFAULT_LAT_LONG_PROJ, SENATE, HOUSE, FINAL_SENATE_ID, FINAL_HOUSE_ID
 
 LEGISLATOR_RENAME = {'name': 'legislator_name',
                      'current_party': 'legislator_party'}
@@ -89,7 +89,7 @@ def load_level_table(geo_level, table_name, columns, engine, file_type=CARTO):
         legis_df[CURRENT_DISTRICT] = legis_df.loc[:,CURRENT_DISTRICT].astype(str).str.zfill(3)
 
         # join chamber with names to level df
-        geo_leg_key = geo_level.lower() + 'st'
+        geo_leg_key = FINAL_HOUSE_ID if geo_level == HOUSE else FINAL_SENATE_ID
         level_geo_df = level_geo_df.merge(legis_df, how='left', left_on=geo_leg_key, right_on=CURRENT_DISTRICT)
 
     write_to_sql(table_name=table_name, geo_df=level_geo_df, engine=engine, columns=columns)
