@@ -6,9 +6,14 @@ from shapely.geometry.multipolygon import MultiPolygon
 from geoalchemy2 import Geometry, WKTElement
 from shapefiles import CARTO, build_level_df, DEFAULT_LAT_LONG_PROJ, SENATE, HOUSE
 
+LEGISLATOR_RENAME = {'name': 'legislator_name',
+                     'current_party': 'legislator_party'}
 GEOMETRY_COL = 'geometry'
 DEFAULT_SCHEMA = 'uploaded_data'
 CT_OPEN_DATA_CSV = 'https://data.openstates.org/people/current/ct.csv'
+
+# Name of column corresponding the text code associated with the district number
+CURRENT_DISTRICT = 'current_district'
 
 
 def convert_to_poly(geom) -> Polygon:
@@ -70,13 +75,22 @@ def load_level_table(geo_level, table_name, columns, engine, file_type=CARTO):
 
     # Load data to Superset keeping data that will allow for joins to other Census and unmet needs data
     level_geo_df = build_level_df(geo_level=geo_level, file_type=file_type)
+    level_geo_df = level_geo_df.rename(columns=lambda x: x.lower())
 
     # If the dataset is a legislative district the name of the Legislator should be added
     if geo_level in [SENATE, HOUSE]:
         legis_df = pd.read_csv(CT_OPEN_DATA_CSV)
-        cur_chamber = 'lower' if geo_level == HOUSE else 'upper'
-        chamber_df = legis_df[legis_df['current_chamber'] == cur_chamber]
-        chamber_df['current_district'] = chamber_df['current_district'].astype(str).str.zfill(3)
 
+        # Reduce legislator df to relevant columns
+        cur_chamber = 'lower' if geo_level == HOUSE else 'upper'
+        legis_df = legis_df.loc[legis_df['current_chamber'] == cur_chamber]
+        legis_df = legis_df.rename(columns=LEGISLATOR_RENAME)
+
+        # Update district to facilitate joins
+        legis_df[CURRENT_DISTRICT] = legis_df.loc[:,CURRENT_DISTRICT].astype(str).str.zfill(3)
+
+        # join chamber with names to level df
+        geo_leg_key = geo_level.lower() + 'st'
+        level_geo_df = level_geo_df.merge(legis_df, how='left', left_on=geo_leg_key, right_on=CURRENT_DISTRICT)
 
     write_to_sql(table_name=table_name, geo_df=level_geo_df, engine=engine, columns=columns)

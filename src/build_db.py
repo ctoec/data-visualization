@@ -58,13 +58,13 @@ def load_shapefiles_to_db(db_engine):
     :return: None, adds data to DB
     """
 
-    town_cols = ['NAME', 'STATEFP', 'COUNTYFP', 'COUSUBFP', 'lat', 'long']
+    town_cols = ['name', 'statefp', 'countyfp', 'cousubfp', 'geoid', 'lat', 'long']
     load_level_table(geo_level=TOWN, table_name='ct_town_geo', columns=town_cols, engine=db_engine)
 
-    house_cols = ['STATEFP', 'SLDLST', 'lat', 'long']
+    house_cols = ['statefp', 'sldlst','geoid' 'lat', 'long']
     load_level_table(geo_level=HOUSE, table_name='ct_house_geo', columns=house_cols, engine=db_engine)
 
-    senate_cols = ['STATEFP', 'SLDUST', 'lat', 'long']
+    senate_cols = ['statefp', 'sldust', 'geoid', 'lat', 'long']
     load_level_table(geo_level=SENATE, table_name='ct_house_geo', columns=senate_cols, engine=db_engine)
 
 
