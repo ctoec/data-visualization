@@ -11,12 +11,45 @@ DATA_FOLDER = 'data'
 # https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2020pl/TGRSHP2020PL_TechDoc.pdf
 # https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 # https://www2.census.gov/geo/tiger/GENZ2018/2018_file_name_def.pdf
+# https://www2.census.gov/geo/tiger/TIGER2020/2020_TL_Shapefiles_File_Name_Definitions.pdf
 TOWN = 'county subdivision'
 PUMA = 'puma'
 SENATE = 'sldu'
 HOUSE = 'sldl'
 TIGER = 'tiger'
 CARTO = 'carto'
+BLOCK = 'block'
+
+CENSUS_NAME = 'NAME'
+CENSUS_STATE_ID = 'STATEFP'
+CENSUS_COUNTY_ID = 'COUNTYFP'
+CENSUS_TOWN_ID = 'COUSUBFP'
+CENSUS_GEO_ID = 'GEOID'
+CENSUS_HOUSE_ID = 'SLDLST'
+CENSUS_SENATE_ID = 'SLDUST'
+CENSUS_TRACT_ID = 'TRACTCE'
+CENSUS_BLOCK_ID = 'BLKGRPCE'
+
+FINAL_NAME = 'name'
+FINAL_STATE_ID = 'state_id'
+FINAL_COUNTY_ID = 'county_id'
+FINAL_TOWN_ID = 'town_id'
+FINAL_GEO_ID = 'geo_id'
+FINAL_HOUSE_ID = 'house_district_id'
+FINAL_SENATE_ID = 'senate_district_id'
+FINAL_TRACT_ID = 'tract_id'
+FINAL_BLOCK_ID = 'block_id'
+
+
+RENAME_DICT = {CENSUS_NAME: FINAL_NAME,
+               CENSUS_STATE_ID: FINAL_STATE_ID,
+               CENSUS_COUNTY_ID: FINAL_COUNTY_ID,
+               CENSUS_TOWN_ID: FINAL_TOWN_ID,
+               CENSUS_GEO_ID: FINAL_GEO_ID,
+               CENSUS_HOUSE_ID: FINAL_HOUSE_ID,
+               CENSUS_SENATE_ID: FINAL_SENATE_ID,
+               CENSUS_BLOCK_ID: FINAL_BLOCK_ID,
+               CENSUS_TRACT_ID: FINAL_TRACT_ID}
 
 sub_county_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/COUSUB/tl_2020_09_cousub.zip'
 sub_county_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_cousub_500k.zip'
@@ -26,11 +59,13 @@ senate_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/SLDU/tl_20
 house_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/SLDL/tl_2020_09_sldl.zip'
 house_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sldl_500k.zip'
 senate_carto_file = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_09_sldu_500k.zip'
+block_full_tiger_file = 'https://www2.census.gov/geo/tiger/TIGER2020/BG/tl_2020_09_bg.zip'
 
-REFERENCE_DICT = {TOWN: {TIGER: sub_county_full_tiger_file, CARTO: sub_county_carto_file, },
+REFERENCE_DICT = {TOWN: {TIGER: sub_county_full_tiger_file, CARTO: sub_county_carto_file},
                   PUMA: {TIGER: puma_full_tiger_file, CARTO: sub_county_carto_file},
                   SENATE: {TIGER: senate_full_tiger_file, CARTO: senate_carto_file},
-                  HOUSE: {TIGER: house_full_tiger_file, CARTO: house_carto_file}}
+                  HOUSE: {TIGER: house_full_tiger_file, CARTO: house_carto_file},
+                  BLOCK: {TIGER: block_full_tiger_file}}
 
 
 def download_all_data():
@@ -41,8 +76,8 @@ def download_all_data():
 
 
 def add_centroid(geo_df: gpd.GeoDataFrame,
-                 new_epsg_code: int=CT_EPSG_CODE,
-                 final_epsg_code: int=DEFAULT_LAT_LONG_PROJ) -> gpd.GeoDataFrame:
+                 new_epsg_code: int = CT_EPSG_CODE,
+                 final_epsg_code: int = DEFAULT_LAT_LONG_PROJ) -> gpd.GeoDataFrame:
     """
 
     :param geo_df:
@@ -66,6 +101,7 @@ def build_level_df(geo_level, file_type, redownload=False):
     file_name = get_geo_data_zip_file(url=url, geo_type=geo_level, file_type=file_type, redownload=redownload)
     df = gpd.read_file(f'zip://{file_name}')
     df = add_centroid(geo_df=df)
+    df.rename(columns=RENAME_DICT)
     return df
 
 

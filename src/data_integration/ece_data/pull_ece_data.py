@@ -1,7 +1,6 @@
 import os
 import sqlalchemy
 import pandas as pd
-import configparser
 import calendar
 from sqlalchemy.sql import text
 from datetime import datetime
