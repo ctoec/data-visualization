@@ -82,10 +82,10 @@ def join_geos(student_df, geo_level_list, geo_type=TIGER):
 
         # For towns attempt to join on town name as well
         if geo_level == TOWN:
-            town_df = geo_df[geo_df['NAME'] != 'County subdivisions not defined'][['NAME',GEOID]]
+            town_df = geo_df[geo_df[NAME_SHAPEFILE] != 'County subdivisions not defined'][[NAME_SHAPEFILE,GEOID]]
             # Create lookup for exact match town names
-            town_df['NAME'] = town_df['NAME'].str.lower().str.strip()
-            town_lookup = town_df.set_index('NAME').to_dict(orient='index')
+            town_df[NAME_SHAPEFILE] = town_df[NAME_SHAPEFILE].str.lower().str.strip()
+            town_lookup = town_df.set_index(NAME_SHAPEFILE).to_dict(orient='index')
 
             def get_town_name_from_lookup(row):
                 """
@@ -96,7 +96,7 @@ def join_geos(student_df, geo_level_list, geo_type=TIGER):
                 current_town_name = row[new_geo_level_name]
 
                 # All null values will be nan
-                if row['range_match_indicator'] != 'No_Match':
+                if row[MATCH_IDENTIFIER] != 'No_Match':
                     return current_town_name
                 else:
                     input_town = row[TOWN_COL].lower().strip() if row[TOWN_COL] else None

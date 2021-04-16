@@ -93,7 +93,6 @@ def init_database(init_postgis: bool=False):
 
 if __name__ == '__main__':
 
-
     # Write CAE CSV
     get_supply_demand_with_cae(filename=f'{DB_DATA_FOLDER}/overall_supply_demand_with_cae.csv')
 

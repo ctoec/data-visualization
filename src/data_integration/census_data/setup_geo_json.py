@@ -75,7 +75,6 @@ def load_level_table(geo_level, table_name, columns, engine, file_type=CARTO):
 
     # Load data to Superset keeping data that will allow for joins to other Census and unmet needs data
     level_geo_df = build_level_df(geo_level=geo_level, file_type=file_type)
-    level_geo_df = level_geo_df.rename(columns=lambda x: x.lower())
 
     # If the dataset is a legislative district the name of the Legislator should be added
     if geo_level in [SENATE, HOUSE]:
