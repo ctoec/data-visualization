@@ -6,7 +6,7 @@ from data_integration.ece_data.pull_ece_data import backfill_ece, get_space_df
 from data_integration.july_2020.build_tables import build_site_df, build_student_df
 from data_integration.july_2020.merge_leg import merge_legislative_data
 from data_integration.census_data.setup_geo_json import load_level_table
-from data_integration.census_data.shapefiles import TOWN, HOUSE, SENATE
+from data_integration.census_data.shapefiles import TOWN, HOUSE, SENATE, BLOCK, TIGER
 from data_integration.connections.databases import get_db_connection
 from data_integration.census_data.bulk_geocoding import run_geo_code
 from demand_estimation.estimate_eligible_population import get_town_eligible_df
@@ -67,11 +67,15 @@ def load_shapefiles_to_db(db_engine):
     town_cols = ['name', 'statefp', 'countyfp', 'cousubfp', 'geoid', 'lat', 'long']
     load_level_table(geo_level=TOWN, table_name='ct_town_geo', columns=town_cols, engine=db_engine)
 
-    house_cols = ['statefp', 'sldlst','geoid' 'lat', 'long']
+    house_cols = ['statefp', 'sldlst', 'geoid', 'legislator_name', 'legislator_party','lat', 'long']
     load_level_table(geo_level=HOUSE, table_name='ct_house_geo', columns=house_cols, engine=db_engine)
 
-    senate_cols = ['statefp', 'sldust', 'geoid', 'lat', 'long']
-    load_level_table(geo_level=SENATE, table_name='ct_house_geo', columns=senate_cols, engine=db_engine)
+    senate_cols = ['statefp', 'sldust', 'geoid', 'legislator_name', 'legislator_party', 'lat', 'long']
+    load_level_table(geo_level=SENATE, table_name='ct_senate_geo', columns=senate_cols, engine=db_engine)
+
+    block_cols = ['statefp', 'countyfp','tractce', 'blkgrpce', 'geoid', 'lat', 'long']
+    load_level_table(geo_level=BLOCK, table_name='ct_census_blocks', columns=block_cols, file_type=TIGER)
+
 
 
 def init_database(init_postgis: bool=False):
@@ -113,3 +117,4 @@ if __name__ == '__main__':
 
     # Get C4K data
     get_historical_c4k(final_filename=f"{DB_DATA_FOLDER}/all_c4k_data.csv")
+

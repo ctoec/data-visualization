@@ -70,7 +70,7 @@ def build_level_df(geo_level, file_type, redownload=False):
     file_name = get_geo_data_zip_file(url=url, geo_type=geo_level, file_type=file_type, redownload=redownload)
     df = gpd.read_file(f'zip://{file_name}')
     df = add_centroid(geo_df=df)
-    df.rename(columns=lambda x: x.lower())
+    df.rename(columns=lambda x: x.lower(), inplace=True)
     return df
 
 
