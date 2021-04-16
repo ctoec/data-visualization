@@ -18,8 +18,8 @@ UPLOAD_FILE_DIRECTORY = FILE_DIR + '/upload_files'
 INPUT_COLUMNS = ['id', 'address', 'city', 'state', 'zip_code']
 
 # Column from shapefiles with unique identifier
-GEOID = 'GEOID'
-NAME_SHAPEFILE = 'NAME'
+GEOID = 'geoid'
+NAME_SHAPEFILE = 'name'
 TOWN_COL = 'town'
 
 # Census API
