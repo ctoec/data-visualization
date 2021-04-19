@@ -15,8 +15,6 @@ CENSUS_GEOCODE_URL = 'https://geocoding.geo.census.gov/geocoder/locations/addres
 
 UPLOAD_FILE_DIRECTORY = FILE_DIR + '/upload_files'
 
-INPUT_COLUMNS = ['id', 'address', 'city', 'state', 'zip_code']
-
 # Column from shapefiles with unique identifier
 GEOID = 'geoid'
 NAME_SHAPEFILE = 'name'
@@ -28,7 +26,14 @@ CHILD_ID = 'child_id'
 LOCATION_IDENTIFIER = 'match_location'
 MATCH_IDENTIFIER = 'range_match_indicator'
 
-LOCATION_FIELDS = [CHILD_ID, 'input_address',MATCH_IDENTIFIER , 'match_type', 'match_address', LOCATION_IDENTIFIER, 'tiger_line_id', 'tiger_line_side_id']
+# Columns to upload to Census Bulk geocoder
+ADDRESS_COL = 'address'
+CITY_COL = 'city'
+STATE_COL = 'state'
+ZIP_CODE_COL = 'zip_code'
+INPUT_COLUMNS = [CHILD_ID, ADDRESS_COL, CITY_COL, STATE_COL, ZIP_CODE_COL]
+
+LOCATION_FIELDS = [CHILD_ID, 'input_address', MATCH_IDENTIFIER , 'match_type', 'match_address', LOCATION_IDENTIFIER, 'tiger_line_id', 'tiger_line_side_id']
 
 
 def get_bulk_data_upload_from_census(filename: str) -> pd.DataFrame:
@@ -132,11 +137,15 @@ def run_geo_code(db_conn) -> pd.DataFrame:
     :param db_conn: SQL alchemy connection to ECE database
     :return: dataframe of child IDs and corresponding geographic entities
     """
-    sql_string = f"""select top 10 c.id as {CHILD_ID}, streetAddress, town as {TOWN_COL}, state, zipCode
-                    from child c
-                    LEFT OUTER join family f on c.familyId = f.id
-                    where c.deletedDate is null and f.deletedDate is null
-                    """
+    sql_string = f"""select top c.id as {CHILD_ID}, 
+                                          streetAddress as {ADDRESS_COL}, 
+                                          town as {TOWN_COL}, 
+                                          state as {STATE_COL}, 
+                                          zipCode as {ZIP_CODE_COL}
+                                from child c
+                                LEFT OUTER join family f on c.familyId = f.id
+                                where c.deletedDate is null and f.deletedDate is null
+                                """
 
     df = pd.read_sql(sql=sql_string, con=db_conn)
 

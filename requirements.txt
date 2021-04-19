@@ -9,3 +9,4 @@ CensusData==1.12
 xlrd==2.0.1
 openpyxl==3.0.7
 Rtree==0.9.7
+recordlinkage==0.14
