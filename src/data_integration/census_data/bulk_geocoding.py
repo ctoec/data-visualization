@@ -132,7 +132,7 @@ def run_geo_code(db_conn) -> pd.DataFrame:
     :param db_conn: SQL alchemy connection to ECE database
     :return: dataframe of child IDs and corresponding geographic entities
     """
-    sql_string = f"""select top 10 c.id as {CHILD_ID}, streetAddress, town as {TOWN_COL}, state, zipCode
+    sql_string = f"""select top c.id as {CHILD_ID}, streetAddress, town as {TOWN_COL}, state, zipCode
                     from child c
                     LEFT OUTER join family f on c.familyId = f.id
                     where c.deletedDate is null and f.deletedDate is null
