@@ -1,6 +1,7 @@
 from recordlinkage import Index, Compare
 import pandas as pd
 from builtins import isinstance
+import sys
 
 '''
 To reference more information about deduplication with recordlinkage,
@@ -8,11 +9,11 @@ consult the docs and a working example at:
 https://recordlinkage.readthedocs.io/en/latest/notebooks/data_deduplication.html
 '''
 
-CHILD_FILE = 'ct_child_data.csv'
+SCORE_THRESHOLD = 5
 OUT_FILE = 'deduped_ece_child_ids.csv'
 
 
-def identify_duplicates(df, show_ranks_distribution=True):
+def identify_duplicates(df, threshold, show_ranks_distribution=True):
     '''
     Identifies duplicates in a given data frame that consists of
     child records with a variety of fields. For the identification
@@ -49,10 +50,10 @@ def identify_duplicates(df, show_ranks_distribution=True):
 
     print('-------Building similarity scores-------')
     comparator = Compare()
-    # Forcing an exact match here is fine because of the empty string
-    # stuff above
-    comparator.exact('sasid', 'sasid', label='sasid')
-    comparator.exact('uniqueId', 'uniqueId', label='uniqueId')
+    # We'll make an allowance for the equivalent of transposing one digit
+    # in each of these IDs, since they're still human entered
+    comparator.string('sasid', 'sasid', threshold=0.95, label='sasid')
+    comparator.string('uniqueId', 'uniqueId', threshold=0.95, label='uniqueId')
 
     # These are threshold scores based on probability of being the
     # same string, just misspelled
@@ -80,7 +81,7 @@ def identify_duplicates(df, show_ranks_distribution=True):
     # Decided on keeping only records that have at least 5 score points.
     # These are the highest quality matches and don't prune out any records
     # that aren't true duplicates.
-    matches = features[features.sum(axis=1) >= 5]
+    matches = features[features.sum(axis=1) >= threshold]
     print(str(len(matches)) + ' duplicates identified')
     print("")
                  
@@ -116,7 +117,8 @@ def identify_duplicates(df, show_ranks_distribution=True):
         
 
 if __name__ == '__main__':
-    df = pd.read_csv(CHILD_FILE)
-    identify_duplicates(df, show_ranks_distribution=False)
+    fpath = sys.argv[-1]
+    df = pd.read_csv(fpath)
+    identify_duplicates(df, SCORE_THRESHOLD, show_ranks_distribution=False)
 
 
