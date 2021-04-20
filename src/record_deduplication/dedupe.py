@@ -11,6 +11,8 @@ https://recordlinkage.readthedocs.io/en/latest/notebooks/data_deduplication.html
 
 SCORE_THRESHOLD = 5
 OUT_FILE = 'deduped_ece_child_ids.csv'
+CHILD_ID = 'child_id'
+DEDUPLICATED_ID = 'deduplicated_id'
 
 SQL_QUERY = """
             select c.id as child_id,
@@ -137,8 +139,8 @@ def identify_duplicates(df, threshold, show_ranks_distribution=True, filename=No
     
     # Write the output to a new CSV
     out = pd.DataFrame()
-    out['ece_ids'] = ece_ids
-    out['new_ids'] = new_ids
+    out[CHILD_ID] = ece_ids
+    out[DEDUPLICATED_ID] = new_ids
     if filename:
         out.to_csv(filename, index=False)
     else:
