@@ -15,6 +15,7 @@ from demand_estimation.estimate_eligible_population import get_town_eligible_df
 from demand_estimation.calculate_town_demand import create_final_town_demand
 from demand_estimation.demand_estimate_script import build_need_demand_df
 from data_integration.historical_care_4_kids.data_aggregation import get_historical_c4k
+from record_deduplication.dedupe import get_dedupe_mapping_from_db
 
 DB_DATA_FOLDER = 'final_data'
 CUR_FOLDER = os.path.dirname(os.path.realpath(__file__))
@@ -31,11 +32,16 @@ def get_demand_estimates(filename):
     create_final_town_demand(parent_metric_df=demand_df, smi_df=eligible_df, write_filename=filename)
 
 
+def get_deduplication(filename):
+    ece_conn = get_db_connection(section='ECE Reporter DB')
+    dedupe_df = get_dedupe_mapping_from_db(db_conn=ece_conn)
+    dedupe_df.to_csv(filename, index=False)
+
+
 def get_ece_student_data(filename):
     ece_conn = get_db_connection(section='ECE Reporter DB')
     child_df = backfill_ece(ece_conn)
     child_df.to_csv(filename, index=False)
-
 
 def get_ece_geocode(filename):
     ece_conn = get_db_connection(section='ECE Reporter DB')
@@ -79,7 +85,6 @@ def load_shapefiles_to_db(db_engine):
     load_level_table(geo_level=BLOCK, table_name='ct_census_blocks', columns=block_cols, file_type=TIGER)
 
 
-
 def init_database(init_postgis: bool=False):
     """
     Adds initial tables to database and loads postgis
@@ -109,7 +114,8 @@ if __name__ == '__main__':
     # Get ECE Data
     get_ece_student_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
     get_ece_site_data(filename=f"{DB_DATA_FOLDER}/ece_space_data.csv")
-    get_ece_geocode(filename="{DB_DATA_FOLDER}/pii/ece_student_data_geocode.csv")
+    get_ece_geocode(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data_geocode.csv")
+    get_deduplication(filename=f'{DB_DATA_FOLDER}/pii/ece_deduplication.csv')
 
     ## TODO
     # Add ECE table creation into script as well as loading CSV directly to DB
