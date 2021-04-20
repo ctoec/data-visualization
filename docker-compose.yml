@@ -6,8 +6,8 @@ services:
     image: apache/superset
     container_name: superset
     volumes:
-      - ./docker/config:/app/pythonpath
-      - ./docker/images:/app/superset/static/assets/images/mounted_images/
-      - ./docker/cache:/cache
+      - ./config:/app/pythonpath
+      - ./images:/app/superset/static/assets/images/mounted_images/
+      - ./cache:/cache
     ports:
       - "8088:8088"
