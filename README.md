@@ -54,7 +54,7 @@ When the database is initially built it needs to be set up with the following st
     - Number of children under 6 who are under 3.44X of the poverty line which is roughly 75% of the state median income.
     - Number of children under 6 in families who are under 200% of poverty with at least one working parent.
 - Shapefiles
-  - Census TIGER files with shapes associated with towns
+  - Census TIGER files with shapes associated with towns, blocks and legislative districts
   - Islands are ignored
 - ECE Reporter
   - Reports pulled from ECE reporter on a monthly basis
@@ -64,10 +64,7 @@ When the database is initially built it needs to be set up with the following st
   is provided in `ece_data/config_template.ini`.
   - _ECE Assumptions_    
     - Family income determination should be the most recent entry by determination date for the family that is not deleted
-    - For foster children, income should be set to 0 and family size should be 1.
-    - The queries are made on temporal tables that return data as if the query was run against the database at the end of the given reporting period. Changes since that time will not be reflected in the results.
-      - For backfilling data this approach does not work because data wasn't in the DB for some of these periods. March 8th 
-      will be the date that is used in this case since it was the first deadline for data submission.  
+    - For foster children, income should be set to 0 and family size should be 1.  
   - C4K data is not included 
   - Capacity data is pulled directly from the funding space table and only includes CDC and SS data. School Readiness data
   is unreliable and Head Start doesn't have defined spaces.
@@ -126,7 +123,7 @@ that disables an overall dashboard list view. All roles can be configured in Set
 - Superset has an option for metrics for Certification and Certification Details that the writer can use.
 
 #### Data Cleaning TODOS
-- Fill outstanding lat, longs for sites
+- Fill outstanding lat, longs for sites in July 2020.
 - Clean up town names
 - Resolve outstanding student records that aren't matching to any sites
 
