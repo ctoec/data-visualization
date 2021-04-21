@@ -1,5 +1,6 @@
 #!/bin/bash
-touch fakefile.txt
+cd ~
+touch anotherfakefile.txt
 
 if [ ! -f .initialized ]; then                                                                                                                                                                                    
     echo "Creating admin user..."  
