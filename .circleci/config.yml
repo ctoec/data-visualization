@@ -55,24 +55,6 @@ jobs:
       - run:
           name: Deploy to Elastic Beanstalk environment
           command: eb deploy ece-pensieve-<< parameters.env >>-env
-
-  setup-admin-user:
-    parameters:
-      env:
-        description: 'The environment to deploy Superset to (staging or prod)'
-        type: string
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - attach_workspace:
-          at: .
-      - eb/setup
-      - add_ssh_keys
-      - run:
-          name: Create admin user
-          command: |
-            ls -la
-            eb ssh ece-pensieve-<< parameters.env >>-env --command "docker exec -it superset superset fab create-admin --username 'voldemort' --firstname 'ADMIN' --lastname 'USER' --email 'admin@ctoec.org' --password 'password'"
           
 workflows:
   deploy-prod:
