@@ -24,11 +24,6 @@ jobs:
             sed -i '/POSTGRES_HOST/d' docker/.env
             echo -e "POSTGRES_HOST=<< parameters.env >>.ece-pensieve-db.ctoecskylight.com" >> docker/.env
       - run:
-          name: 'Set Admin Password for Superset from Secrets Manager'
-          command: |
-            sed -i '/ADMIN_PASSWORD/d' docker/.env
-            SUPERSET_ADMIN_PASSWORD=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/admin/password --query 'SecretString' --output text) && echo -e "ADMIN_PASSWORD=$SUPERSET_ADMIN_PASSWORD" >> docker/.env
-      - run:
           name: 'Add Mapbox key to config file'
           command: |
             MAPBOX_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_KEY=$MAPBOX_KEY" >> docker/.env
