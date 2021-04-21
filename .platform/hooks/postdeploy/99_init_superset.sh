@@ -2,6 +2,24 @@
 cd ~
 
 if [ ! -f .superset-init ]; then
+    SLEEP_COUNTER=0
+
+    until [ "`docker inspect -f {{.State.Running}} superset`"=="true" ] || [ $SLEEP_COUNTER -ge 60 ]; do
+      echo "Superset container not up and running yet.  Still waiting..."
+      SLEEP_COUNTER=$(( SLEEP_COUNTER + 1 ))
+      sleep 5;
+    done;
+
+    if [ $SLEEP_COUNTER -ge 60 ]; then
+      echo "Superset container wasn't started properly - initialization aborted."
+      exit 1
+    fi
+
+    echo "Superset container available!  Initialization started..."
+
+    echo "Upgrading Superset database..."
+    docker exec superset superset db upgrade
+
     echo "Setting default Superset permissions..."
     docker exec -it superset superset init
 
