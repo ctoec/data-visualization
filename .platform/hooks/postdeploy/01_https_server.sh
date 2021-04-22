@@ -1,8 +1,12 @@
 #!/bin/bash
+# Ugly hack to force Elastic Beanstalk to pick up our extended NGINX configuration for HTTPS
+# Because what's documented for Amazon Linux 2 environments flat-out does not work with Docker, apparently
+# https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-linux-extend.html
 
-# Hack to force Elastic Beanstalk to pick up our extended NGINX configuration for HTTPS
-# TODO: Move the server block into the following location from project root:
+# TODO: Once Elastic Beanstalk supports NGINX extensions in Linux Docker envs (which it purports to)
+# in the format AWS has documented, move the server block into the following location from project root:
 # .platform/nginx/conf.d/https.conf
+
 sudo mkdir -p /etc/nginx/conf.d
 rm -f /etc/nginx/conf.d/https.conf
 
