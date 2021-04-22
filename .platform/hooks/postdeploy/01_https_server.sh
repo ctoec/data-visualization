@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Hack to force Elastic Beanstalk to pick up our extended NGINX configuration for HTTPS
-mkdir -p /etc/nginx/conf.d/elasticbeanstalk
-cat > /etc/nginx/conf.d/elasticbeanstalk/https.conf << LIMIT_STRING
+sudo mkdir -p /etc/nginx/conf.d/elasticbeanstalk
+sudo cat > /etc/nginx/conf.d/elasticbeanstalk/https.conf << LIMIT_STRING
 # HTTPS server
 server {
     listen       443 ssl;
@@ -29,4 +29,4 @@ server {
 }
 LIMIT_STRING
 
-service nginx restart
+sudo service nginx restart
