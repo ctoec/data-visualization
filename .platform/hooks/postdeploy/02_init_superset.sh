@@ -2,6 +2,8 @@
 cd ~
 
 if [ ! -f .superset-init ]; then
+    echo "No init file found - Superset will be initialized!"
+
     SLEEP_COUNTER=0
 
     until [ "`docker inspect -f {{.State.Running}} superset`"=="true" ] || [ $SLEEP_COUNTER -ge 60 ]; do
