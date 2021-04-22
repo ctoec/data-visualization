@@ -13,6 +13,7 @@ SCORE_THRESHOLD = 3
 OUT_FILE = 'deduped_ece_child_ids.csv'
 CHILD_ID = 'child_id'
 DEDUPLICATED_ID = 'deduplicated_id'
+IS_DUPE_COL = 'is_duplicate'
 
 SQL_QUERY = """
             select c.id as child_id,
@@ -123,32 +124,36 @@ def identify_duplicates(df, threshold, show_ranks_distribution=True, filename=No
     # Now assign each child their own unique ID for DB joining purposes
     ece_ids = list(df['child_id'].values)
     new_ids = {}
+    is_dupes = {}
     i = 1
     # Start with a first pass to make sure all "original" records are given
     # an id, since duplicates are in no particular referential order
     for id in ece_ids:
         if not id in dupes:
             new_ids[id] = i
+            is_dupes[id] = False
             i += 1
         else:
             new_ids[id] = dupes[id]
+            is_dupes[id]  = True
     # Now replace everything that points to another record with the
     # reference record's ID number
     for key in new_ids:
         if isinstance(new_ids[key], str):
             new_ids[key] = new_ids[new_ids[key]]
     new_ids = [new_ids[id] for id in ece_ids]
+    is_dupes = [is_dupes[id] for id in ece_ids]
     
     # Write the output to a new CSV
     out = pd.DataFrame()
     out[CHILD_ID] = ece_ids
     out[DEDUPLICATED_ID] = new_ids
+    out[IS_DUPE_COL] = is_dupes
     if filename:
         out.to_csv(filename, index=False)
     else:
         return out
         
-
 if __name__ == '__main__':
     fpath = sys.argv[-1]
     df = pd.read_csv(fpath)
