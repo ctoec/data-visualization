@@ -4,7 +4,9 @@
 # TODO: Move the server block into the following location from project root:
 # .platform/nginx/conf.d/https.conf
 sudo mkdir -p /etc/nginx/conf.d
-sudo cat > /etc/nginx/conf.d/https.conf << LIMIT_STRING
+rm -f /etc/nginx/conf.d/https.conf
+
+echo "
 # HTTPS server
 server {
     listen       443 ssl;
@@ -21,14 +23,17 @@ server {
     client_max_body_size 5M;
 
     location / {
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header Host \$http_host;
         proxy_set_header X-NginX-Proxy true;
         proxy_pass http://127.0.0.1:8088;
         proxy_redirect off;
     }
 }
-LIMIT_STRING
+" >> https.conf
+
+sudo cp https.conf /etc/nginx/conf.d/https.conf
+rm https.conf
 
 sudo service nginx restart
