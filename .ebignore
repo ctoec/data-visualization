@@ -1,0 +1,4 @@
+__pycache__/
+venv/
+
+/src/data_integration/july_2020/data/
