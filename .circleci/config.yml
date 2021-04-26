@@ -46,6 +46,9 @@ jobs:
           at: .
       - eb/setup
       - run:
+          name: Test env file
+          command: cat docker/.env
+      - run:
           name: Initialize Elastic Beanstalk
           command: eb init ece-pensieve-<< parameters.env >>-app --region us-east-2 --platform docker
       - run:
