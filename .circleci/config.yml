@@ -26,7 +26,7 @@ jobs:
       - run:
           name: 'Add Mapbox key to config file'
           command: |
-            MAPBOX_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_KEY=$MAPBOX_KEY" >> docker/.env
+            MAPBOX_API_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_API_KEY=$MAPBOX_API_KEY" >> docker/.env
       # Save workspace for subsequent jobs
       - persist_to_workspace:
           root: .
