@@ -65,13 +65,12 @@ def get_july_2020_students(filename):
     merge_legislative_data(student_df, filename)
 
 
-def load_shapefiles_to_db(db_engine):
+def load_shapefiles_to_db():
     """
-    Loads town, house and senate shapefiles to the dashboard database
-    :param db_engine: SQLAlchemy engine
+    Loads town, house, block and senate shapefiles to the dashboard database
     :return: None, adds data to DB
     """
-
+    db_engine = get_db_connection(section='SUPERSET DB')
     town_cols = [FINAL_NAME, FINAL_STATE_ID, FINAL_COUNTY_ID, FINAL_TOWN_ID, FINAL_GEO_ID, 'lat', 'long']
     load_level_table(geo_level=TOWN, table_name='ct_town_geo', columns=town_cols, engine=db_engine)
 
@@ -82,7 +81,7 @@ def load_shapefiles_to_db(db_engine):
     load_level_table(geo_level=SENATE, table_name='ct_senate_geo', columns=senate_cols, engine=db_engine)
 
     block_cols = [FINAL_STATE_ID, FINAL_COUNTY_ID, FINAL_TRACT_ID, FINAL_BLOCK_ID, FINAL_GEO_ID, 'lat', 'long']
-    load_level_table(geo_level=BLOCK, table_name='ct_census_blocks', columns=block_cols, file_type=TIGER)
+    load_level_table(geo_level=BLOCK, table_name='ct_census_blocks', columns=block_cols, file_type=TIGER, engine=db_engine)
 
 
 def init_database(init_postgis: bool=False):
@@ -105,24 +104,32 @@ def init_database(init_postgis: bool=False):
 if __name__ == '__main__':
 
     # Write CAE CSV
+    print("Pulling Unmet needs report")
     get_supply_demand_with_cae(filename=f'{DB_DATA_FOLDER}/overall_supply_demand_with_cae.csv')
 
     # Write July data CSV
+    print("Pulling July 2020 data")
     get_july_2020_sites(filename=f"{DB_DATA_FOLDER}/july_2020_sites.csv")
     get_july_2020_students(filename=f"{DB_DATA_FOLDER}/pii/july_2020.csv")
 
     # Get ECE Data
+    print("Pulling ECE student data")
     get_ece_student_data(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data.csv")
+    print("Pulling ECE site data")
     get_ece_site_data(filename=f"{DB_DATA_FOLDER}/ece_space_data.csv")
+    print("Geocoding ECE data")
     get_ece_geocode(filename=f"{DB_DATA_FOLDER}/pii/ece_student_data_geocode.csv")
+    print("Deduplicating data")
     get_deduplication(filename=f'{DB_DATA_FOLDER}/pii/ece_deduplication.csv')
 
     ## TODO
-    # Add ECE table creation into script as well as loading CSV directly to DB
+    # Add ECE table creation for students/geos into script as well as loading CSV directly to DB
 
     # Build demand estimates
+    print("Getting demand estimation")
     get_demand_estimates(filename=f"{DB_DATA_FOLDER}/demand_estimation.csv")
 
     # Get C4K data
+    print("Getting historical C4K data")
     get_historical_c4k(final_filename=f"{DB_DATA_FOLDER}/all_c4k_data.csv")
 

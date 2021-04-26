@@ -4,7 +4,7 @@ import pandas as pd
 from math import ceil
 from io import StringIO
 import geopandas as gpd
-from shapefiles import build_level_df, TOWN, TIGER, HOUSE, SENATE, BLOCK, DEFAULT_LAT_LONG_PROJ
+from shapefiles import build_level_df, TOWN, TIGER, HOUSE, SENATE, BLOCK, DEFAULT_LAT_LONG_PROJ, FINAL_GEO_ID
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -50,11 +50,13 @@ def get_bulk_data_upload_from_census(filename: str) -> pd.DataFrame:
         raise Exception(f"Improperly formatted input file {filename}")
 
     payload = {'benchmark': 'Public_AR_Current', 'vintage': 'Current_Current'}
+    print(f"Uploading {filename}")
     with open(filename, 'rb') as rf:
         files = {'addressFile': rf}
         r = requests.post(CENSUS_GEOCODE_URL, data=payload, files=files)
         returned_text = r.text
     output_df = pd.read_csv(StringIO(returned_text), names=LOCATION_FIELDS)
+    print(f"{filename} geocoded")
 
     # Delete file
     os.remove(filename)
@@ -81,13 +83,13 @@ def join_geos(student_df, geo_level_list, geo_type=TIGER):
         geo_df = build_level_df(geo_level=geo_level, file_type=geo_type)
 
         # Add the geoid from the census shapefile to student data for joins to shapefiles in the database
-        new_geo_level_name = geo_level.replace(' ','_') + f'_{GEOID.lower()}'
+        new_geo_level_name = geo_level.replace(' ','_') + f'_{FINAL_GEO_ID.lower()}'
         geo_level_id_list.append(new_geo_level_name)
-        student_df = join_geo_df(student_df=student_df, geo_df=geo_df, geo_name_col=GEOID, geo_name=new_geo_level_name)
+        student_df = join_geo_df(student_df=student_df, geo_df=geo_df, geo_name_col=FINAL_GEO_ID, geo_name=new_geo_level_name)
 
         # For towns attempt to join on town name as well
         if geo_level == TOWN:
-            town_df = geo_df[geo_df[NAME_SHAPEFILE] != 'County subdivisions not defined'][[NAME_SHAPEFILE,GEOID]]
+            town_df = geo_df[geo_df[NAME_SHAPEFILE] != 'County subdivisions not defined'][[NAME_SHAPEFILE,FINAL_GEO_ID]]
             # Create lookup for exact match town names
             town_df[NAME_SHAPEFILE] = town_df[NAME_SHAPEFILE].str.lower().str.strip()
             town_lookup = town_df.set_index(NAME_SHAPEFILE).to_dict(orient='index')
@@ -105,7 +107,7 @@ def join_geos(student_df, geo_level_list, geo_type=TIGER):
                     return current_town_name
                 else:
                     input_town = row[TOWN_COL].lower().strip() if row[TOWN_COL] else None
-                    found_town_id = town_lookup.get(input_town, {GEOID: None})[GEOID]
+                    found_town_id = town_lookup.get(input_town, {FINAL_GEO_ID: None})[FINAL_GEO_ID]
                     return found_town_id
 
             student_df[new_geo_level_name] = student_df.apply(lambda row: get_town_name_from_lookup(row), axis=1)
@@ -137,7 +139,7 @@ def run_geo_code(db_conn) -> pd.DataFrame:
     :param db_conn: SQL alchemy connection to ECE database
     :return: dataframe of child IDs and corresponding geographic entities
     """
-    sql_string = f"""select top c.id as {CHILD_ID}, 
+    sql_string = f"""select c.id as {CHILD_ID}, 
                                           streetAddress as {ADDRESS_COL}, 
                                           town as {TOWN_COL}, 
                                           state as {STATE_COL}, 
@@ -151,6 +153,7 @@ def run_geo_code(db_conn) -> pd.DataFrame:
 
     # Call bulk census API geocoder with results from SQL query, temporary files are written and removed
     file_list = split_and_write_files(df)
+    print("Uploaded data to census")
     df_list = [get_bulk_data_upload_from_census(filename) for filename in file_list]
     combined_df = pd.concat(df_list)
 
