@@ -1,117 +1,78 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@1.3.0
+  eb: circleci/aws-elastic-beanstalk@1.0.2
 
 jobs: 
-  install:  # TODO: Move all these install steps to terraform init, if we end up keeping this
-    machine:
-      image: ubuntu-1604:202007-01 
-    steps:
-      - checkout
-      - add_ssh_keys
-      - run:
-          name: 'Install Git'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo yum install git -y"
-      - run:
-          name: 'Install Docker Engine'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo amazon-linux-extras install docker -y"
-      - run:
-          name: 'Start Docker'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo service docker start"
-      - run:
-          name: 'Add ec2-user to Docker group'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo usermod -a -G docker ec2-user"
-      # - run:
-      #     name: 'Install pinned version of Docker Compose'  # https://github.com/docker/compose/issues/8064
-      #     command: |
-      #       ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo su && sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose"
-      # - run:
-      #     name: 'Change Docker Compose permissions'
-      #     command: |
-      #       ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo chmod +x /usr/local/bin/docker-compose"
-      # - run:
-      #     name: 'Add Docker Compose to path'
-      #     command: |
-      #       ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose"
   build:
+    parameters:
+      env:
+        description: 'The environment to deploy Superset to (staging or prod)'
+        type: string   
     machine:
       image: ubuntu-1604:202007-01 
     steps:
       - checkout
-      - add_ssh_keys
       - run:
-          name: 'Remove Postgres Password set up from env file'
+          name: 'Set Postgres DB Password from Secrets Manager'  
           command: |
             sed -i '/POSTGRES_PASSWORD/d' docker/.env
+            SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /pensieve/<< parameters.env >>/superset/db/password --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
       - run:
-          name: 'Add DB Password to config files'
+          name: 'Set Postgres DB Host'
           command: |
-             SUPERSET_DB_PASS=$(aws secretsmanager get-secret-value --secret-id /data-viz/db/db_pass --query 'SecretString' --output text) && echo -e "POSTGRES_PASSWORD=$SUPERSET_DB_PASS" >> docker/.env
+            sed -i '/POSTGRES_HOST/d' docker/.env
+            echo -e "POSTGRES_HOST=<< parameters.env >>.ece-pensieve-db.ctoecskylight.com" >> docker/.env
       - run:
           name: 'Add Mapbox key to config file'
           command: |
-            MAPBOX_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_KEY=$MAPBOX_KEY" >> docker/.env
-      - run:
-          name: 'Copy docker files to instance'
-          command: |
-            scp -r docker/ ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com:
+            MAPBOX_API_KEY=$(aws secretsmanager get-secret-value --secret-id /data-viz/map_box/key --query 'SecretString' --output text) && echo -e "MAPBOX_API_KEY=$MAPBOX_API_KEY" >> docker/.env
+      # Save workspace for subsequent jobs
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
-  start:
-    machine:
-      image: ubuntu-1604:202007-01 
-    steps:
-      - checkout
-      - add_ssh_keys
-      - run:
-          name: 'Start SuperSet'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "cd docker && docker-compose down && docker-compose up -d"
-      - run:
-          name: 'Copy Favicon'
-          command: |
-            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker cp docker/images/favicon.ico superset:/app/superset/static/assets/images/favicon.png"
-
-# # One time init of database
-#  init:
-#    machine:
-#      image: ubuntu-1604:202007-01
-#    steps:
-#      - checkout
-#      - add_ssh_keys
-#      - run:
-#          name: 'Set up database'
-#          command: |
-#            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset db upgrade && docker exec -it superset superset init"
-#      # This can also be run on the command line in the instance with interactivity
-#      - run:
-#          name: 'Create admin user'
-#          command: |
-#            ssh ec2-user@ec2-3-134-85-99.us-east-2.compute.amazonaws.com "docker exec -it superset superset fab create-admin \
-#                                                                                         --username USERNAME \
-#                                                                                         --firstname FIRSTNAME \
-#                                                                                         --lastname LASTNAME \
-#                                                                                         --email EMAIL \
-#                                                                                         --password ********"
-
-workflows:
   deploy:
+    parameters:
+      env:
+        description: 'The environment to deploy Superset to (staging or prod)'
+        type: string
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - attach_workspace:
+          at: .
+      - eb/setup
+      - run:
+          name: Initialize Elastic Beanstalk
+          command: eb init ece-pensieve-<< parameters.env >>-app --region us-east-2 --platform docker
+      - run:
+          name: Deploy to Elastic Beanstalk environment
+          command: eb deploy ece-pensieve-<< parameters.env >>-env
+          
+workflows:
+  deploy-prod:
     jobs:
       - hold:
           type: approval
-      - install:
+      - build:
+          env: prod
           requires:
             - hold
-      - build:
-          requires:
-            - install
-      - start:
+      - deploy:
+          env: prod
           requires:
             - build
-#      - init:
-#          requires:
-#            - start
+  deploy-staging:
+    jobs:
+      - hold:
+          type: approval
+      - build:
+          env: staging
+          requires:
+            - hold
+      - deploy:
+          env: staging
+          requires:
+            - build

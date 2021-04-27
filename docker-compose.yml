@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+
+  superset:
+    env_file: ./docker/.env
+    image: apache/superset
+    container_name: superset
+    volumes:
+      - ./docker/config:/app/pythonpath
+      - ./docker/images:/app/superset/static/assets/images/mounted_images/
+      - ./docker/cache:/cache
+      - type: bind
+        source: ./docker/images/favicon.ico
+        target: /app/superset/static/assets/images/favicon.png
+        read_only: true
+    ports:
+      - "8088:8088"
