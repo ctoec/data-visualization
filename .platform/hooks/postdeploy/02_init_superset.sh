@@ -1,36 +1,47 @@
 #!/bin/bash
 cd ~
 
-if [ ! -f .superset-init ]; then
-    echo "No init file found - Superset will be initialized!"
+ADMIN_USERNAME="voldemort"
+ADMIN_EMAIL="admin@ctoec.org"
 
-    SLEEP_COUNTER=0
+SLEEP_COUNTER=0
 
-    until [ "`docker inspect -f {{.State.Running}} superset`"=="true" ] || [ $SLEEP_COUNTER -ge 60 ]; do
-      echo "Superset container not up and running yet.  Still waiting..."
-      SLEEP_COUNTER=$(( SLEEP_COUNTER + 1 ))
-      sleep 5;
-    done;
+# Give Superset container 5 minutes to start up before exiting early
+until [ "`docker inspect -f {{.State.Running}} superset`"=="true" ] || [ $SLEEP_COUNTER -ge 60 ]; do
+  echo "Superset container not up and running yet.  Still waiting..."
+  SLEEP_COUNTER=$(( SLEEP_COUNTER + 1 ))
+  sleep 5;
+done;
 
-    if [ $SLEEP_COUNTER -ge 60 ]; then
-      echo "Superset container wasn't started properly - initialization aborted."
-      exit 1
-    fi
+if [ $SLEEP_COUNTER -ge 60 ];
+then
+  echo "Superset container wasn't started properly - initialization aborted."
+  exit 1
+fi
 
-    echo "Superset container available!  Initialization started..."
+echo "Superset container available!  Starting initialization process..."
 
-    echo "Upgrading Superset database..."
-    docker exec superset superset db upgrade
+SUPERSET_ADMIN=$(docker exec superset superset fab list-users | grep $ADMIN_USERNAME | grep $ADMIN_EMAIL )
 
-    echo "Setting default Superset permissions..."
-    docker exec superset superset init
+# If no Superset admin user has been created, assume this is a brand new application instance
+# and perform all the necessary Superset initialization steps
+if [ -z "$SUPERSET_ADMIN" ];
+then
+  echo "No Superset admin user found.  Continuing with intialization process..."
 
-    echo "Creating Superset admin user..."  
-    STAGE=$(/opt/elasticbeanstalk/bin/get-config environment -k BUILD_ENV)
-    PASSWORD=$(aws secretsmanager get-secret-value --secret-id /pensieve/$STAGE/superset/admin/password --query 'SecretString' --output text --region 'us-east-2')
+  echo "Upgrading Superset database..."
+  docker exec superset superset db upgrade
 
-    docker exec superset superset fab create-admin --username 'voldemort' --firstname 'Admin' --lastname 'User' --email 'admin@ctoec.org' --password $PASSWORD
+  echo "Setting default Superset permissions..."
+  docker exec superset superset init
 
-    touch .superset-init     
-    echo "Superset initialization complete!"                                                                                                                                                                     
-fi   
+  echo "Creating Superset admin user..."  
+  STAGE=$(/opt/elasticbeanstalk/bin/get-config environment -k BUILD_ENV)
+  PASSWORD=$(aws secretsmanager get-secret-value --secret-id /pensieve/$STAGE/superset/admin/password --query 'SecretString' --output text --region 'us-east-2')
+
+  docker exec superset superset fab create-admin --username $ADMIN_USERNAME --firstname 'Admin' --lastname 'User' --email $ADMIN_EMAIL --password $PASSWORD
+
+  echo "Superset initialization complete!"
+else
+  echo "Superset admin user has already been set up!  Skipping initialization..."
+fi                                                                                                                                                                     
