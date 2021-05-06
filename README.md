@@ -18,22 +18,16 @@ This instance of Superset is configured with the file in `config/superset_config
 
 ### Initial Database Setup
  
-When the database is initially built it needs to be set up with the following steps:
+For completely new instances of Superset the following set-up steps will need to be followed:
 
-1. Upgrade and initialize database from command line of Superset instance
-   - `docker exec -it superset superset db upgrade && docker exec -it superset superset init`
-1. Create admin user from command line of Superset instance
-   - `docker exec -it superset superset fab create-admin \
-                 --username USERNAME \
-                --firstname FIRSTNAME \
-                --email EMAIL \
-                --password ********`
 1. Add Database to store OEC data through Superset UI 
-   - Add database through database UI with connection string `SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://superset_admin:$SUPERSET_DB_PASS@superset_db/superset`
-   - Enable CSV upload and all SQL Lab settings
-1. Use SQL Lab to create uploaded_data schema and initialize POSTGIS
+   - Add database through database UI with connection string `SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://username:password@db_host/db_name`
+   - Enable CSV upload and all SQL Lab settings in the settings tab in the edit database menu.
+1. Use SQL Lab to create uploaded_data schema and initialize POSTGIS. Postgis is required for some of the mapping options.
    - `CREATE SCHEMA uploaded_data;`
-   - `CREATE EXTENSION postgis;`
+   
+### Loading data to the database
+
 1. Populate a `config.ini` file in `src/data_integration/connections` using the format in `src/data_integration/connections/config_template.ini`
 1. Run `build_db.py` to create csvs
 1. Load shapefiles and initialize tables by running the `init_database` function in `build_db.py` in either the Python console on a standalone script.

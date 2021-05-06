@@ -5,10 +5,10 @@ from data_integration.unmet_needs.unmet_needs import get_supply_demand_with_cae
 from data_integration.ece_data.pull_ece_data import backfill_ece, get_space_df
 from data_integration.july_2020.build_tables import build_site_df, build_student_df
 from data_integration.july_2020.merge_leg import merge_legislative_data
-from data_integration.census_data.setup_geo_json import load_level_table
+from data_integration.census_data.setup_geo_json import get_level_table
 from data_integration.census_data.shapefiles import TOWN, HOUSE, SENATE, BLOCK, TIGER, \
     FINAL_NAME,FINAL_GEO_ID, FINAL_TOWN_ID, FINAL_COUNTY_ID, FINAL_STATE_ID, FINAL_HOUSE_ID,\
-    FINAL_SENATE_ID, FINAL_TRACT_ID, FINAL_BLOCK_ID
+    FINAL_SENATE_ID
 from data_integration.connections.databases import get_db_connection
 from data_integration.census_data.bulk_geocoding import run_geo_code
 from demand_estimation.estimate_eligible_population import get_town_eligible_df
@@ -65,35 +65,29 @@ def get_july_2020_students(filename):
     merge_legislative_data(student_df, filename)
 
 
-def load_shapefiles_to_db():
+def create_shapefile_csvs():
     """
     Loads town, house, block and senate shapefiles to the dashboard database
     :return: None, adds data to DB
     """
-    db_engine = get_db_connection(section='SUPERSET DB')
     town_cols = [FINAL_NAME, FINAL_STATE_ID, FINAL_COUNTY_ID, FINAL_TOWN_ID, FINAL_GEO_ID, 'lat', 'long']
-    load_level_table(geo_level=TOWN, table_name='ct_town_geo', columns=town_cols, engine=db_engine)
+    town_df = get_level_table(geo_level=TOWN, columns=town_cols)
+    town_df.to_csv(f"{DB_DATA_FOLDER}/ct_town_geo.csv", index=False)
 
     house_cols = [FINAL_STATE_ID, FINAL_HOUSE_ID, FINAL_GEO_ID, 'legislator_name', 'legislator_party','lat', 'long']
-    load_level_table(geo_level=HOUSE, table_name='ct_house_geo', columns=house_cols, engine=db_engine)
+    house_df = get_level_table(geo_level=HOUSE, columns=house_cols)
+    house_df.to_csv(f"{DB_DATA_FOLDER}/ct_house_geo.csv", index=False)
 
     senate_cols = [FINAL_STATE_ID, FINAL_SENATE_ID, FINAL_GEO_ID, 'legislator_name', 'legislator_party', 'lat', 'long']
-    load_level_table(geo_level=SENATE, table_name='ct_senate_geo', columns=senate_cols, engine=db_engine)
+    senate_df = get_level_table(geo_level=SENATE, columns=senate_cols)
+    senate_df.to_csv(f"{DB_DATA_FOLDER}/ct_senate_geo.csv", index=False)
 
-    block_cols = [FINAL_STATE_ID, FINAL_COUNTY_ID, FINAL_TRACT_ID, FINAL_BLOCK_ID, FINAL_GEO_ID, 'lat', 'long']
-    load_level_table(geo_level=BLOCK, table_name='ct_census_blocks', columns=block_cols, file_type=TIGER, engine=db_engine)
-
-
-def init_database(init_postgis: bool=False):
+def init_database():
     """
-    Adds initial tables to database and loads postgis
-    :param init_postgis: Boolean whether to install postgis in database
+    Adds initial tables to database
     :return:
     """
     db_engine = get_db_connection(section='SUPERSET DB')
-    if init_postgis:
-        db_engine.execute('CREATE EXTENSION postgis')
-    load_shapefiles_to_db(db_engine)
 
     # Load all tables in analytics table folder
     for filename in os.listdir(TABLE_FOLDER):
@@ -132,4 +126,7 @@ if __name__ == '__main__':
     # Get C4K data
     print("Getting historical C4K data")
     get_historical_c4k(final_filename=f"{DB_DATA_FOLDER}/all_c4k_data.csv")
+
+    # Create shapefile CSVs
+    create_shapefile_csvs()
 
